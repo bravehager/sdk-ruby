@@ -160,7 +160,7 @@ methods!(
         options.target_url(url)
             .client_name("temporal-ruby".to_string())
             .client_version(client_version)
-            .retry_config(retry_config.unwrap_or(RetryConfig::default()));
+            .retry_config(retry_config.unwrap_or_default());
         if let Some(tls_cfg) = tls {
             options.tls_cfg(tls_cfg);
         }

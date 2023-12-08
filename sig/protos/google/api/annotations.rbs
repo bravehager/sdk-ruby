@@ -1,0 +1,24 @@
+module Google
+  module Api
+  end
+end
+
+class ::Google::Protobuf::MethodOptions
+  # See `HttpRule`.
+  #
+  attr_accessor http(): ::Google::Api::HttpRule?
+
+  # See `HttpRule`.
+  #
+  def http=: [M < ::Google::Api::HttpRule::_ToProto] (M?) -> M?
+           | ...
+
+  def http!: () -> ::Google::Api::HttpRule?
+
+  def []: (:http) -> ::Google::Api::HttpRule?
+        | ...
+
+  def []=: (:http, ::Google::Api::HttpRule?) -> ::Google::Api::HttpRule?
+         | [M < ::Google::Api::HttpRule::_ToProto] (:http, M?) -> M?
+         | ...
+end

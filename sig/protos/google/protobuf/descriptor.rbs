@@ -1,5 +1,66 @@
 module Google
   module Protobuf
+    # The full set of known editions.
+    #
+    class Edition < ::Protobuf::Enum
+      type names = :EDITION_UNKNOWN | :EDITION_PROTO2 | :EDITION_PROTO3 | :EDITION_2023 | :EDITION_1_TEST_ONLY | :EDITION_2_TEST_ONLY | :EDITION_99997_TEST_ONLY | :EDITION_99998_TEST_ONLY | :EDITION_99999_TEST_ONLY
+
+      type strings = "EDITION_UNKNOWN" | "EDITION_PROTO2" | "EDITION_PROTO3" | "EDITION_2023" | "EDITION_1_TEST_ONLY" | "EDITION_2_TEST_ONLY" | "EDITION_99997_TEST_ONLY" | "EDITION_99998_TEST_ONLY" | "EDITION_99999_TEST_ONLY"
+
+      type tags = 0 | 998 | 999 | 1000 | 1 | 2 | 99997 | 99998 | 99999
+
+      type values = names | strings | tags
+
+      attr_reader name(): names
+
+      attr_reader tag(): tags
+
+      # A placeholder for an unknown edition value.
+      #
+      EDITION_UNKNOWN: Edition
+
+      # Legacy syntax "editions".  These pre-date editions, but behave much like
+      #  distinct editions.  These can't be used to specify the edition of proto
+      #  files, but feature definitions must supply proto2/proto3 defaults for
+      #  backwards compatibility.
+      #
+      EDITION_PROTO2: Edition
+
+      EDITION_PROTO3: Edition
+
+      # Editions that have been released.  The specific values are arbitrary and
+      #  should not be depended on, but they will always be time-ordered for easy
+      #  comparison.
+      #
+      EDITION_2023: Edition
+
+      # Placeholder editions for testing feature resolution.  These should not be
+      #  used or relyed on outside of tests.
+      #
+      EDITION_1_TEST_ONLY: Edition
+
+      EDITION_2_TEST_ONLY: Edition
+
+      EDITION_99997_TEST_ONLY: Edition
+
+      EDITION_99998_TEST_ONLY: Edition
+
+      EDITION_99999_TEST_ONLY: Edition
+
+      # The type of `#initialize` parameter.
+      type init = Edition | values
+
+      # The type of `repeated` field.
+      type field_array = ::Protobuf::Field::FieldArray[Edition, Edition | values]
+
+      # The type of `map` field.
+      type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, Edition, Edition | values]
+
+      type array = ::Array[Edition | values]
+
+      type hash[KEY] = ::Hash[KEY, Edition | values]
+    end
+
     # The protocol compiler can output a FileDescriptorSet containing the .proto
     #  files it parses.
     #
@@ -153,13 +214,26 @@ module Google
       def source_code_info!: () -> ::Google::Protobuf::SourceCodeInfo?
 
       # The syntax of the proto file.
-      #  The supported values are "proto2" and "proto3".
+      #  The supported values are "proto2", "proto3", and "editions".
+      #
+      #  If `edition` is present, this value must be "editions".
       #
       attr_accessor syntax(): ::String
 
       def syntax!: () -> ::String?
 
-      def initialize: (?name: ::String, ?package: ::String, ?dependency: ::Array[::String], ?public_dependency: ::Array[::Integer], ?weak_dependency: ::Array[::Integer], ?message_type: ::Google::Protobuf::DescriptorProto::array, ?enum_type: ::Google::Protobuf::EnumDescriptorProto::array, ?service: ::Google::Protobuf::ServiceDescriptorProto::array, ?extension: ::Google::Protobuf::FieldDescriptorProto::array, ?options: ::Google::Protobuf::FileOptions::init?, ?source_code_info: ::Google::Protobuf::SourceCodeInfo::init?, ?syntax: ::String) -> void
+      # The edition of the proto file.
+      #
+      attr_accessor edition(): ::Google::Protobuf::Edition
+
+      # The edition of the proto file.
+      #
+      def edition=: (::Google::Protobuf::Edition::values) -> ::Google::Protobuf::Edition::values
+                  | ...
+
+      def edition!: () -> ::Google::Protobuf::Edition?
+
+      def initialize: (?name: ::String, ?package: ::String, ?dependency: ::Array[::String], ?public_dependency: ::Array[::Integer], ?weak_dependency: ::Array[::Integer], ?message_type: ::Google::Protobuf::DescriptorProto::array, ?enum_type: ::Google::Protobuf::EnumDescriptorProto::array, ?service: ::Google::Protobuf::ServiceDescriptorProto::array, ?extension: ::Google::Protobuf::FieldDescriptorProto::array, ?options: ::Google::Protobuf::FileOptions::init?, ?source_code_info: ::Google::Protobuf::SourceCodeInfo::init?, ?syntax: ::String, ?edition: ::Google::Protobuf::Edition::init) -> void
 
       def []: (:name) -> ::String
             | (:package) -> ::String
@@ -173,6 +247,7 @@ module Google
             | (:options) -> ::Google::Protobuf::FileOptions?
             | (:source_code_info) -> ::Google::Protobuf::SourceCodeInfo?
             | (:syntax) -> ::String
+            | (:edition) -> ::Google::Protobuf::Edition
             | (::Symbol) -> untyped
 
       def []=: (:name, ::String) -> ::String
@@ -196,6 +271,8 @@ module Google
              | (:source_code_info, ::Google::Protobuf::SourceCodeInfo?) -> ::Google::Protobuf::SourceCodeInfo?
              | [M < ::Google::Protobuf::SourceCodeInfo::_ToProto] (:source_code_info, M?) -> M?
              | (:syntax, ::String) -> ::String
+             | (:edition, ::Google::Protobuf::Edition) -> ::Google::Protobuf::Edition
+             | (:edition, ::Google::Protobuf::Edition::values) -> ::Google::Protobuf::Edition::values
              | (::Symbol, untyped) -> untyped
 
       interface _ToProto
@@ -458,6 +535,120 @@ module Google
       #
       def self.encode: (ExtensionRangeOptions) -> String
 
+      class Declaration < ::Protobuf::Message
+        # Encode the message to a binary string
+        #
+        def self.encode: (Declaration) -> String
+
+        # The extension number declared within the extension range.
+        #
+        attr_accessor number(): ::Integer
+
+        def number!: () -> ::Integer?
+
+        # The fully-qualified name of the extension field. There must be a leading
+        #  dot in front of the full name.
+        #
+        attr_accessor full_name(): ::String
+
+        def full_name!: () -> ::String?
+
+        # The fully-qualified type name of the extension field. Unlike
+        #  Metadata.type, Declaration.type must have a leading dot for messages
+        #  and enums.
+        #
+        attr_accessor type(): ::String
+
+        def type!: () -> ::String?
+
+        # If true, indicates that the number is reserved in the extension range,
+        #  and any extension field with the number will fail to compile. Set this
+        #  when a declared extension field is deleted.
+        #
+        attr_accessor reserved(): bool
+
+        def reserved!: () -> bool?
+
+        # If true, indicates that the extension must be defined as repeated.
+        #  Otherwise the extension must be defined as optional.
+        #
+        attr_accessor repeated(): bool
+
+        def repeated!: () -> bool?
+
+        def initialize: (?number: ::Integer, ?full_name: ::String, ?type: ::String, ?reserved: bool, ?repeated: bool) -> void
+
+        def []: (:number) -> ::Integer
+              | (:full_name) -> ::String
+              | (:type) -> ::String
+              | (:reserved) -> bool
+              | (:repeated) -> bool
+              | (::Symbol) -> untyped
+
+        def []=: (:number, ::Integer) -> ::Integer
+               | (:full_name, ::String) -> ::String
+               | (:type, ::String) -> ::String
+               | (:reserved, bool) -> bool
+               | (:repeated, bool) -> bool
+               | (::Symbol, untyped) -> untyped
+
+        def reserved?: () -> bool
+
+        def repeated?: () -> bool
+
+        interface _ToProto
+          def to_proto: () -> Declaration
+        end
+
+        # The type of `#initialize` parameter.
+        type init = Declaration | _ToProto
+
+        # The type of `repeated` field.
+        type field_array = ::Protobuf::Field::FieldArray[Declaration, Declaration | _ToProto]
+
+        # The type of `map` field.
+        type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, Declaration, Declaration | _ToProto]
+
+        type array = ::Array[Declaration | _ToProto]
+
+        type hash[KEY] = ::Hash[KEY, Declaration | _ToProto]
+      end
+
+      # The verification state of the extension range.
+      #
+      class VerificationState < ::Protobuf::Enum
+        type names = :DECLARATION | :UNVERIFIED
+
+        type strings = "DECLARATION" | "UNVERIFIED"
+
+        type tags = 0 | 1
+
+        type values = names | strings | tags
+
+        attr_reader name(): names
+
+        attr_reader tag(): tags
+
+        # All the extensions of the range must be declared.
+        #
+        DECLARATION: VerificationState
+
+        UNVERIFIED: VerificationState
+
+        # The type of `#initialize` parameter.
+        type init = VerificationState | values
+
+        # The type of `repeated` field.
+        type field_array = ::Protobuf::Field::FieldArray[VerificationState, VerificationState | values]
+
+        # The type of `map` field.
+        type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, VerificationState, VerificationState | values]
+
+        type array = ::Array[VerificationState | values]
+
+        type hash[KEY] = ::Hash[KEY, VerificationState | values]
+      end
+
       # The parser stores options it doesn't recognize here. See above.
       #
       attr_accessor uninterpreted_option(): ::Google::Protobuf::UninterpretedOption::field_array
@@ -469,13 +660,63 @@ module Google
 
       def uninterpreted_option!: () -> ::Google::Protobuf::UninterpretedOption::field_array?
 
-      def initialize: (?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
+      # For external users: DO NOT USE. We are in the process of open sourcing
+      #  extension declaration and executing internal cleanups before it can be
+      #  used externally.
+      #
+      attr_accessor declaration(): ::Google::Protobuf::ExtensionRangeOptions::Declaration::field_array
+
+      # For external users: DO NOT USE. We are in the process of open sourcing
+      #  extension declaration and executing internal cleanups before it can be
+      #  used externally.
+      #
+      def declaration=: (::Google::Protobuf::ExtensionRangeOptions::Declaration::array) -> ::Google::Protobuf::ExtensionRangeOptions::Declaration::array
+                      | ...
+
+      def declaration!: () -> ::Google::Protobuf::ExtensionRangeOptions::Declaration::field_array?
+
+      # Any features defined in the specific edition.
+      #
+      attr_accessor features(): ::Google::Protobuf::FeatureSet?
+
+      # Any features defined in the specific edition.
+      #
+      def features=: [M < ::Google::Protobuf::FeatureSet::_ToProto] (M?) -> M?
+                   | ...
+
+      def features!: () -> ::Google::Protobuf::FeatureSet?
+
+      # The verification state of the range.
+      #  TODO: flip the default to DECLARATION once all empty ranges
+      #  are marked as UNVERIFIED.
+      #
+      attr_accessor verification(): ::Google::Protobuf::ExtensionRangeOptions::VerificationState
+
+      # The verification state of the range.
+      #  TODO: flip the default to DECLARATION once all empty ranges
+      #  are marked as UNVERIFIED.
+      #
+      def verification=: (::Google::Protobuf::ExtensionRangeOptions::VerificationState::values) -> ::Google::Protobuf::ExtensionRangeOptions::VerificationState::values
+                       | ...
+
+      def verification!: () -> ::Google::Protobuf::ExtensionRangeOptions::VerificationState?
+
+      def initialize: (?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array, ?declaration: ::Google::Protobuf::ExtensionRangeOptions::Declaration::array, ?features: ::Google::Protobuf::FeatureSet::init?, ?verification: ::Google::Protobuf::ExtensionRangeOptions::VerificationState::init) -> void
 
       def []: (:uninterpreted_option) -> ::Google::Protobuf::UninterpretedOption::field_array
+            | (:declaration) -> ::Google::Protobuf::ExtensionRangeOptions::Declaration::field_array
+            | (:features) -> ::Google::Protobuf::FeatureSet?
+            | (:verification) -> ::Google::Protobuf::ExtensionRangeOptions::VerificationState
             | (::Symbol) -> untyped
 
       def []=: (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::field_array) -> ::Google::Protobuf::UninterpretedOption::field_array
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::array) -> ::Google::Protobuf::UninterpretedOption::array
+             | (:declaration, ::Google::Protobuf::ExtensionRangeOptions::Declaration::field_array) -> ::Google::Protobuf::ExtensionRangeOptions::Declaration::field_array
+             | (:declaration, ::Google::Protobuf::ExtensionRangeOptions::Declaration::array) -> ::Google::Protobuf::ExtensionRangeOptions::Declaration::array
+             | (:features, ::Google::Protobuf::FeatureSet?) -> ::Google::Protobuf::FeatureSet?
+             | [M < ::Google::Protobuf::FeatureSet::_ToProto] (:features, M?) -> M?
+             | (:verification, ::Google::Protobuf::ExtensionRangeOptions::VerificationState) -> ::Google::Protobuf::ExtensionRangeOptions::VerificationState
+             | (:verification, ::Google::Protobuf::ExtensionRangeOptions::VerificationState::values) -> ::Google::Protobuf::ExtensionRangeOptions::VerificationState::values
              | (::Symbol, untyped) -> untyped
 
       interface _ToProto
@@ -1406,6 +1647,17 @@ module Google
 
       def ruby_package!: () -> ::String?
 
+      # Any features defined in the specific edition.
+      #
+      attr_accessor features(): ::Google::Protobuf::FeatureSet?
+
+      # Any features defined in the specific edition.
+      #
+      def features=: [M < ::Google::Protobuf::FeatureSet::_ToProto] (M?) -> M?
+                   | ...
+
+      def features!: () -> ::Google::Protobuf::FeatureSet?
+
       # The parser stores options it doesn't recognize here.
       #  See the documentation for the "Options" section above.
       #
@@ -1419,7 +1671,7 @@ module Google
 
       def uninterpreted_option!: () -> ::Google::Protobuf::UninterpretedOption::field_array?
 
-      def initialize: (?java_package: ::String, ?java_outer_classname: ::String, ?java_multiple_files: bool, ?java_generate_equals_and_hash: bool, ?java_string_check_utf8: bool, ?optimize_for: ::Google::Protobuf::FileOptions::OptimizeMode::init, ?go_package: ::String, ?cc_generic_services: bool, ?java_generic_services: bool, ?py_generic_services: bool, ?php_generic_services: bool, ?deprecated: bool, ?cc_enable_arenas: bool, ?objc_class_prefix: ::String, ?csharp_namespace: ::String, ?swift_prefix: ::String, ?php_class_prefix: ::String, ?php_namespace: ::String, ?php_metadata_namespace: ::String, ?ruby_package: ::String, ?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
+      def initialize: (?java_package: ::String, ?java_outer_classname: ::String, ?java_multiple_files: bool, ?java_generate_equals_and_hash: bool, ?java_string_check_utf8: bool, ?optimize_for: ::Google::Protobuf::FileOptions::OptimizeMode::init, ?go_package: ::String, ?cc_generic_services: bool, ?java_generic_services: bool, ?py_generic_services: bool, ?php_generic_services: bool, ?deprecated: bool, ?cc_enable_arenas: bool, ?objc_class_prefix: ::String, ?csharp_namespace: ::String, ?swift_prefix: ::String, ?php_class_prefix: ::String, ?php_namespace: ::String, ?php_metadata_namespace: ::String, ?ruby_package: ::String, ?features: ::Google::Protobuf::FeatureSet::init?, ?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
 
       def []: (:java_package) -> ::String
             | (:java_outer_classname) -> ::String
@@ -1441,6 +1693,7 @@ module Google
             | (:php_namespace) -> ::String
             | (:php_metadata_namespace) -> ::String
             | (:ruby_package) -> ::String
+            | (:features) -> ::Google::Protobuf::FeatureSet?
             | (:uninterpreted_option) -> ::Google::Protobuf::UninterpretedOption::field_array
             | (::Symbol) -> untyped
 
@@ -1465,6 +1718,8 @@ module Google
              | (:php_namespace, ::String) -> ::String
              | (:php_metadata_namespace, ::String) -> ::String
              | (:ruby_package, ::String) -> ::String
+             | (:features, ::Google::Protobuf::FeatureSet?) -> ::Google::Protobuf::FeatureSet?
+             | [M < ::Google::Protobuf::FeatureSet::_ToProto] (:features, M?) -> M?
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::field_array) -> ::Google::Protobuf::UninterpretedOption::field_array
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::array) -> ::Google::Protobuf::UninterpretedOption::array
              | (::Symbol, untyped) -> untyped
@@ -1550,7 +1805,11 @@ module Google
 
       def deprecated!: () -> bool?
 
-      # Whether the message is an automatically generated map entry type for the
+      # NOTE: Do not set the option in .proto files. Always use the maps syntax
+      #  instead. The option should only be implicitly set by the proto compiler
+      #  parser.
+      #
+      #  Whether the message is an automatically generated map entry type for the
       #  maps field.
       #
       #  For maps fields:
@@ -1568,13 +1827,41 @@ module Google
       #  The reflection APIs in such implementations still need to work as
       #  if the field is a repeated message field.
       #
-      #  NOTE: Do not set the option in .proto files. Always use the maps syntax
-      #  instead. The option should only be implicitly set by the proto compiler
-      #  parser.
-      #
       attr_accessor map_entry(): bool
 
       def map_entry!: () -> bool?
+
+      # Enable the legacy handling of JSON field name conflicts.  This lowercases
+      #  and strips underscored from the fields before comparison in proto3 only.
+      #  The new behavior takes `json_name` into account and applies to proto2 as
+      #  well.
+      #
+      #  This should only be used as a temporary measure against broken builds due
+      #  to the change in behavior for JSON field name conflicts.
+      #
+      #  TODO This is legacy behavior we plan to remove once downstream
+      #  teams have had time to migrate.
+      #
+      # ----
+      #
+      # Protobuf options:
+      #
+      # - `deprecated = true`
+      #
+      attr_accessor deprecated_legacy_json_field_conflicts(): bool
+
+      def deprecated_legacy_json_field_conflicts!: () -> bool?
+
+      # Any features defined in the specific edition.
+      #
+      attr_accessor features(): ::Google::Protobuf::FeatureSet?
+
+      # Any features defined in the specific edition.
+      #
+      def features=: [M < ::Google::Protobuf::FeatureSet::_ToProto] (M?) -> M?
+                   | ...
+
+      def features!: () -> ::Google::Protobuf::FeatureSet?
 
       # The parser stores options it doesn't recognize here. See above.
       #
@@ -1587,12 +1874,14 @@ module Google
 
       def uninterpreted_option!: () -> ::Google::Protobuf::UninterpretedOption::field_array?
 
-      def initialize: (?message_set_wire_format: bool, ?no_standard_descriptor_accessor: bool, ?deprecated: bool, ?map_entry: bool, ?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
+      def initialize: (?message_set_wire_format: bool, ?no_standard_descriptor_accessor: bool, ?deprecated: bool, ?map_entry: bool, ?deprecated_legacy_json_field_conflicts: bool, ?features: ::Google::Protobuf::FeatureSet::init?, ?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
 
       def []: (:message_set_wire_format) -> bool
             | (:no_standard_descriptor_accessor) -> bool
             | (:deprecated) -> bool
             | (:map_entry) -> bool
+            | (:deprecated_legacy_json_field_conflicts) -> bool
+            | (:features) -> ::Google::Protobuf::FeatureSet?
             | (:uninterpreted_option) -> ::Google::Protobuf::UninterpretedOption::field_array
             | (::Symbol) -> untyped
 
@@ -1600,6 +1889,9 @@ module Google
              | (:no_standard_descriptor_accessor, bool) -> bool
              | (:deprecated, bool) -> bool
              | (:map_entry, bool) -> bool
+             | (:deprecated_legacy_json_field_conflicts, bool) -> bool
+             | (:features, ::Google::Protobuf::FeatureSet?) -> ::Google::Protobuf::FeatureSet?
+             | [M < ::Google::Protobuf::FeatureSet::_ToProto] (:features, M?) -> M?
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::field_array) -> ::Google::Protobuf::UninterpretedOption::field_array
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::array) -> ::Google::Protobuf::UninterpretedOption::array
              | (::Symbol, untyped) -> untyped
@@ -1611,6 +1903,8 @@ module Google
       def deprecated?: () -> bool
 
       def map_entry?: () -> bool
+
+      def deprecated_legacy_json_field_conflicts?: () -> bool
 
       interface _ToProto
         def to_proto: () -> MessageOptions
@@ -1635,6 +1929,53 @@ module Google
       #
       def self.encode: (FieldOptions) -> String
 
+      class EditionDefault < ::Protobuf::Message
+        # Encode the message to a binary string
+        #
+        def self.encode: (EditionDefault) -> String
+
+        attr_accessor edition(): ::Google::Protobuf::Edition
+
+        def edition=: (::Google::Protobuf::Edition::values) -> ::Google::Protobuf::Edition::values
+                    | ...
+
+        def edition!: () -> ::Google::Protobuf::Edition?
+
+        # Textproto value.
+        #
+        attr_accessor value(): ::String
+
+        def value!: () -> ::String?
+
+        def initialize: (?edition: ::Google::Protobuf::Edition::init, ?value: ::String) -> void
+
+        def []: (:edition) -> ::Google::Protobuf::Edition
+              | (:value) -> ::String
+              | (::Symbol) -> untyped
+
+        def []=: (:edition, ::Google::Protobuf::Edition) -> ::Google::Protobuf::Edition
+               | (:edition, ::Google::Protobuf::Edition::values) -> ::Google::Protobuf::Edition::values
+               | (:value, ::String) -> ::String
+               | (::Symbol, untyped) -> untyped
+
+        interface _ToProto
+          def to_proto: () -> EditionDefault
+        end
+
+        # The type of `#initialize` parameter.
+        type init = EditionDefault | _ToProto
+
+        # The type of `repeated` field.
+        type field_array = ::Protobuf::Field::FieldArray[EditionDefault, EditionDefault | _ToProto]
+
+        # The type of `map` field.
+        type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, EditionDefault, EditionDefault | _ToProto]
+
+        type array = ::Array[EditionDefault | _ToProto]
+
+        type hash[KEY] = ::Hash[KEY, EditionDefault | _ToProto]
+      end
+
       class CType < ::Protobuf::Enum
         type names = :STRING | :CORD | :STRING_PIECE
 
@@ -1652,6 +1993,13 @@ module Google
         #
         STRING: CType
 
+        # The option [ctype=CORD] may be applied to a non-repeated field of type
+        #  "bytes". It indicates that in C++, the data should be stored in a Cord
+        #  instead of a string.  For very large strings, this may reduce memory
+        #  fragmentation. It may also allow better performance when parsing from a
+        #  Cord, or when parsing with aliasing enabled, as the parsed Cord may then
+        #  alias the original buffer.
+        #
         CORD: CType
 
         STRING_PIECE: CType
@@ -1709,17 +2057,110 @@ module Google
         type hash[KEY] = ::Hash[KEY, JSType | values]
       end
 
+      # If set to RETENTION_SOURCE, the option will be omitted from the binary.
+      #  Note: as of January 2023, support for this is in progress and does not yet
+      #  have an effect (b/264593489).
+      #
+      class OptionRetention < ::Protobuf::Enum
+        type names = :RETENTION_UNKNOWN | :RETENTION_RUNTIME | :RETENTION_SOURCE
+
+        type strings = "RETENTION_UNKNOWN" | "RETENTION_RUNTIME" | "RETENTION_SOURCE"
+
+        type tags = 0 | 1 | 2
+
+        type values = names | strings | tags
+
+        attr_reader name(): names
+
+        attr_reader tag(): tags
+
+        RETENTION_UNKNOWN: OptionRetention
+
+        RETENTION_RUNTIME: OptionRetention
+
+        RETENTION_SOURCE: OptionRetention
+
+        # The type of `#initialize` parameter.
+        type init = OptionRetention | values
+
+        # The type of `repeated` field.
+        type field_array = ::Protobuf::Field::FieldArray[OptionRetention, OptionRetention | values]
+
+        # The type of `map` field.
+        type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, OptionRetention, OptionRetention | values]
+
+        type array = ::Array[OptionRetention | values]
+
+        type hash[KEY] = ::Hash[KEY, OptionRetention | values]
+      end
+
+      # This indicates the types of entities that the field may apply to when used
+      #  as an option. If it is unset, then the field may be freely used as an
+      #  option on any kind of entity. Note: as of January 2023, support for this is
+      #  in progress and does not yet have an effect (b/264593489).
+      #
+      class OptionTargetType < ::Protobuf::Enum
+        type names = :TARGET_TYPE_UNKNOWN | :TARGET_TYPE_FILE | :TARGET_TYPE_EXTENSION_RANGE | :TARGET_TYPE_MESSAGE | :TARGET_TYPE_FIELD | :TARGET_TYPE_ONEOF | :TARGET_TYPE_ENUM | :TARGET_TYPE_ENUM_ENTRY | :TARGET_TYPE_SERVICE | :TARGET_TYPE_METHOD
+
+        type strings = "TARGET_TYPE_UNKNOWN" | "TARGET_TYPE_FILE" | "TARGET_TYPE_EXTENSION_RANGE" | "TARGET_TYPE_MESSAGE" | "TARGET_TYPE_FIELD" | "TARGET_TYPE_ONEOF" | "TARGET_TYPE_ENUM" | "TARGET_TYPE_ENUM_ENTRY" | "TARGET_TYPE_SERVICE" | "TARGET_TYPE_METHOD"
+
+        type tags = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+
+        type values = names | strings | tags
+
+        attr_reader name(): names
+
+        attr_reader tag(): tags
+
+        TARGET_TYPE_UNKNOWN: OptionTargetType
+
+        TARGET_TYPE_FILE: OptionTargetType
+
+        TARGET_TYPE_EXTENSION_RANGE: OptionTargetType
+
+        TARGET_TYPE_MESSAGE: OptionTargetType
+
+        TARGET_TYPE_FIELD: OptionTargetType
+
+        TARGET_TYPE_ONEOF: OptionTargetType
+
+        TARGET_TYPE_ENUM: OptionTargetType
+
+        TARGET_TYPE_ENUM_ENTRY: OptionTargetType
+
+        TARGET_TYPE_SERVICE: OptionTargetType
+
+        TARGET_TYPE_METHOD: OptionTargetType
+
+        # The type of `#initialize` parameter.
+        type init = OptionTargetType | values
+
+        # The type of `repeated` field.
+        type field_array = ::Protobuf::Field::FieldArray[OptionTargetType, OptionTargetType | values]
+
+        # The type of `map` field.
+        type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, OptionTargetType, OptionTargetType | values]
+
+        type array = ::Array[OptionTargetType | values]
+
+        type hash[KEY] = ::Hash[KEY, OptionTargetType | values]
+      end
+
       # The ctype option instructs the C++ code generator to use a different
       #  representation of the field than it normally would.  See the specific
-      #  options below.  This option is not yet implemented in the open source
-      #  release -- sorry, we'll try to include it in a future version!
+      #  options below.  This option is only implemented to support use of
+      #  [ctype=CORD] and [ctype=STRING] (the default) on non-repeated fields of
+      #  type "bytes" in the open source release -- sorry, we'll try to include
+      #  other types in a future version!
       #
       attr_accessor ctype(): ::Google::Protobuf::FieldOptions::CType
 
       # The ctype option instructs the C++ code generator to use a different
       #  representation of the field than it normally would.  See the specific
-      #  options below.  This option is not yet implemented in the open source
-      #  release -- sorry, we'll try to include it in a future version!
+      #  options below.  This option is only implemented to support use of
+      #  [ctype=CORD] and [ctype=STRING] (the default) on non-repeated fields of
+      #  type "bytes" in the open source release -- sorry, we'll try to include
+      #  other types in a future version!
       #
       def ctype=: (::Google::Protobuf::FieldOptions::CType::values) -> ::Google::Protobuf::FieldOptions::CType::values
                 | ...
@@ -1784,7 +2225,6 @@ module Google
       #  call from multiple threads concurrently, while non-const methods continue
       #  to require exclusive access.
       #
-      #
       #  Note that implementations may choose not to check required fields within
       #  a lazy sub-message.  That is, calling IsInitialized() on the outer message
       #  may return true even if the inner message has missing required fields.
@@ -1796,11 +2236,8 @@ module Google
       #  check its required fields, regardless of whether or not the message has
       #  been parsed.
       #
-      #  As of 2021, lazy does no correctness checks on the byte stream during
-      #  parsing.  This may lead to crashes if and when an invalid byte stream is
-      #  finally parsed upon access.
-      #
-      #  TODO(b/211906113):  Enable validation on lazy fields.
+      #  As of May 2022, lazy verifies the contents of the byte stream during
+      #  parsing.  An invalid byte stream will cause the overall parsing to fail.
       #
       attr_accessor lazy(): bool
 
@@ -1829,6 +2266,45 @@ module Google
 
       def weak!: () -> bool?
 
+      # Indicate that the field value should not be printed out when using debug
+      #  formats, e.g. when the field contains sensitive credentials.
+      #
+      attr_accessor debug_redact(): bool
+
+      def debug_redact!: () -> bool?
+
+      attr_accessor retention(): ::Google::Protobuf::FieldOptions::OptionRetention
+
+      def retention=: (::Google::Protobuf::FieldOptions::OptionRetention::values) -> ::Google::Protobuf::FieldOptions::OptionRetention::values
+                    | ...
+
+      def retention!: () -> ::Google::Protobuf::FieldOptions::OptionRetention?
+
+      attr_accessor targets(): ::Google::Protobuf::FieldOptions::OptionTargetType::field_array
+
+      def targets=: (::Google::Protobuf::FieldOptions::OptionTargetType::array) -> ::Google::Protobuf::FieldOptions::OptionTargetType::array
+                  | ...
+
+      def targets!: () -> ::Google::Protobuf::FieldOptions::OptionTargetType::field_array?
+
+      attr_accessor edition_defaults(): ::Google::Protobuf::FieldOptions::EditionDefault::field_array
+
+      def edition_defaults=: (::Google::Protobuf::FieldOptions::EditionDefault::array) -> ::Google::Protobuf::FieldOptions::EditionDefault::array
+                           | ...
+
+      def edition_defaults!: () -> ::Google::Protobuf::FieldOptions::EditionDefault::field_array?
+
+      # Any features defined in the specific edition.
+      #
+      attr_accessor features(): ::Google::Protobuf::FeatureSet?
+
+      # Any features defined in the specific edition.
+      #
+      def features=: [M < ::Google::Protobuf::FeatureSet::_ToProto] (M?) -> M?
+                   | ...
+
+      def features!: () -> ::Google::Protobuf::FeatureSet?
+
       # The parser stores options it doesn't recognize here. See above.
       #
       attr_accessor uninterpreted_option(): ::Google::Protobuf::UninterpretedOption::field_array
@@ -1840,7 +2316,7 @@ module Google
 
       def uninterpreted_option!: () -> ::Google::Protobuf::UninterpretedOption::field_array?
 
-      def initialize: (?ctype: ::Google::Protobuf::FieldOptions::CType::init, ?packed: bool, ?jstype: ::Google::Protobuf::FieldOptions::JSType::init, ?lazy: bool, ?unverified_lazy: bool, ?deprecated: bool, ?weak: bool, ?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
+      def initialize: (?ctype: ::Google::Protobuf::FieldOptions::CType::init, ?packed: bool, ?jstype: ::Google::Protobuf::FieldOptions::JSType::init, ?lazy: bool, ?unverified_lazy: bool, ?deprecated: bool, ?weak: bool, ?debug_redact: bool, ?retention: ::Google::Protobuf::FieldOptions::OptionRetention::init, ?targets: ::Google::Protobuf::FieldOptions::OptionTargetType::array, ?edition_defaults: ::Google::Protobuf::FieldOptions::EditionDefault::array, ?features: ::Google::Protobuf::FeatureSet::init?, ?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
 
       def []: (:ctype) -> ::Google::Protobuf::FieldOptions::CType
             | (:packed) -> bool
@@ -1849,6 +2325,11 @@ module Google
             | (:unverified_lazy) -> bool
             | (:deprecated) -> bool
             | (:weak) -> bool
+            | (:debug_redact) -> bool
+            | (:retention) -> ::Google::Protobuf::FieldOptions::OptionRetention
+            | (:targets) -> ::Google::Protobuf::FieldOptions::OptionTargetType::field_array
+            | (:edition_defaults) -> ::Google::Protobuf::FieldOptions::EditionDefault::field_array
+            | (:features) -> ::Google::Protobuf::FeatureSet?
             | (:uninterpreted_option) -> ::Google::Protobuf::UninterpretedOption::field_array
             | (::Symbol) -> untyped
 
@@ -1861,6 +2342,15 @@ module Google
              | (:unverified_lazy, bool) -> bool
              | (:deprecated, bool) -> bool
              | (:weak, bool) -> bool
+             | (:debug_redact, bool) -> bool
+             | (:retention, ::Google::Protobuf::FieldOptions::OptionRetention) -> ::Google::Protobuf::FieldOptions::OptionRetention
+             | (:retention, ::Google::Protobuf::FieldOptions::OptionRetention::values) -> ::Google::Protobuf::FieldOptions::OptionRetention::values
+             | (:targets, ::Google::Protobuf::FieldOptions::OptionTargetType::field_array) -> ::Google::Protobuf::FieldOptions::OptionTargetType::field_array
+             | (:targets, ::Google::Protobuf::FieldOptions::OptionTargetType::array) -> ::Google::Protobuf::FieldOptions::OptionTargetType::array
+             | (:edition_defaults, ::Google::Protobuf::FieldOptions::EditionDefault::field_array) -> ::Google::Protobuf::FieldOptions::EditionDefault::field_array
+             | (:edition_defaults, ::Google::Protobuf::FieldOptions::EditionDefault::array) -> ::Google::Protobuf::FieldOptions::EditionDefault::array
+             | (:features, ::Google::Protobuf::FeatureSet?) -> ::Google::Protobuf::FeatureSet?
+             | [M < ::Google::Protobuf::FeatureSet::_ToProto] (:features, M?) -> M?
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::field_array) -> ::Google::Protobuf::UninterpretedOption::field_array
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::array) -> ::Google::Protobuf::UninterpretedOption::array
              | (::Symbol, untyped) -> untyped
@@ -1874,6 +2364,8 @@ module Google
       def deprecated?: () -> bool
 
       def weak?: () -> bool
+
+      def debug_redact?: () -> bool
 
       interface _ToProto
         def to_proto: () -> FieldOptions
@@ -1898,6 +2390,17 @@ module Google
       #
       def self.encode: (OneofOptions) -> String
 
+      # Any features defined in the specific edition.
+      #
+      attr_accessor features(): ::Google::Protobuf::FeatureSet?
+
+      # Any features defined in the specific edition.
+      #
+      def features=: [M < ::Google::Protobuf::FeatureSet::_ToProto] (M?) -> M?
+                   | ...
+
+      def features!: () -> ::Google::Protobuf::FeatureSet?
+
       # The parser stores options it doesn't recognize here. See above.
       #
       attr_accessor uninterpreted_option(): ::Google::Protobuf::UninterpretedOption::field_array
@@ -1909,12 +2412,15 @@ module Google
 
       def uninterpreted_option!: () -> ::Google::Protobuf::UninterpretedOption::field_array?
 
-      def initialize: (?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
+      def initialize: (?features: ::Google::Protobuf::FeatureSet::init?, ?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
 
-      def []: (:uninterpreted_option) -> ::Google::Protobuf::UninterpretedOption::field_array
+      def []: (:features) -> ::Google::Protobuf::FeatureSet?
+            | (:uninterpreted_option) -> ::Google::Protobuf::UninterpretedOption::field_array
             | (::Symbol) -> untyped
 
-      def []=: (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::field_array) -> ::Google::Protobuf::UninterpretedOption::field_array
+      def []=: (:features, ::Google::Protobuf::FeatureSet?) -> ::Google::Protobuf::FeatureSet?
+             | [M < ::Google::Protobuf::FeatureSet::_ToProto] (:features, M?) -> M?
+             | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::field_array) -> ::Google::Protobuf::UninterpretedOption::field_array
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::array) -> ::Google::Protobuf::UninterpretedOption::array
              | (::Symbol, untyped) -> untyped
 
@@ -1957,6 +2463,34 @@ module Google
 
       def deprecated!: () -> bool?
 
+      # Enable the legacy handling of JSON field name conflicts.  This lowercases
+      #  and strips underscored from the fields before comparison in proto3 only.
+      #  The new behavior takes `json_name` into account and applies to proto2 as
+      #  well.
+      #  TODO Remove this legacy behavior once downstream teams have
+      #  had time to migrate.
+      #
+      # ----
+      #
+      # Protobuf options:
+      #
+      # - `deprecated = true`
+      #
+      attr_accessor deprecated_legacy_json_field_conflicts(): bool
+
+      def deprecated_legacy_json_field_conflicts!: () -> bool?
+
+      # Any features defined in the specific edition.
+      #
+      attr_accessor features(): ::Google::Protobuf::FeatureSet?
+
+      # Any features defined in the specific edition.
+      #
+      def features=: [M < ::Google::Protobuf::FeatureSet::_ToProto] (M?) -> M?
+                   | ...
+
+      def features!: () -> ::Google::Protobuf::FeatureSet?
+
       # The parser stores options it doesn't recognize here. See above.
       #
       attr_accessor uninterpreted_option(): ::Google::Protobuf::UninterpretedOption::field_array
@@ -1968,15 +2502,20 @@ module Google
 
       def uninterpreted_option!: () -> ::Google::Protobuf::UninterpretedOption::field_array?
 
-      def initialize: (?allow_alias: bool, ?deprecated: bool, ?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
+      def initialize: (?allow_alias: bool, ?deprecated: bool, ?deprecated_legacy_json_field_conflicts: bool, ?features: ::Google::Protobuf::FeatureSet::init?, ?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
 
       def []: (:allow_alias) -> bool
             | (:deprecated) -> bool
+            | (:deprecated_legacy_json_field_conflicts) -> bool
+            | (:features) -> ::Google::Protobuf::FeatureSet?
             | (:uninterpreted_option) -> ::Google::Protobuf::UninterpretedOption::field_array
             | (::Symbol) -> untyped
 
       def []=: (:allow_alias, bool) -> bool
              | (:deprecated, bool) -> bool
+             | (:deprecated_legacy_json_field_conflicts, bool) -> bool
+             | (:features, ::Google::Protobuf::FeatureSet?) -> ::Google::Protobuf::FeatureSet?
+             | [M < ::Google::Protobuf::FeatureSet::_ToProto] (:features, M?) -> M?
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::field_array) -> ::Google::Protobuf::UninterpretedOption::field_array
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::array) -> ::Google::Protobuf::UninterpretedOption::array
              | (::Symbol, untyped) -> untyped
@@ -1984,6 +2523,8 @@ module Google
       def allow_alias?: () -> bool
 
       def deprecated?: () -> bool
+
+      def deprecated_legacy_json_field_conflicts?: () -> bool
 
       interface _ToProto
         def to_proto: () -> EnumOptions
@@ -2017,6 +2558,25 @@ module Google
 
       def deprecated!: () -> bool?
 
+      # Any features defined in the specific edition.
+      #
+      attr_accessor features(): ::Google::Protobuf::FeatureSet?
+
+      # Any features defined in the specific edition.
+      #
+      def features=: [M < ::Google::Protobuf::FeatureSet::_ToProto] (M?) -> M?
+                   | ...
+
+      def features!: () -> ::Google::Protobuf::FeatureSet?
+
+      # Indicate that fields annotated with this enum value should not be printed
+      #  out when using debug formats, e.g. when the field contains sensitive
+      #  credentials.
+      #
+      attr_accessor debug_redact(): bool
+
+      def debug_redact!: () -> bool?
+
       # The parser stores options it doesn't recognize here. See above.
       #
       attr_accessor uninterpreted_option(): ::Google::Protobuf::UninterpretedOption::field_array
@@ -2028,18 +2588,25 @@ module Google
 
       def uninterpreted_option!: () -> ::Google::Protobuf::UninterpretedOption::field_array?
 
-      def initialize: (?deprecated: bool, ?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
+      def initialize: (?deprecated: bool, ?features: ::Google::Protobuf::FeatureSet::init?, ?debug_redact: bool, ?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
 
       def []: (:deprecated) -> bool
+            | (:features) -> ::Google::Protobuf::FeatureSet?
+            | (:debug_redact) -> bool
             | (:uninterpreted_option) -> ::Google::Protobuf::UninterpretedOption::field_array
             | (::Symbol) -> untyped
 
       def []=: (:deprecated, bool) -> bool
+             | (:features, ::Google::Protobuf::FeatureSet?) -> ::Google::Protobuf::FeatureSet?
+             | [M < ::Google::Protobuf::FeatureSet::_ToProto] (:features, M?) -> M?
+             | (:debug_redact, bool) -> bool
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::field_array) -> ::Google::Protobuf::UninterpretedOption::field_array
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::array) -> ::Google::Protobuf::UninterpretedOption::array
              | (::Symbol, untyped) -> untyped
 
       def deprecated?: () -> bool
+
+      def debug_redact?: () -> bool
 
       interface _ToProto
         def to_proto: () -> EnumValueOptions
@@ -2064,6 +2631,17 @@ module Google
       #
       def self.encode: (ServiceOptions) -> String
 
+      # Any features defined in the specific edition.
+      #
+      attr_accessor features(): ::Google::Protobuf::FeatureSet?
+
+      # Any features defined in the specific edition.
+      #
+      def features=: [M < ::Google::Protobuf::FeatureSet::_ToProto] (M?) -> M?
+                   | ...
+
+      def features!: () -> ::Google::Protobuf::FeatureSet?
+
       # Is this service deprecated?
       #  Depending on the target platform, this can emit Deprecated annotations
       #  for the service, or it will be completely ignored; in the very least,
@@ -2084,13 +2662,16 @@ module Google
 
       def uninterpreted_option!: () -> ::Google::Protobuf::UninterpretedOption::field_array?
 
-      def initialize: (?deprecated: bool, ?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
+      def initialize: (?features: ::Google::Protobuf::FeatureSet::init?, ?deprecated: bool, ?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
 
-      def []: (:deprecated) -> bool
+      def []: (:features) -> ::Google::Protobuf::FeatureSet?
+            | (:deprecated) -> bool
             | (:uninterpreted_option) -> ::Google::Protobuf::UninterpretedOption::field_array
             | (::Symbol) -> untyped
 
-      def []=: (:deprecated, bool) -> bool
+      def []=: (:features, ::Google::Protobuf::FeatureSet?) -> ::Google::Protobuf::FeatureSet?
+             | [M < ::Google::Protobuf::FeatureSet::_ToProto] (:features, M?) -> M?
+             | (:deprecated, bool) -> bool
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::field_array) -> ::Google::Protobuf::UninterpretedOption::field_array
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::array) -> ::Google::Protobuf::UninterpretedOption::array
              | (::Symbol, untyped) -> untyped
@@ -2177,6 +2758,17 @@ module Google
 
       def idempotency_level!: () -> ::Google::Protobuf::MethodOptions::IdempotencyLevel?
 
+      # Any features defined in the specific edition.
+      #
+      attr_accessor features(): ::Google::Protobuf::FeatureSet?
+
+      # Any features defined in the specific edition.
+      #
+      def features=: [M < ::Google::Protobuf::FeatureSet::_ToProto] (M?) -> M?
+                   | ...
+
+      def features!: () -> ::Google::Protobuf::FeatureSet?
+
       # The parser stores options it doesn't recognize here. See above.
       #
       attr_accessor uninterpreted_option(): ::Google::Protobuf::UninterpretedOption::field_array
@@ -2188,16 +2780,19 @@ module Google
 
       def uninterpreted_option!: () -> ::Google::Protobuf::UninterpretedOption::field_array?
 
-      def initialize: (?deprecated: bool, ?idempotency_level: ::Google::Protobuf::MethodOptions::IdempotencyLevel::init, ?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
+      def initialize: (?deprecated: bool, ?idempotency_level: ::Google::Protobuf::MethodOptions::IdempotencyLevel::init, ?features: ::Google::Protobuf::FeatureSet::init?, ?uninterpreted_option: ::Google::Protobuf::UninterpretedOption::array) -> void
 
       def []: (:deprecated) -> bool
             | (:idempotency_level) -> ::Google::Protobuf::MethodOptions::IdempotencyLevel
+            | (:features) -> ::Google::Protobuf::FeatureSet?
             | (:uninterpreted_option) -> ::Google::Protobuf::UninterpretedOption::field_array
             | (::Symbol) -> untyped
 
       def []=: (:deprecated, bool) -> bool
              | (:idempotency_level, ::Google::Protobuf::MethodOptions::IdempotencyLevel) -> ::Google::Protobuf::MethodOptions::IdempotencyLevel
              | (:idempotency_level, ::Google::Protobuf::MethodOptions::IdempotencyLevel::values) -> ::Google::Protobuf::MethodOptions::IdempotencyLevel::values
+             | (:features, ::Google::Protobuf::FeatureSet?) -> ::Google::Protobuf::FeatureSet?
+             | [M < ::Google::Protobuf::FeatureSet::_ToProto] (:features, M?) -> M?
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::field_array) -> ::Google::Protobuf::UninterpretedOption::field_array
              | (:uninterpreted_option, ::Google::Protobuf::UninterpretedOption::array) -> ::Google::Protobuf::UninterpretedOption::array
              | (::Symbol, untyped) -> untyped
@@ -2354,6 +2949,432 @@ module Google
       type array = ::Array[UninterpretedOption | _ToProto]
 
       type hash[KEY] = ::Hash[KEY, UninterpretedOption | _ToProto]
+    end
+
+    # TODO Enums in C++ gencode (and potentially other languages) are
+    #  not well scoped.  This means that each of the feature enums below can clash
+    #  with each other.  The short names we've chosen maximize call-site
+    #  readability, but leave us very open to this scenario.  A future feature will
+    #  be designed and implemented to handle this, hopefully before we ever hit a
+    #  conflict here.
+    #
+    class FeatureSet < ::Protobuf::Message
+      # Encode the message to a binary string
+      #
+      def self.encode: (FeatureSet) -> String
+
+      class FieldPresence < ::Protobuf::Enum
+        type names = :FIELD_PRESENCE_UNKNOWN | :EXPLICIT | :IMPLICIT | :LEGACY_REQUIRED
+
+        type strings = "FIELD_PRESENCE_UNKNOWN" | "EXPLICIT" | "IMPLICIT" | "LEGACY_REQUIRED"
+
+        type tags = 0 | 1 | 2 | 3
+
+        type values = names | strings | tags
+
+        attr_reader name(): names
+
+        attr_reader tag(): tags
+
+        FIELD_PRESENCE_UNKNOWN: FieldPresence
+
+        EXPLICIT: FieldPresence
+
+        IMPLICIT: FieldPresence
+
+        LEGACY_REQUIRED: FieldPresence
+
+        # The type of `#initialize` parameter.
+        type init = FieldPresence | values
+
+        # The type of `repeated` field.
+        type field_array = ::Protobuf::Field::FieldArray[FieldPresence, FieldPresence | values]
+
+        # The type of `map` field.
+        type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, FieldPresence, FieldPresence | values]
+
+        type array = ::Array[FieldPresence | values]
+
+        type hash[KEY] = ::Hash[KEY, FieldPresence | values]
+      end
+
+      class EnumType < ::Protobuf::Enum
+        type names = :ENUM_TYPE_UNKNOWN | :OPEN | :CLOSED
+
+        type strings = "ENUM_TYPE_UNKNOWN" | "OPEN" | "CLOSED"
+
+        type tags = 0 | 1 | 2
+
+        type values = names | strings | tags
+
+        attr_reader name(): names
+
+        attr_reader tag(): tags
+
+        ENUM_TYPE_UNKNOWN: EnumType
+
+        OPEN: EnumType
+
+        CLOSED: EnumType
+
+        # The type of `#initialize` parameter.
+        type init = EnumType | values
+
+        # The type of `repeated` field.
+        type field_array = ::Protobuf::Field::FieldArray[EnumType, EnumType | values]
+
+        # The type of `map` field.
+        type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, EnumType, EnumType | values]
+
+        type array = ::Array[EnumType | values]
+
+        type hash[KEY] = ::Hash[KEY, EnumType | values]
+      end
+
+      class RepeatedFieldEncoding < ::Protobuf::Enum
+        type names = :REPEATED_FIELD_ENCODING_UNKNOWN | :PACKED | :EXPANDED
+
+        type strings = "REPEATED_FIELD_ENCODING_UNKNOWN" | "PACKED" | "EXPANDED"
+
+        type tags = 0 | 1 | 2
+
+        type values = names | strings | tags
+
+        attr_reader name(): names
+
+        attr_reader tag(): tags
+
+        REPEATED_FIELD_ENCODING_UNKNOWN: RepeatedFieldEncoding
+
+        PACKED: RepeatedFieldEncoding
+
+        EXPANDED: RepeatedFieldEncoding
+
+        # The type of `#initialize` parameter.
+        type init = RepeatedFieldEncoding | values
+
+        # The type of `repeated` field.
+        type field_array = ::Protobuf::Field::FieldArray[RepeatedFieldEncoding, RepeatedFieldEncoding | values]
+
+        # The type of `map` field.
+        type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, RepeatedFieldEncoding, RepeatedFieldEncoding | values]
+
+        type array = ::Array[RepeatedFieldEncoding | values]
+
+        type hash[KEY] = ::Hash[KEY, RepeatedFieldEncoding | values]
+      end
+
+      class Utf8Validation < ::Protobuf::Enum
+        type names = :UTF8_VALIDATION_UNKNOWN | :UNVERIFIED | :VERIFY
+
+        type strings = "UTF8_VALIDATION_UNKNOWN" | "UNVERIFIED" | "VERIFY"
+
+        type tags = 0 | 1 | 2
+
+        type values = names | strings | tags
+
+        attr_reader name(): names
+
+        attr_reader tag(): tags
+
+        UTF8_VALIDATION_UNKNOWN: Utf8Validation
+
+        UNVERIFIED: Utf8Validation
+
+        VERIFY: Utf8Validation
+
+        # The type of `#initialize` parameter.
+        type init = Utf8Validation | values
+
+        # The type of `repeated` field.
+        type field_array = ::Protobuf::Field::FieldArray[Utf8Validation, Utf8Validation | values]
+
+        # The type of `map` field.
+        type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, Utf8Validation, Utf8Validation | values]
+
+        type array = ::Array[Utf8Validation | values]
+
+        type hash[KEY] = ::Hash[KEY, Utf8Validation | values]
+      end
+
+      class MessageEncoding < ::Protobuf::Enum
+        type names = :MESSAGE_ENCODING_UNKNOWN | :LENGTH_PREFIXED | :DELIMITED
+
+        type strings = "MESSAGE_ENCODING_UNKNOWN" | "LENGTH_PREFIXED" | "DELIMITED"
+
+        type tags = 0 | 1 | 2
+
+        type values = names | strings | tags
+
+        attr_reader name(): names
+
+        attr_reader tag(): tags
+
+        MESSAGE_ENCODING_UNKNOWN: MessageEncoding
+
+        LENGTH_PREFIXED: MessageEncoding
+
+        DELIMITED: MessageEncoding
+
+        # The type of `#initialize` parameter.
+        type init = MessageEncoding | values
+
+        # The type of `repeated` field.
+        type field_array = ::Protobuf::Field::FieldArray[MessageEncoding, MessageEncoding | values]
+
+        # The type of `map` field.
+        type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, MessageEncoding, MessageEncoding | values]
+
+        type array = ::Array[MessageEncoding | values]
+
+        type hash[KEY] = ::Hash[KEY, MessageEncoding | values]
+      end
+
+      class JsonFormat < ::Protobuf::Enum
+        type names = :JSON_FORMAT_UNKNOWN | :ALLOW | :LEGACY_BEST_EFFORT
+
+        type strings = "JSON_FORMAT_UNKNOWN" | "ALLOW" | "LEGACY_BEST_EFFORT"
+
+        type tags = 0 | 1 | 2
+
+        type values = names | strings | tags
+
+        attr_reader name(): names
+
+        attr_reader tag(): tags
+
+        JSON_FORMAT_UNKNOWN: JsonFormat
+
+        ALLOW: JsonFormat
+
+        LEGACY_BEST_EFFORT: JsonFormat
+
+        # The type of `#initialize` parameter.
+        type init = JsonFormat | values
+
+        # The type of `repeated` field.
+        type field_array = ::Protobuf::Field::FieldArray[JsonFormat, JsonFormat | values]
+
+        # The type of `map` field.
+        type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, JsonFormat, JsonFormat | values]
+
+        type array = ::Array[JsonFormat | values]
+
+        type hash[KEY] = ::Hash[KEY, JsonFormat | values]
+      end
+
+      attr_accessor field_presence(): ::Google::Protobuf::FeatureSet::FieldPresence
+
+      def field_presence=: (::Google::Protobuf::FeatureSet::FieldPresence::values) -> ::Google::Protobuf::FeatureSet::FieldPresence::values
+                         | ...
+
+      def field_presence!: () -> ::Google::Protobuf::FeatureSet::FieldPresence?
+
+      attr_accessor enum_type(): ::Google::Protobuf::FeatureSet::EnumType
+
+      def enum_type=: (::Google::Protobuf::FeatureSet::EnumType::values) -> ::Google::Protobuf::FeatureSet::EnumType::values
+                    | ...
+
+      def enum_type!: () -> ::Google::Protobuf::FeatureSet::EnumType?
+
+      attr_accessor repeated_field_encoding(): ::Google::Protobuf::FeatureSet::RepeatedFieldEncoding
+
+      def repeated_field_encoding=: (::Google::Protobuf::FeatureSet::RepeatedFieldEncoding::values) -> ::Google::Protobuf::FeatureSet::RepeatedFieldEncoding::values
+                                  | ...
+
+      def repeated_field_encoding!: () -> ::Google::Protobuf::FeatureSet::RepeatedFieldEncoding?
+
+      attr_accessor utf8_validation(): ::Google::Protobuf::FeatureSet::Utf8Validation
+
+      def utf8_validation=: (::Google::Protobuf::FeatureSet::Utf8Validation::values) -> ::Google::Protobuf::FeatureSet::Utf8Validation::values
+                          | ...
+
+      def utf8_validation!: () -> ::Google::Protobuf::FeatureSet::Utf8Validation?
+
+      attr_accessor message_encoding(): ::Google::Protobuf::FeatureSet::MessageEncoding
+
+      def message_encoding=: (::Google::Protobuf::FeatureSet::MessageEncoding::values) -> ::Google::Protobuf::FeatureSet::MessageEncoding::values
+                           | ...
+
+      def message_encoding!: () -> ::Google::Protobuf::FeatureSet::MessageEncoding?
+
+      attr_accessor json_format(): ::Google::Protobuf::FeatureSet::JsonFormat
+
+      def json_format=: (::Google::Protobuf::FeatureSet::JsonFormat::values) -> ::Google::Protobuf::FeatureSet::JsonFormat::values
+                      | ...
+
+      def json_format!: () -> ::Google::Protobuf::FeatureSet::JsonFormat?
+
+      def initialize: (?field_presence: ::Google::Protobuf::FeatureSet::FieldPresence::init, ?enum_type: ::Google::Protobuf::FeatureSet::EnumType::init, ?repeated_field_encoding: ::Google::Protobuf::FeatureSet::RepeatedFieldEncoding::init, ?utf8_validation: ::Google::Protobuf::FeatureSet::Utf8Validation::init, ?message_encoding: ::Google::Protobuf::FeatureSet::MessageEncoding::init, ?json_format: ::Google::Protobuf::FeatureSet::JsonFormat::init) -> void
+
+      def []: (:field_presence) -> ::Google::Protobuf::FeatureSet::FieldPresence
+            | (:enum_type) -> ::Google::Protobuf::FeatureSet::EnumType
+            | (:repeated_field_encoding) -> ::Google::Protobuf::FeatureSet::RepeatedFieldEncoding
+            | (:utf8_validation) -> ::Google::Protobuf::FeatureSet::Utf8Validation
+            | (:message_encoding) -> ::Google::Protobuf::FeatureSet::MessageEncoding
+            | (:json_format) -> ::Google::Protobuf::FeatureSet::JsonFormat
+            | (::Symbol) -> untyped
+
+      def []=: (:field_presence, ::Google::Protobuf::FeatureSet::FieldPresence) -> ::Google::Protobuf::FeatureSet::FieldPresence
+             | (:field_presence, ::Google::Protobuf::FeatureSet::FieldPresence::values) -> ::Google::Protobuf::FeatureSet::FieldPresence::values
+             | (:enum_type, ::Google::Protobuf::FeatureSet::EnumType) -> ::Google::Protobuf::FeatureSet::EnumType
+             | (:enum_type, ::Google::Protobuf::FeatureSet::EnumType::values) -> ::Google::Protobuf::FeatureSet::EnumType::values
+             | (:repeated_field_encoding, ::Google::Protobuf::FeatureSet::RepeatedFieldEncoding) -> ::Google::Protobuf::FeatureSet::RepeatedFieldEncoding
+             | (:repeated_field_encoding, ::Google::Protobuf::FeatureSet::RepeatedFieldEncoding::values) -> ::Google::Protobuf::FeatureSet::RepeatedFieldEncoding::values
+             | (:utf8_validation, ::Google::Protobuf::FeatureSet::Utf8Validation) -> ::Google::Protobuf::FeatureSet::Utf8Validation
+             | (:utf8_validation, ::Google::Protobuf::FeatureSet::Utf8Validation::values) -> ::Google::Protobuf::FeatureSet::Utf8Validation::values
+             | (:message_encoding, ::Google::Protobuf::FeatureSet::MessageEncoding) -> ::Google::Protobuf::FeatureSet::MessageEncoding
+             | (:message_encoding, ::Google::Protobuf::FeatureSet::MessageEncoding::values) -> ::Google::Protobuf::FeatureSet::MessageEncoding::values
+             | (:json_format, ::Google::Protobuf::FeatureSet::JsonFormat) -> ::Google::Protobuf::FeatureSet::JsonFormat
+             | (:json_format, ::Google::Protobuf::FeatureSet::JsonFormat::values) -> ::Google::Protobuf::FeatureSet::JsonFormat::values
+             | (::Symbol, untyped) -> untyped
+
+      interface _ToProto
+        def to_proto: () -> FeatureSet
+      end
+
+      # The type of `#initialize` parameter.
+      type init = FeatureSet | _ToProto
+
+      # The type of `repeated` field.
+      type field_array = ::Protobuf::Field::FieldArray[FeatureSet, FeatureSet | _ToProto]
+
+      # The type of `map` field.
+      type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, FeatureSet, FeatureSet | _ToProto]
+
+      type array = ::Array[FeatureSet | _ToProto]
+
+      type hash[KEY] = ::Hash[KEY, FeatureSet | _ToProto]
+    end
+
+    # A compiled specification for the defaults of a set of features.  These
+    #  messages are generated from FeatureSet extensions and can be used to seed
+    #  feature resolution. The resolution with this object becomes a simple search
+    #  for the closest matching edition, followed by proto merges.
+    #
+    class FeatureSetDefaults < ::Protobuf::Message
+      # Encode the message to a binary string
+      #
+      def self.encode: (FeatureSetDefaults) -> String
+
+      # A map from every known edition with a unique set of defaults to its
+      #  defaults. Not all editions may be contained here.  For a given edition,
+      #  the defaults at the closest matching edition ordered at or before it should
+      #  be used.  This field must be in strict ascending order by edition.
+      #
+      class FeatureSetEditionDefault < ::Protobuf::Message
+        # Encode the message to a binary string
+        #
+        def self.encode: (FeatureSetEditionDefault) -> String
+
+        attr_accessor edition(): ::Google::Protobuf::Edition
+
+        def edition=: (::Google::Protobuf::Edition::values) -> ::Google::Protobuf::Edition::values
+                    | ...
+
+        def edition!: () -> ::Google::Protobuf::Edition?
+
+        attr_accessor features(): ::Google::Protobuf::FeatureSet?
+
+        def features=: [M < ::Google::Protobuf::FeatureSet::_ToProto] (M?) -> M?
+                     | ...
+
+        def features!: () -> ::Google::Protobuf::FeatureSet?
+
+        def initialize: (?edition: ::Google::Protobuf::Edition::init, ?features: ::Google::Protobuf::FeatureSet::init?) -> void
+
+        def []: (:edition) -> ::Google::Protobuf::Edition
+              | (:features) -> ::Google::Protobuf::FeatureSet?
+              | (::Symbol) -> untyped
+
+        def []=: (:edition, ::Google::Protobuf::Edition) -> ::Google::Protobuf::Edition
+               | (:edition, ::Google::Protobuf::Edition::values) -> ::Google::Protobuf::Edition::values
+               | (:features, ::Google::Protobuf::FeatureSet?) -> ::Google::Protobuf::FeatureSet?
+               | [M < ::Google::Protobuf::FeatureSet::_ToProto] (:features, M?) -> M?
+               | (::Symbol, untyped) -> untyped
+
+        interface _ToProto
+          def to_proto: () -> FeatureSetEditionDefault
+        end
+
+        # The type of `#initialize` parameter.
+        type init = FeatureSetEditionDefault | _ToProto
+
+        # The type of `repeated` field.
+        type field_array = ::Protobuf::Field::FieldArray[FeatureSetEditionDefault, FeatureSetEditionDefault | _ToProto]
+
+        # The type of `map` field.
+        type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, FeatureSetEditionDefault, FeatureSetEditionDefault | _ToProto]
+
+        type array = ::Array[FeatureSetEditionDefault | _ToProto]
+
+        type hash[KEY] = ::Hash[KEY, FeatureSetEditionDefault | _ToProto]
+      end
+
+      attr_accessor defaults(): ::Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault::field_array
+
+      def defaults=: (::Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault::array) -> ::Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault::array
+                   | ...
+
+      def defaults!: () -> ::Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault::field_array?
+
+      # The minimum supported edition (inclusive) when this was constructed.
+      #  Editions before this will not have defaults.
+      #
+      attr_accessor minimum_edition(): ::Google::Protobuf::Edition
+
+      # The minimum supported edition (inclusive) when this was constructed.
+      #  Editions before this will not have defaults.
+      #
+      def minimum_edition=: (::Google::Protobuf::Edition::values) -> ::Google::Protobuf::Edition::values
+                          | ...
+
+      def minimum_edition!: () -> ::Google::Protobuf::Edition?
+
+      # The maximum known edition (inclusive) when this was constructed. Editions
+      #  after this will not have reliable defaults.
+      #
+      attr_accessor maximum_edition(): ::Google::Protobuf::Edition
+
+      # The maximum known edition (inclusive) when this was constructed. Editions
+      #  after this will not have reliable defaults.
+      #
+      def maximum_edition=: (::Google::Protobuf::Edition::values) -> ::Google::Protobuf::Edition::values
+                          | ...
+
+      def maximum_edition!: () -> ::Google::Protobuf::Edition?
+
+      def initialize: (?defaults: ::Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault::array, ?minimum_edition: ::Google::Protobuf::Edition::init, ?maximum_edition: ::Google::Protobuf::Edition::init) -> void
+
+      def []: (:defaults) -> ::Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault::field_array
+            | (:minimum_edition) -> ::Google::Protobuf::Edition
+            | (:maximum_edition) -> ::Google::Protobuf::Edition
+            | (::Symbol) -> untyped
+
+      def []=: (:defaults, ::Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault::field_array) -> ::Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault::field_array
+             | (:defaults, ::Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault::array) -> ::Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault::array
+             | (:minimum_edition, ::Google::Protobuf::Edition) -> ::Google::Protobuf::Edition
+             | (:minimum_edition, ::Google::Protobuf::Edition::values) -> ::Google::Protobuf::Edition::values
+             | (:maximum_edition, ::Google::Protobuf::Edition) -> ::Google::Protobuf::Edition
+             | (:maximum_edition, ::Google::Protobuf::Edition::values) -> ::Google::Protobuf::Edition::values
+             | (::Symbol, untyped) -> untyped
+
+      interface _ToProto
+        def to_proto: () -> FeatureSetDefaults
+      end
+
+      # The type of `#initialize` parameter.
+      type init = FeatureSetDefaults | _ToProto
+
+      # The type of `repeated` field.
+      type field_array = ::Protobuf::Field::FieldArray[FeatureSetDefaults, FeatureSetDefaults | _ToProto]
+
+      # The type of `map` field.
+      type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, FeatureSetDefaults, FeatureSetDefaults | _ToProto]
+
+      type array = ::Array[FeatureSetDefaults | _ToProto]
+
+      type hash[KEY] = ::Hash[KEY, FeatureSetDefaults | _ToProto]
     end
 
     # Encapsulates information about the original source file from which a
@@ -2703,6 +3724,48 @@ module Google
         #
         def self.encode: (Annotation) -> String
 
+        # Represents the identified object's effect on the element in the original
+        #  .proto file.
+        #
+        class Semantic < ::Protobuf::Enum
+          type names = :NONE | :SET | :ALIAS
+
+          type strings = "NONE" | "SET" | "ALIAS"
+
+          type tags = 0 | 1 | 2
+
+          type values = names | strings | tags
+
+          attr_reader name(): names
+
+          attr_reader tag(): tags
+
+          # There is no effect or the effect is indescribable.
+          #
+          NONE: Semantic
+
+          # The element is set or otherwise mutated.
+          #
+          SET: Semantic
+
+          # An alias to the element is returned.
+          #
+          ALIAS: Semantic
+
+          # The type of `#initialize` parameter.
+          type init = Semantic | values
+
+          # The type of `repeated` field.
+          type field_array = ::Protobuf::Field::FieldArray[Semantic, Semantic | values]
+
+          # The type of `map` field.
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, Semantic, Semantic | values]
+
+          type array = ::Array[Semantic | values]
+
+          type hash[KEY] = ::Hash[KEY, Semantic | values]
+        end
+
         # Identifies the element in the original source .proto file. This field
         #  is formatted the same as SourceCodeInfo.Location.path.
         #
@@ -2742,19 +3805,27 @@ module Google
         def begin!: () -> ::Integer?
 
         # Identifies the ending offset in bytes in the generated code that
-        #  relates to the identified offset. The end offset should be one past
+        #  relates to the identified object. The end offset should be one past
         #  the last relevant byte (so the length of the text = end - begin).
         #
         attr_accessor end(): ::Integer
 
         def end!: () -> ::Integer?
 
-        def initialize: (?path: ::Array[::Integer], ?source_file: ::String, ?begin: ::Integer, ?end: ::Integer) -> void
+        attr_accessor semantic(): ::Google::Protobuf::GeneratedCodeInfo::Annotation::Semantic
+
+        def semantic=: (::Google::Protobuf::GeneratedCodeInfo::Annotation::Semantic::values) -> ::Google::Protobuf::GeneratedCodeInfo::Annotation::Semantic::values
+                     | ...
+
+        def semantic!: () -> ::Google::Protobuf::GeneratedCodeInfo::Annotation::Semantic?
+
+        def initialize: (?path: ::Array[::Integer], ?source_file: ::String, ?begin: ::Integer, ?end: ::Integer, ?semantic: ::Google::Protobuf::GeneratedCodeInfo::Annotation::Semantic::init) -> void
 
         def []: (:path) -> ::Protobuf::field_array[::Integer]
               | (:source_file) -> ::String
               | (:begin) -> ::Integer
               | (:end) -> ::Integer
+              | (:semantic) -> ::Google::Protobuf::GeneratedCodeInfo::Annotation::Semantic
               | (::Symbol) -> untyped
 
         def []=: (:path, ::Protobuf::field_array[::Integer]) -> ::Protobuf::field_array[::Integer]
@@ -2762,6 +3833,8 @@ module Google
                | (:source_file, ::String) -> ::String
                | (:begin, ::Integer) -> ::Integer
                | (:end, ::Integer) -> ::Integer
+               | (:semantic, ::Google::Protobuf::GeneratedCodeInfo::Annotation::Semantic) -> ::Google::Protobuf::GeneratedCodeInfo::Annotation::Semantic
+               | (:semantic, ::Google::Protobuf::GeneratedCodeInfo::Annotation::Semantic::values) -> ::Google::Protobuf::GeneratedCodeInfo::Annotation::Semantic::values
                | (::Symbol, untyped) -> untyped
 
         interface _ToProto

@@ -2,8 +2,8 @@ module Temporalio
   module Api
     module Update
       module V1
-        # Sepcifies to the gRPC server how the client wants the UpdateWorkflowExecution
-        #  call to wait before returning control to the caller.
+        # Specifies to the gRPC server how long the client wants the an update-related
+        #  RPC call to wait before returning control to the caller.
         #
         class WaitPolicy < ::Protobuf::Message
           # Encode the message to a binary string
@@ -50,7 +50,7 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, WaitPolicy | _ToProto]
         end
 
-        # The data needed by a client to refer to an previously invoked workflow
+        # The data needed by a client to refer to a previously invoked workflow
         #  execution update process.
         #
         class UpdateRef < ::Protobuf::Message

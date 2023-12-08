@@ -226,7 +226,26 @@ module Temporalio
 
           def parent_initiated_event_version!: () -> ::Integer?
 
-          def initialize: (?workflow_type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?parent_workflow_namespace: ::String, ?parent_workflow_namespace_id: ::String, ?parent_workflow_execution: ::Temporalio::Api::Common::V1::WorkflowExecution::init?, ?parent_initiated_event_id: ::Integer, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?workflow_execution_timeout: ::Google::Protobuf::Duration::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?continued_execution_run_id: ::String, ?initiator: ::Temporalio::Api::Enums::V1::ContinueAsNewInitiator::init, ?continued_failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?last_completion_result: ::Temporalio::Api::Common::V1::Payloads::init?, ?original_execution_run_id: ::String, ?identity: ::String, ?first_execution_run_id: ::String, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?attempt: ::Integer, ?workflow_execution_expiration_time: ::Google::Protobuf::Timestamp::init?, ?cron_schedule: ::String, ?first_workflow_task_backoff: ::Google::Protobuf::Duration::init?, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?, ?prev_auto_reset_points: ::Temporalio::Api::Workflow::V1::ResetPoints::init?, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?parent_initiated_event_version: ::Integer) -> void
+          # This field is new in 1.21.
+          #
+          attr_accessor workflow_id(): ::String
+
+          def workflow_id!: () -> ::String?
+
+          # If this workflow intends to use anything other than the current overall default version for
+          #  the queue, then we include it here.
+          #
+          attr_accessor source_version_stamp(): ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          # If this workflow intends to use anything other than the current overall default version for
+          #  the queue, then we include it here.
+          #
+          def source_version_stamp=: [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (M?) -> M?
+                                   | ...
+
+          def source_version_stamp!: () -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          def initialize: (?workflow_type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?parent_workflow_namespace: ::String, ?parent_workflow_namespace_id: ::String, ?parent_workflow_execution: ::Temporalio::Api::Common::V1::WorkflowExecution::init?, ?parent_initiated_event_id: ::Integer, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?workflow_execution_timeout: ::Google::Protobuf::Duration::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?continued_execution_run_id: ::String, ?initiator: ::Temporalio::Api::Enums::V1::ContinueAsNewInitiator::init, ?continued_failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?last_completion_result: ::Temporalio::Api::Common::V1::Payloads::init?, ?original_execution_run_id: ::String, ?identity: ::String, ?first_execution_run_id: ::String, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?attempt: ::Integer, ?workflow_execution_expiration_time: ::Google::Protobuf::Timestamp::init?, ?cron_schedule: ::String, ?first_workflow_task_backoff: ::Google::Protobuf::Duration::init?, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?, ?prev_auto_reset_points: ::Temporalio::Api::Workflow::V1::ResetPoints::init?, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?parent_initiated_event_version: ::Integer, ?workflow_id: ::String, ?source_version_stamp: ::Temporalio::Api::Common::V1::WorkerVersionStamp::init?) -> void
 
           def []: (:workflow_type) -> ::Temporalio::Api::Common::V1::WorkflowType?
                 | (:parent_workflow_namespace) -> ::String
@@ -255,6 +274,8 @@ module Temporalio
                 | (:prev_auto_reset_points) -> ::Temporalio::Api::Workflow::V1::ResetPoints?
                 | (:header) -> ::Temporalio::Api::Common::V1::Header?
                 | (:parent_initiated_event_version) -> ::Integer
+                | (:workflow_id) -> ::String
+                | (:source_version_stamp) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
                 | (::Symbol) -> untyped
 
           def []=: (:workflow_type, ::Temporalio::Api::Common::V1::WorkflowType?) -> ::Temporalio::Api::Common::V1::WorkflowType?
@@ -301,6 +322,9 @@ module Temporalio
                  | (:header, ::Temporalio::Api::Common::V1::Header?) -> ::Temporalio::Api::Common::V1::Header?
                  | [M < ::Temporalio::Api::Common::V1::Header::_ToProto] (:header, M?) -> M?
                  | (:parent_initiated_event_version, ::Integer) -> ::Integer
+                 | (:workflow_id, ::String) -> ::String
+                 | (:source_version_stamp, ::Temporalio::Api::Common::V1::WorkerVersionStamp?) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+                 | [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (:source_version_stamp, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -623,7 +647,14 @@ module Temporalio
 
           def search_attributes!: () -> ::Temporalio::Api::Common::V1::SearchAttributes?
 
-          def initialize: (?new_execution_run_id: ::String, ?workflow_type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_completed_event_id: ::Integer, ?backoff_start_interval: ::Google::Protobuf::Duration::init?, ?initiator: ::Temporalio::Api::Enums::V1::ContinueAsNewInitiator::init, ?failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?last_completion_result: ::Temporalio::Api::Common::V1::Payloads::init?, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?) -> void
+          # If this is set, the workflow executing this command wishes to continue as new using a version
+          #  compatible with the version that this workflow most recently ran on.
+          #
+          attr_accessor use_compatible_version(): bool
+
+          def use_compatible_version!: () -> bool?
+
+          def initialize: (?new_execution_run_id: ::String, ?workflow_type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_completed_event_id: ::Integer, ?backoff_start_interval: ::Google::Protobuf::Duration::init?, ?initiator: ::Temporalio::Api::Enums::V1::ContinueAsNewInitiator::init, ?failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?last_completion_result: ::Temporalio::Api::Common::V1::Payloads::init?, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?, ?use_compatible_version: bool) -> void
 
           def []: (:new_execution_run_id) -> ::String
                 | (:workflow_type) -> ::Temporalio::Api::Common::V1::WorkflowType?
@@ -639,6 +670,7 @@ module Temporalio
                 | (:header) -> ::Temporalio::Api::Common::V1::Header?
                 | (:memo) -> ::Temporalio::Api::Common::V1::Memo?
                 | (:search_attributes) -> ::Temporalio::Api::Common::V1::SearchAttributes?
+                | (:use_compatible_version) -> bool
                 | (::Symbol) -> untyped
 
           def []=: (:new_execution_run_id, ::String) -> ::String
@@ -667,7 +699,10 @@ module Temporalio
                  | [M < ::Temporalio::Api::Common::V1::Memo::_ToProto] (:memo, M?) -> M?
                  | (:search_attributes, ::Temporalio::Api::Common::V1::SearchAttributes?) -> ::Temporalio::Api::Common::V1::SearchAttributes?
                  | [M < ::Temporalio::Api::Common::V1::SearchAttributes::_ToProto] (:search_attributes, M?) -> M?
+                 | (:use_compatible_version, bool) -> bool
                  | (::Symbol, untyped) -> untyped
+
+          def use_compatible_version?: () -> bool
 
           interface _ToProto
             def to_proto: () -> WorkflowExecutionContinuedAsNewEventAttributes
@@ -861,18 +896,20 @@ module Temporalio
 
           def binary_checksum!: () -> ::String?
 
-          # ID of the worker who picked up this workflow task, or missing if worker
-          #  is not using versioning.
+          # Version info of the worker who processed this workflow task. If present, the `build_id` field
+          #  within is also used as `binary_checksum`, which may be omitted in that case (it may also be
+          #  populated to preserve compatibility).
           #
-          attr_accessor worker_versioning_id(): ::Temporalio::Api::TaskQueue::V1::VersionId?
+          attr_accessor worker_version(): ::Temporalio::Api::Common::V1::WorkerVersionStamp?
 
-          # ID of the worker who picked up this workflow task, or missing if worker
-          #  is not using versioning.
+          # Version info of the worker who processed this workflow task. If present, the `build_id` field
+          #  within is also used as `binary_checksum`, which may be omitted in that case (it may also be
+          #  populated to preserve compatibility).
           #
-          def worker_versioning_id=: [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (M?) -> M?
-                                   | ...
+          def worker_version=: [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (M?) -> M?
+                             | ...
 
-          def worker_versioning_id!: () -> ::Temporalio::Api::TaskQueue::V1::VersionId?
+          def worker_version!: () -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
 
           # Data the SDK wishes to record for itself, but server need not interpret, and does not
           #  directly impact workflow state.
@@ -898,13 +935,13 @@ module Temporalio
 
           def metering_metadata!: () -> ::Temporalio::Api::Common::V1::MeteringMetadata?
 
-          def initialize: (?scheduled_event_id: ::Integer, ?started_event_id: ::Integer, ?identity: ::String, ?binary_checksum: ::String, ?worker_versioning_id: ::Temporalio::Api::TaskQueue::V1::VersionId::init?, ?sdk_metadata: ::Temporalio::Api::Sdk::V1::WorkflowTaskCompletedMetadata::init?, ?metering_metadata: ::Temporalio::Api::Common::V1::MeteringMetadata::init?) -> void
+          def initialize: (?scheduled_event_id: ::Integer, ?started_event_id: ::Integer, ?identity: ::String, ?binary_checksum: ::String, ?worker_version: ::Temporalio::Api::Common::V1::WorkerVersionStamp::init?, ?sdk_metadata: ::Temporalio::Api::Sdk::V1::WorkflowTaskCompletedMetadata::init?, ?metering_metadata: ::Temporalio::Api::Common::V1::MeteringMetadata::init?) -> void
 
           def []: (:scheduled_event_id) -> ::Integer
                 | (:started_event_id) -> ::Integer
                 | (:identity) -> ::String
                 | (:binary_checksum) -> ::String
-                | (:worker_versioning_id) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
+                | (:worker_version) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
                 | (:sdk_metadata) -> ::Temporalio::Api::Sdk::V1::WorkflowTaskCompletedMetadata?
                 | (:metering_metadata) -> ::Temporalio::Api::Common::V1::MeteringMetadata?
                 | (::Symbol) -> untyped
@@ -913,8 +950,8 @@ module Temporalio
                  | (:started_event_id, ::Integer) -> ::Integer
                  | (:identity, ::String) -> ::String
                  | (:binary_checksum, ::String) -> ::String
-                 | (:worker_versioning_id, ::Temporalio::Api::TaskQueue::V1::VersionId?) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
-                 | [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (:worker_versioning_id, M?) -> M?
+                 | (:worker_version, ::Temporalio::Api::Common::V1::WorkerVersionStamp?) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+                 | [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (:worker_version, M?) -> M?
                  | (:sdk_metadata, ::Temporalio::Api::Sdk::V1::WorkflowTaskCompletedMetadata?) -> ::Temporalio::Api::Sdk::V1::WorkflowTaskCompletedMetadata?
                  | [M < ::Temporalio::Api::Sdk::V1::WorkflowTaskCompletedMetadata::_ToProto] (:sdk_metadata, M?) -> M?
                  | (:metering_metadata, ::Temporalio::Api::Common::V1::MeteringMetadata?) -> ::Temporalio::Api::Common::V1::MeteringMetadata?
@@ -1053,13 +1090,29 @@ module Temporalio
 
           def fork_event_version!: () -> ::Integer?
 
-          # If a worker explicitly failed this task, it's binary id
+          # DEPRECATED since 1.21 - use `worker_version` instead.
+          #  If a worker explicitly failed this task, its binary id
           #
           attr_accessor binary_checksum(): ::String
 
           def binary_checksum!: () -> ::String?
 
-          def initialize: (?scheduled_event_id: ::Integer, ?started_event_id: ::Integer, ?cause: ::Temporalio::Api::Enums::V1::WorkflowTaskFailedCause::init, ?failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?identity: ::String, ?base_run_id: ::String, ?new_run_id: ::String, ?fork_event_version: ::Integer, ?binary_checksum: ::String) -> void
+          # Version info of the worker who processed this workflow task. If present, the `build_id` field
+          #  within is also used as `binary_checksum`, which may be omitted in that case (it may also be
+          #  populated to preserve compatibility).
+          #
+          attr_accessor worker_version(): ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          # Version info of the worker who processed this workflow task. If present, the `build_id` field
+          #  within is also used as `binary_checksum`, which may be omitted in that case (it may also be
+          #  populated to preserve compatibility).
+          #
+          def worker_version=: [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (M?) -> M?
+                             | ...
+
+          def worker_version!: () -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          def initialize: (?scheduled_event_id: ::Integer, ?started_event_id: ::Integer, ?cause: ::Temporalio::Api::Enums::V1::WorkflowTaskFailedCause::init, ?failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?identity: ::String, ?base_run_id: ::String, ?new_run_id: ::String, ?fork_event_version: ::Integer, ?binary_checksum: ::String, ?worker_version: ::Temporalio::Api::Common::V1::WorkerVersionStamp::init?) -> void
 
           def []: (:scheduled_event_id) -> ::Integer
                 | (:started_event_id) -> ::Integer
@@ -1070,6 +1123,7 @@ module Temporalio
                 | (:new_run_id) -> ::String
                 | (:fork_event_version) -> ::Integer
                 | (:binary_checksum) -> ::String
+                | (:worker_version) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
                 | (::Symbol) -> untyped
 
           def []=: (:scheduled_event_id, ::Integer) -> ::Integer
@@ -1083,6 +1137,8 @@ module Temporalio
                  | (:new_run_id, ::String) -> ::String
                  | (:fork_event_version, ::Integer) -> ::Integer
                  | (:binary_checksum, ::String) -> ::String
+                 | (:worker_version, ::Temporalio::Api::Common::V1::WorkerVersionStamp?) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+                 | [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (:worker_version, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -1237,7 +1293,15 @@ module Temporalio
 
           def retry_policy!: () -> ::Temporalio::Api::Common::V1::RetryPolicy?
 
-          def initialize: (?activity_id: ::String, ?activity_type: ::Temporalio::Api::Common::V1::ActivityType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?schedule_to_close_timeout: ::Google::Protobuf::Duration::init?, ?schedule_to_start_timeout: ::Google::Protobuf::Duration::init?, ?start_to_close_timeout: ::Google::Protobuf::Duration::init?, ?heartbeat_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_completed_event_id: ::Integer, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?) -> void
+          # If this is set, the workflow executing this command wishes to start the activity using
+          #  a version compatible with the version that this workflow most recently ran on, if such
+          #  behavior is possible.
+          #
+          attr_accessor use_compatible_version(): bool
+
+          def use_compatible_version!: () -> bool?
+
+          def initialize: (?activity_id: ::String, ?activity_type: ::Temporalio::Api::Common::V1::ActivityType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?schedule_to_close_timeout: ::Google::Protobuf::Duration::init?, ?schedule_to_start_timeout: ::Google::Protobuf::Duration::init?, ?start_to_close_timeout: ::Google::Protobuf::Duration::init?, ?heartbeat_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_completed_event_id: ::Integer, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?use_compatible_version: bool) -> void
 
           def []: (:activity_id) -> ::String
                 | (:activity_type) -> ::Temporalio::Api::Common::V1::ActivityType?
@@ -1250,6 +1314,7 @@ module Temporalio
                 | (:heartbeat_timeout) -> ::Google::Protobuf::Duration?
                 | (:workflow_task_completed_event_id) -> ::Integer
                 | (:retry_policy) -> ::Temporalio::Api::Common::V1::RetryPolicy?
+                | (:use_compatible_version) -> bool
                 | (::Symbol) -> untyped
 
           def []=: (:activity_id, ::String) -> ::String
@@ -1272,7 +1337,10 @@ module Temporalio
                  | (:workflow_task_completed_event_id, ::Integer) -> ::Integer
                  | (:retry_policy, ::Temporalio::Api::Common::V1::RetryPolicy?) -> ::Temporalio::Api::Common::V1::RetryPolicy?
                  | [M < ::Temporalio::Api::Common::V1::RetryPolicy::_ToProto] (:retry_policy, M?) -> M?
+                 | (:use_compatible_version, bool) -> bool
                  | (::Symbol, untyped) -> untyped
+
+          def use_compatible_version?: () -> bool
 
           interface _ToProto
             def to_proto: () -> ActivityTaskScheduledEventAttributes
@@ -1403,12 +1471,24 @@ module Temporalio
 
           def identity!: () -> ::String?
 
-          def initialize: (?result: ::Temporalio::Api::Common::V1::Payloads::init?, ?scheduled_event_id: ::Integer, ?started_event_id: ::Integer, ?identity: ::String) -> void
+          # Version info of the worker who processed this workflow task.
+          #
+          attr_accessor worker_version(): ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          # Version info of the worker who processed this workflow task.
+          #
+          def worker_version=: [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (M?) -> M?
+                             | ...
+
+          def worker_version!: () -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          def initialize: (?result: ::Temporalio::Api::Common::V1::Payloads::init?, ?scheduled_event_id: ::Integer, ?started_event_id: ::Integer, ?identity: ::String, ?worker_version: ::Temporalio::Api::Common::V1::WorkerVersionStamp::init?) -> void
 
           def []: (:result) -> ::Temporalio::Api::Common::V1::Payloads?
                 | (:scheduled_event_id) -> ::Integer
                 | (:started_event_id) -> ::Integer
                 | (:identity) -> ::String
+                | (:worker_version) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
                 | (::Symbol) -> untyped
 
           def []=: (:result, ::Temporalio::Api::Common::V1::Payloads?) -> ::Temporalio::Api::Common::V1::Payloads?
@@ -1416,6 +1496,8 @@ module Temporalio
                  | (:scheduled_event_id, ::Integer) -> ::Integer
                  | (:started_event_id, ::Integer) -> ::Integer
                  | (:identity, ::String) -> ::String
+                 | (:worker_version, ::Temporalio::Api::Common::V1::WorkerVersionStamp?) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+                 | [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (:worker_version, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -1477,13 +1559,25 @@ module Temporalio
 
           def retry_state!: () -> ::Temporalio::Api::Enums::V1::RetryState?
 
-          def initialize: (?failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?scheduled_event_id: ::Integer, ?started_event_id: ::Integer, ?identity: ::String, ?retry_state: ::Temporalio::Api::Enums::V1::RetryState::init) -> void
+          # Version info of the worker who processed this workflow task.
+          #
+          attr_accessor worker_version(): ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          # Version info of the worker who processed this workflow task.
+          #
+          def worker_version=: [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (M?) -> M?
+                             | ...
+
+          def worker_version!: () -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          def initialize: (?failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?scheduled_event_id: ::Integer, ?started_event_id: ::Integer, ?identity: ::String, ?retry_state: ::Temporalio::Api::Enums::V1::RetryState::init, ?worker_version: ::Temporalio::Api::Common::V1::WorkerVersionStamp::init?) -> void
 
           def []: (:failure) -> ::Temporalio::Api::Failure::V1::Failure?
                 | (:scheduled_event_id) -> ::Integer
                 | (:started_event_id) -> ::Integer
                 | (:identity) -> ::String
                 | (:retry_state) -> ::Temporalio::Api::Enums::V1::RetryState
+                | (:worker_version) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
                 | (::Symbol) -> untyped
 
           def []=: (:failure, ::Temporalio::Api::Failure::V1::Failure?) -> ::Temporalio::Api::Failure::V1::Failure?
@@ -1493,6 +1587,8 @@ module Temporalio
                  | (:identity, ::String) -> ::String
                  | (:retry_state, ::Temporalio::Api::Enums::V1::RetryState) -> ::Temporalio::Api::Enums::V1::RetryState
                  | (:retry_state, ::Temporalio::Api::Enums::V1::RetryState::values) -> ::Temporalio::Api::Enums::V1::RetryState::values
+                 | (:worker_version, ::Temporalio::Api::Common::V1::WorkerVersionStamp?) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+                 | [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (:worker_version, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -1670,13 +1766,25 @@ module Temporalio
 
           def identity!: () -> ::String?
 
-          def initialize: (?details: ::Temporalio::Api::Common::V1::Payloads::init?, ?latest_cancel_requested_event_id: ::Integer, ?scheduled_event_id: ::Integer, ?started_event_id: ::Integer, ?identity: ::String) -> void
+          # Version info of the worker who processed this workflow task.
+          #
+          attr_accessor worker_version(): ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          # Version info of the worker who processed this workflow task.
+          #
+          def worker_version=: [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (M?) -> M?
+                             | ...
+
+          def worker_version!: () -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          def initialize: (?details: ::Temporalio::Api::Common::V1::Payloads::init?, ?latest_cancel_requested_event_id: ::Integer, ?scheduled_event_id: ::Integer, ?started_event_id: ::Integer, ?identity: ::String, ?worker_version: ::Temporalio::Api::Common::V1::WorkerVersionStamp::init?) -> void
 
           def []: (:details) -> ::Temporalio::Api::Common::V1::Payloads?
                 | (:latest_cancel_requested_event_id) -> ::Integer
                 | (:scheduled_event_id) -> ::Integer
                 | (:started_event_id) -> ::Integer
                 | (:identity) -> ::String
+                | (:worker_version) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
                 | (::Symbol) -> untyped
 
           def []=: (:details, ::Temporalio::Api::Common::V1::Payloads?) -> ::Temporalio::Api::Common::V1::Payloads?
@@ -1685,6 +1793,8 @@ module Temporalio
                  | (:scheduled_event_id, ::Integer) -> ::Integer
                  | (:started_event_id, ::Integer) -> ::Integer
                  | (:identity, ::String) -> ::String
+                 | (:worker_version, ::Temporalio::Api::Common::V1::WorkerVersionStamp?) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+                 | [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (:worker_version, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -2111,12 +2221,19 @@ module Temporalio
 
           def header!: () -> ::Temporalio::Api::Common::V1::Header?
 
-          def initialize: (?signal_name: ::String, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?identity: ::String, ?header: ::Temporalio::Api::Common::V1::Header::init?) -> void
+          # Indicates the signal did not generate a new workflow task when received.
+          #
+          attr_accessor skip_generate_workflow_task(): bool
+
+          def skip_generate_workflow_task!: () -> bool?
+
+          def initialize: (?signal_name: ::String, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?identity: ::String, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?skip_generate_workflow_task: bool) -> void
 
           def []: (:signal_name) -> ::String
                 | (:input) -> ::Temporalio::Api::Common::V1::Payloads?
                 | (:identity) -> ::String
                 | (:header) -> ::Temporalio::Api::Common::V1::Header?
+                | (:skip_generate_workflow_task) -> bool
                 | (::Symbol) -> untyped
 
           def []=: (:signal_name, ::String) -> ::String
@@ -2125,7 +2242,10 @@ module Temporalio
                  | (:identity, ::String) -> ::String
                  | (:header, ::Temporalio::Api::Common::V1::Header?) -> ::Temporalio::Api::Common::V1::Header?
                  | [M < ::Temporalio::Api::Common::V1::Header::_ToProto] (:header, M?) -> M?
+                 | (:skip_generate_workflow_task, bool) -> bool
                  | (::Symbol, untyped) -> untyped
+
+          def skip_generate_workflow_task?: () -> bool
 
           interface _ToProto
             def to_proto: () -> WorkflowExecutionSignaledEventAttributes
@@ -2954,7 +3074,15 @@ module Temporalio
 
           def search_attributes!: () -> ::Temporalio::Api::Common::V1::SearchAttributes?
 
-          def initialize: (?namespace: ::String, ?namespace_id: ::String, ?workflow_id: ::String, ?workflow_type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?workflow_execution_timeout: ::Google::Protobuf::Duration::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?parent_close_policy: ::Temporalio::Api::Enums::V1::ParentClosePolicy::init, ?control: ::String, ?workflow_task_completed_event_id: ::Integer, ?workflow_id_reuse_policy: ::Temporalio::Api::Enums::V1::WorkflowIdReusePolicy::init, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?cron_schedule: ::String, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?) -> void
+          # If this is set, the workflow executing this command wishes to start the child workflow using
+          #  a version compatible with the version that this workflow most recently ran on, if such
+          #  behavior is possible.
+          #
+          attr_accessor use_compatible_version(): bool
+
+          def use_compatible_version!: () -> bool?
+
+          def initialize: (?namespace: ::String, ?namespace_id: ::String, ?workflow_id: ::String, ?workflow_type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?workflow_execution_timeout: ::Google::Protobuf::Duration::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?parent_close_policy: ::Temporalio::Api::Enums::V1::ParentClosePolicy::init, ?control: ::String, ?workflow_task_completed_event_id: ::Integer, ?workflow_id_reuse_policy: ::Temporalio::Api::Enums::V1::WorkflowIdReusePolicy::init, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?cron_schedule: ::String, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?, ?use_compatible_version: bool) -> void
 
           def []: (:namespace) -> ::String
                 | (:namespace_id) -> ::String
@@ -2974,6 +3102,7 @@ module Temporalio
                 | (:header) -> ::Temporalio::Api::Common::V1::Header?
                 | (:memo) -> ::Temporalio::Api::Common::V1::Memo?
                 | (:search_attributes) -> ::Temporalio::Api::Common::V1::SearchAttributes?
+                | (:use_compatible_version) -> bool
                 | (::Symbol) -> untyped
 
           def []=: (:namespace, ::String) -> ::String
@@ -3006,7 +3135,10 @@ module Temporalio
                  | [M < ::Temporalio::Api::Common::V1::Memo::_ToProto] (:memo, M?) -> M?
                  | (:search_attributes, ::Temporalio::Api::Common::V1::SearchAttributes?) -> ::Temporalio::Api::Common::V1::SearchAttributes?
                  | [M < ::Temporalio::Api::Common::V1::SearchAttributes::_ToProto] (:search_attributes, M?) -> M?
+                 | (:use_compatible_version, bool) -> bool
                  | (::Symbol, untyped) -> untyped
+
+          def use_compatible_version?: () -> bool
 
           interface _ToProto
             def to_proto: () -> StartChildWorkflowExecutionInitiatedEventAttributes
@@ -3890,6 +4022,12 @@ module Temporalio
 
           def meta!: () -> ::Temporalio::Api::Update::V1::Meta?
 
+          # The event ID indicating the acceptance of this update.
+          #
+          attr_accessor accepted_event_id(): ::Integer
+
+          def accepted_event_id!: () -> ::Integer?
+
           # The outcome of executing the workflow update function.
           #
           attr_accessor outcome(): ::Temporalio::Api::Update::V1::Outcome?
@@ -3901,14 +4039,16 @@ module Temporalio
 
           def outcome!: () -> ::Temporalio::Api::Update::V1::Outcome?
 
-          def initialize: (?meta: ::Temporalio::Api::Update::V1::Meta::init?, ?outcome: ::Temporalio::Api::Update::V1::Outcome::init?) -> void
+          def initialize: (?meta: ::Temporalio::Api::Update::V1::Meta::init?, ?accepted_event_id: ::Integer, ?outcome: ::Temporalio::Api::Update::V1::Outcome::init?) -> void
 
           def []: (:meta) -> ::Temporalio::Api::Update::V1::Meta?
+                | (:accepted_event_id) -> ::Integer
                 | (:outcome) -> ::Temporalio::Api::Update::V1::Outcome?
                 | (::Symbol) -> untyped
 
           def []=: (:meta, ::Temporalio::Api::Update::V1::Meta?) -> ::Temporalio::Api::Update::V1::Meta?
                  | [M < ::Temporalio::Api::Update::V1::Meta::_ToProto] (:meta, M?) -> M?
+                 | (:accepted_event_id, ::Integer) -> ::Integer
                  | (:outcome, ::Temporalio::Api::Update::V1::Outcome?) -> ::Temporalio::Api::Update::V1::Outcome?
                  | [M < ::Temporalio::Api::Update::V1::Outcome::_ToProto] (:outcome, M?) -> M?
                  | (::Symbol, untyped) -> untyped

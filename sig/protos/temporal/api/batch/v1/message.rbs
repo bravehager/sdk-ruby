@@ -294,6 +294,74 @@ module Temporalio
 
           type hash[KEY] = ::Hash[KEY, BatchOperationDeletion | _ToProto]
         end
+
+        # BatchOperationReset sends reset requests to batch workflows.
+        #  Keep the parameter in sync with temporal.api.workflowservice.v1.ResetWorkflowExecutionRequest.
+        #
+        class BatchOperationReset < ::Protobuf::Message
+          # Encode the message to a binary string
+          #
+          def self.encode: (BatchOperationReset) -> String
+
+          # Reset type.
+          #
+          attr_accessor reset_type(): ::Temporalio::Api::Enums::V1::ResetType
+
+          # Reset type.
+          #
+          def reset_type=: (::Temporalio::Api::Enums::V1::ResetType::values) -> ::Temporalio::Api::Enums::V1::ResetType::values
+                         | ...
+
+          def reset_type!: () -> ::Temporalio::Api::Enums::V1::ResetType?
+
+          # History event reapply options.
+          #
+          attr_accessor reset_reapply_type(): ::Temporalio::Api::Enums::V1::ResetReapplyType
+
+          # History event reapply options.
+          #
+          def reset_reapply_type=: (::Temporalio::Api::Enums::V1::ResetReapplyType::values) -> ::Temporalio::Api::Enums::V1::ResetReapplyType::values
+                                 | ...
+
+          def reset_reapply_type!: () -> ::Temporalio::Api::Enums::V1::ResetReapplyType?
+
+          # The identity of the worker/client.
+          #
+          attr_accessor identity(): ::String
+
+          def identity!: () -> ::String?
+
+          def initialize: (?reset_type: ::Temporalio::Api::Enums::V1::ResetType::init, ?reset_reapply_type: ::Temporalio::Api::Enums::V1::ResetReapplyType::init, ?identity: ::String) -> void
+
+          def []: (:reset_type) -> ::Temporalio::Api::Enums::V1::ResetType
+                | (:reset_reapply_type) -> ::Temporalio::Api::Enums::V1::ResetReapplyType
+                | (:identity) -> ::String
+                | (::Symbol) -> untyped
+
+          def []=: (:reset_type, ::Temporalio::Api::Enums::V1::ResetType) -> ::Temporalio::Api::Enums::V1::ResetType
+                 | (:reset_type, ::Temporalio::Api::Enums::V1::ResetType::values) -> ::Temporalio::Api::Enums::V1::ResetType::values
+                 | (:reset_reapply_type, ::Temporalio::Api::Enums::V1::ResetReapplyType) -> ::Temporalio::Api::Enums::V1::ResetReapplyType
+                 | (:reset_reapply_type, ::Temporalio::Api::Enums::V1::ResetReapplyType::values) -> ::Temporalio::Api::Enums::V1::ResetReapplyType::values
+                 | (:identity, ::String) -> ::String
+                 | (::Symbol, untyped) -> untyped
+
+          interface _ToProto
+            def to_proto: () -> BatchOperationReset
+          end
+
+          # The type of `#initialize` parameter.
+          type init = BatchOperationReset | _ToProto
+
+          # The type of `repeated` field.
+          type field_array = ::Protobuf::Field::FieldArray[BatchOperationReset, BatchOperationReset | _ToProto]
+
+          # The type of `map` field.
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, BatchOperationReset, BatchOperationReset | _ToProto]
+
+          type array = ::Array[BatchOperationReset | _ToProto]
+
+          type hash[KEY] = ::Hash[KEY, BatchOperationReset | _ToProto]
+        end
       end
     end
   end

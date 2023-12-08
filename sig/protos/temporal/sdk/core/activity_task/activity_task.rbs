@@ -3,11 +3,11 @@ module Temporalio
     module Api
       module ActivityTask
         class ActivityCancelReason < ::Protobuf::Enum
-          type names = :NOT_FOUND | :CANCELLED | :TIMED_OUT
+          type names = :NOT_FOUND | :CANCELLED | :TIMED_OUT | :WORKER_SHUTDOWN
 
-          type strings = "NOT_FOUND" | "CANCELLED" | "TIMED_OUT"
+          type strings = "NOT_FOUND" | "CANCELLED" | "TIMED_OUT" | "WORKER_SHUTDOWN"
 
-          type tags = 0 | 1 | 2
+          type tags = 0 | 1 | 2 | 3
 
           type values = names | strings | tags
 
@@ -15,17 +15,21 @@ module Temporalio
 
           attr_reader tag(): tags
 
-          # / The activity no longer exists according to server (may be already completed)
+          # The activity no longer exists according to server (may be already completed)
           #
           NOT_FOUND: ActivityCancelReason
 
-          # / Activity was explicitly cancelled
+          # Activity was explicitly cancelled
           #
           CANCELLED: ActivityCancelReason
 
-          # / Activity timed out
+          # Activity timed out
           #
           TIMED_OUT: ActivityCancelReason
+
+          # Core is shutting down and the graceful timeout has elapsed
+          #
+          WORKER_SHUTDOWN: ActivityCancelReason
 
           # The type of `#initialize` parameter.
           type init = ActivityCancelReason | values
@@ -46,28 +50,28 @@ module Temporalio
           #
           def self.encode: (ActivityTask) -> String
 
-          # / A unique identifier for this task
+          # A unique identifier for this task
           #
           attr_accessor task_token(): ::String
 
           def task_token!: () -> ::String?
 
-          # / Start activity execution.
+          # Start activity execution.
           #
           attr_accessor start(): ::Temporalio::Bridge::Api::ActivityTask::Start?
 
-          # / Start activity execution.
+          # Start activity execution.
           #
           def start=: [M < ::Temporalio::Bridge::Api::ActivityTask::Start::_ToProto] (M?) -> M?
                     | ...
 
           def start!: () -> ::Temporalio::Bridge::Api::ActivityTask::Start?
 
-          # / Attempt to cancel activity execution.
+          # Attempt to cancel activity execution.
           #
           attr_accessor cancel(): ::Temporalio::Bridge::Api::ActivityTask::Cancel?
 
-          # / Attempt to cancel activity execution.
+          # Attempt to cancel activity execution.
           #
           def cancel=: [M < ::Temporalio::Bridge::Api::ActivityTask::Cancel::_ToProto] (M?) -> M?
                      | ...
@@ -340,7 +344,7 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, Start | _ToProto]
         end
 
-        # / Attempt to cancel a running activity
+        # Attempt to cancel a running activity
         #
         class Cancel < ::Protobuf::Message
           # Encode the message to a binary string

@@ -75,16 +75,39 @@ module Temporalio
 
           def lang_used_flags!: () -> ::Protobuf::field_array[::Integer]?
 
-          def initialize: (?core_used_flags: ::Array[::Integer], ?lang_used_flags: ::Array[::Integer]) -> void
+          # Name of the SDK that processed the task. This is usually something like "temporal-go" and is
+          #  usually the same as client-name gRPC header. This should only be set if its value changed
+          #  since the last time recorded on the workflow (or be set on the first task).
+          #
+          #  (-- api-linter: core::0122::name-suffix=disabled
+          #      aip.dev/not-precedent: We're ok with a name suffix here. --)
+          #
+          attr_accessor sdk_name(): ::String
+
+          def sdk_name!: () -> ::String?
+
+          # Version of the SDK that processed the task. This is usually something like "1.20.0" and is
+          #  usually the same as client-version gRPC header. This should only be set if its value changed
+          #  since the last time recorded on the workflow (or be set on the first task).
+          #
+          attr_accessor sdk_version(): ::String
+
+          def sdk_version!: () -> ::String?
+
+          def initialize: (?core_used_flags: ::Array[::Integer], ?lang_used_flags: ::Array[::Integer], ?sdk_name: ::String, ?sdk_version: ::String) -> void
 
           def []: (:core_used_flags) -> ::Protobuf::field_array[::Integer]
                 | (:lang_used_flags) -> ::Protobuf::field_array[::Integer]
+                | (:sdk_name) -> ::String
+                | (:sdk_version) -> ::String
                 | (::Symbol) -> untyped
 
           def []=: (:core_used_flags, ::Protobuf::field_array[::Integer]) -> ::Protobuf::field_array[::Integer]
                  | (:core_used_flags, ::Array[::Integer]) -> ::Array[::Integer]
                  | (:lang_used_flags, ::Protobuf::field_array[::Integer]) -> ::Protobuf::field_array[::Integer]
                  | (:lang_used_flags, ::Array[::Integer]) -> ::Array[::Integer]
+                 | (:sdk_name, ::String) -> ::String
+                 | (:sdk_version, ::String) -> ::String
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto

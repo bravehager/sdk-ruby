@@ -24,15 +24,24 @@ module Temporalio
 
           def kind!: () -> ::Temporalio::Api::Enums::V1::TaskQueueKind?
 
-          def initialize: (?name: ::String, ?kind: ::Temporalio::Api::Enums::V1::TaskQueueKind::init) -> void
+          # Iff kind == TASK_QUEUE_KIND_STICKY, then this field contains the name of
+          #  the normal task queue that the sticky worker is running on.
+          #
+          attr_accessor normal_name(): ::String
+
+          def normal_name!: () -> ::String?
+
+          def initialize: (?name: ::String, ?kind: ::Temporalio::Api::Enums::V1::TaskQueueKind::init, ?normal_name: ::String) -> void
 
           def []: (:name) -> ::String
                 | (:kind) -> ::Temporalio::Api::Enums::V1::TaskQueueKind
+                | (:normal_name) -> ::String
                 | (::Symbol) -> untyped
 
           def []=: (:name, ::String) -> ::String
                  | (:kind, ::Temporalio::Api::Enums::V1::TaskQueueKind) -> ::Temporalio::Api::Enums::V1::TaskQueueKind
                  | (:kind, ::Temporalio::Api::Enums::V1::TaskQueueKind::values) -> ::Temporalio::Api::Enums::V1::TaskQueueKind::values
+                 | (:normal_name, ::String) -> ::String
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -248,12 +257,8 @@ module Temporalio
           #
           def self.encode: (PollerInfo) -> String
 
-          # Unix Nano
-          #
           attr_accessor last_access_time(): ::Google::Protobuf::Timestamp?
 
-          # Unix Nano
-          #
           def last_access_time=: [M < ::Google::Protobuf::Timestamp::_ToProto] (M?) -> M?
                                | ...
 
@@ -267,33 +272,33 @@ module Temporalio
 
           def rate_per_second!: () -> ::Float?
 
-          # If a worker has specified an ID for use with the worker versioning feature while polling,
-          #  that id must appear here.
+          # If a worker has opted into the worker versioning feature while polling, its capabilities will
+          #  appear here.
           #
-          attr_accessor worker_versioning_id(): ::Temporalio::Api::TaskQueue::V1::VersionId?
+          attr_accessor worker_version_capabilities(): ::Temporalio::Api::Common::V1::WorkerVersionCapabilities?
 
-          # If a worker has specified an ID for use with the worker versioning feature while polling,
-          #  that id must appear here.
+          # If a worker has opted into the worker versioning feature while polling, its capabilities will
+          #  appear here.
           #
-          def worker_versioning_id=: [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (M?) -> M?
-                                   | ...
+          def worker_version_capabilities=: [M < ::Temporalio::Api::Common::V1::WorkerVersionCapabilities::_ToProto] (M?) -> M?
+                                          | ...
 
-          def worker_versioning_id!: () -> ::Temporalio::Api::TaskQueue::V1::VersionId?
+          def worker_version_capabilities!: () -> ::Temporalio::Api::Common::V1::WorkerVersionCapabilities?
 
-          def initialize: (?last_access_time: ::Google::Protobuf::Timestamp::init?, ?identity: ::String, ?rate_per_second: ::Float, ?worker_versioning_id: ::Temporalio::Api::TaskQueue::V1::VersionId::init?) -> void
+          def initialize: (?last_access_time: ::Google::Protobuf::Timestamp::init?, ?identity: ::String, ?rate_per_second: ::Float, ?worker_version_capabilities: ::Temporalio::Api::Common::V1::WorkerVersionCapabilities::init?) -> void
 
           def []: (:last_access_time) -> ::Google::Protobuf::Timestamp?
                 | (:identity) -> ::String
                 | (:rate_per_second) -> ::Float
-                | (:worker_versioning_id) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
+                | (:worker_version_capabilities) -> ::Temporalio::Api::Common::V1::WorkerVersionCapabilities?
                 | (::Symbol) -> untyped
 
           def []=: (:last_access_time, ::Google::Protobuf::Timestamp?) -> ::Google::Protobuf::Timestamp?
                  | [M < ::Google::Protobuf::Timestamp::_ToProto] (:last_access_time, M?) -> M?
                  | (:identity, ::String) -> ::String
                  | (:rate_per_second, ::Float) -> ::Float
-                 | (:worker_versioning_id, ::Temporalio::Api::TaskQueue::V1::VersionId?) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
-                 | [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (:worker_versioning_id, M?) -> M?
+                 | (:worker_version_capabilities, ::Temporalio::Api::Common::V1::WorkerVersionCapabilities?) -> ::Temporalio::Api::Common::V1::WorkerVersionCapabilities?
+                 | [M < ::Temporalio::Api::Common::V1::WorkerVersionCapabilities::_ToProto] (:worker_version_capabilities, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -369,116 +374,158 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, StickyExecutionAttributes | _ToProto]
         end
 
-        # Used by the worker versioning APIs, represents a node in the version graph for a particular
-        #  task queue
+        # Used by the worker versioning APIs, represents an unordered set of one or more versions which are
+        #  considered to be compatible with each other. Currently the versions are always worker build IDs.
         #
-        class VersionIdNode < ::Protobuf::Message
+        class CompatibleVersionSet < ::Protobuf::Message
           # Encode the message to a binary string
           #
-          def self.encode: (VersionIdNode) -> String
+          def self.encode: (CompatibleVersionSet) -> String
 
-          attr_accessor version(): ::Temporalio::Api::TaskQueue::V1::VersionId?
-
-          def version=: [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (M?) -> M?
-                      | ...
-
-          def version!: () -> ::Temporalio::Api::TaskQueue::V1::VersionId?
-
-          # A pointer to the previous version this version is considered to be compatible with
+          # All the compatible versions, unordered, except for the last element, which is considered the set "default".
           #
-          attr_accessor previous_compatible(): ::Temporalio::Api::TaskQueue::V1::VersionIdNode?
+          attr_accessor build_ids(): ::Protobuf::field_array[::String]
 
-          # A pointer to the previous version this version is considered to be compatible with
+          # All the compatible versions, unordered, except for the last element, which is considered the set "default".
           #
-          def previous_compatible=: [M < ::Temporalio::Api::TaskQueue::V1::VersionIdNode::_ToProto] (M?) -> M?
-                                  | ...
+          def build_ids=: (::Array[::String]) -> ::Array[::String]
+                        | ...
 
-          def previous_compatible!: () -> ::Temporalio::Api::TaskQueue::V1::VersionIdNode?
+          def build_ids!: () -> ::Protobuf::field_array[::String]?
 
-          # A pointer to the last incompatible version (previous major version)
-          #
-          attr_accessor previous_incompatible(): ::Temporalio::Api::TaskQueue::V1::VersionIdNode?
+          def initialize: (?build_ids: ::Array[::String]) -> void
 
-          # A pointer to the last incompatible version (previous major version)
-          #
-          def previous_incompatible=: [M < ::Temporalio::Api::TaskQueue::V1::VersionIdNode::_ToProto] (M?) -> M?
-                                    | ...
-
-          def previous_incompatible!: () -> ::Temporalio::Api::TaskQueue::V1::VersionIdNode?
-
-          def initialize: (?version: ::Temporalio::Api::TaskQueue::V1::VersionId::init?, ?previous_compatible: ::Temporalio::Api::TaskQueue::V1::VersionIdNode::init?, ?previous_incompatible: ::Temporalio::Api::TaskQueue::V1::VersionIdNode::init?) -> void
-
-          def []: (:version) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
-                | (:previous_compatible) -> ::Temporalio::Api::TaskQueue::V1::VersionIdNode?
-                | (:previous_incompatible) -> ::Temporalio::Api::TaskQueue::V1::VersionIdNode?
+          def []: (:build_ids) -> ::Protobuf::field_array[::String]
                 | (::Symbol) -> untyped
 
-          def []=: (:version, ::Temporalio::Api::TaskQueue::V1::VersionId?) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
-                 | [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (:version, M?) -> M?
-                 | (:previous_compatible, ::Temporalio::Api::TaskQueue::V1::VersionIdNode?) -> ::Temporalio::Api::TaskQueue::V1::VersionIdNode?
-                 | [M < ::Temporalio::Api::TaskQueue::V1::VersionIdNode::_ToProto] (:previous_compatible, M?) -> M?
-                 | (:previous_incompatible, ::Temporalio::Api::TaskQueue::V1::VersionIdNode?) -> ::Temporalio::Api::TaskQueue::V1::VersionIdNode?
-                 | [M < ::Temporalio::Api::TaskQueue::V1::VersionIdNode::_ToProto] (:previous_incompatible, M?) -> M?
+          def []=: (:build_ids, ::Protobuf::field_array[::String]) -> ::Protobuf::field_array[::String]
+                 | (:build_ids, ::Array[::String]) -> ::Array[::String]
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
-            def to_proto: () -> VersionIdNode
+            def to_proto: () -> CompatibleVersionSet
           end
 
           # The type of `#initialize` parameter.
-          type init = VersionIdNode | _ToProto
+          type init = CompatibleVersionSet | _ToProto
 
           # The type of `repeated` field.
-          type field_array = ::Protobuf::Field::FieldArray[VersionIdNode, VersionIdNode | _ToProto]
+          type field_array = ::Protobuf::Field::FieldArray[CompatibleVersionSet, CompatibleVersionSet | _ToProto]
 
           # The type of `map` field.
-          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, VersionIdNode, VersionIdNode | _ToProto]
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, CompatibleVersionSet, CompatibleVersionSet | _ToProto]
 
-          type array = ::Array[VersionIdNode | _ToProto]
+          type array = ::Array[CompatibleVersionSet | _ToProto]
 
-          type hash[KEY] = ::Hash[KEY, VersionIdNode | _ToProto]
+          type hash[KEY] = ::Hash[KEY, CompatibleVersionSet | _ToProto]
         end
 
-        # Used by the worker versioning APIs, represents a specific version of something
-        #  Currently, that's just a whole-worker id. In the future, if we support
-        #  WASM workflow bundle based versioning, for example, then the inside of this
-        #  message may become a oneof of different version types.
+        # Reachability of tasks for a worker on a single task queue.
         #
-        class VersionId < ::Protobuf::Message
+        class TaskQueueReachability < ::Protobuf::Message
           # Encode the message to a binary string
           #
-          def self.encode: (VersionId) -> String
+          def self.encode: (TaskQueueReachability) -> String
 
-          # An opaque whole-worker identifier
+          attr_accessor task_queue(): ::String
+
+          def task_queue!: () -> ::String?
+
+          # Task reachability for a worker in a single task queue.
+          #  See the TaskReachability docstring for information about each enum variant.
+          #  If reachability is empty, this worker is considered unreachable in this task queue.
           #
-          attr_accessor worker_build_id(): ::String
+          attr_accessor reachability(): ::Temporalio::Api::Enums::V1::TaskReachability::field_array
 
-          def worker_build_id!: () -> ::String?
+          # Task reachability for a worker in a single task queue.
+          #  See the TaskReachability docstring for information about each enum variant.
+          #  If reachability is empty, this worker is considered unreachable in this task queue.
+          #
+          def reachability=: (::Temporalio::Api::Enums::V1::TaskReachability::array) -> ::Temporalio::Api::Enums::V1::TaskReachability::array
+                           | ...
 
-          def initialize: (?worker_build_id: ::String) -> void
+          def reachability!: () -> ::Temporalio::Api::Enums::V1::TaskReachability::field_array?
 
-          def []: (:worker_build_id) -> ::String
+          def initialize: (?task_queue: ::String, ?reachability: ::Temporalio::Api::Enums::V1::TaskReachability::array) -> void
+
+          def []: (:task_queue) -> ::String
+                | (:reachability) -> ::Temporalio::Api::Enums::V1::TaskReachability::field_array
                 | (::Symbol) -> untyped
 
-          def []=: (:worker_build_id, ::String) -> ::String
+          def []=: (:task_queue, ::String) -> ::String
+                 | (:reachability, ::Temporalio::Api::Enums::V1::TaskReachability::field_array) -> ::Temporalio::Api::Enums::V1::TaskReachability::field_array
+                 | (:reachability, ::Temporalio::Api::Enums::V1::TaskReachability::array) -> ::Temporalio::Api::Enums::V1::TaskReachability::array
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
-            def to_proto: () -> VersionId
+            def to_proto: () -> TaskQueueReachability
           end
 
           # The type of `#initialize` parameter.
-          type init = VersionId | _ToProto
+          type init = TaskQueueReachability | _ToProto
 
           # The type of `repeated` field.
-          type field_array = ::Protobuf::Field::FieldArray[VersionId, VersionId | _ToProto]
+          type field_array = ::Protobuf::Field::FieldArray[TaskQueueReachability, TaskQueueReachability | _ToProto]
 
           # The type of `map` field.
-          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, VersionId, VersionId | _ToProto]
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, TaskQueueReachability, TaskQueueReachability | _ToProto]
 
-          type array = ::Array[VersionId | _ToProto]
+          type array = ::Array[TaskQueueReachability | _ToProto]
 
-          type hash[KEY] = ::Hash[KEY, VersionId | _ToProto]
+          type hash[KEY] = ::Hash[KEY, TaskQueueReachability | _ToProto]
+        end
+
+        # Reachability of tasks for a worker by build id, in one or more task queues.
+        #
+        class BuildIdReachability < ::Protobuf::Message
+          # Encode the message to a binary string
+          #
+          def self.encode: (BuildIdReachability) -> String
+
+          # A build id or empty if unversioned.
+          #
+          attr_accessor build_id(): ::String
+
+          def build_id!: () -> ::String?
+
+          # Reachability per task queue.
+          #
+          attr_accessor task_queue_reachability(): ::Temporalio::Api::TaskQueue::V1::TaskQueueReachability::field_array
+
+          # Reachability per task queue.
+          #
+          def task_queue_reachability=: (::Temporalio::Api::TaskQueue::V1::TaskQueueReachability::array) -> ::Temporalio::Api::TaskQueue::V1::TaskQueueReachability::array
+                                      | ...
+
+          def task_queue_reachability!: () -> ::Temporalio::Api::TaskQueue::V1::TaskQueueReachability::field_array?
+
+          def initialize: (?build_id: ::String, ?task_queue_reachability: ::Temporalio::Api::TaskQueue::V1::TaskQueueReachability::array) -> void
+
+          def []: (:build_id) -> ::String
+                | (:task_queue_reachability) -> ::Temporalio::Api::TaskQueue::V1::TaskQueueReachability::field_array
+                | (::Symbol) -> untyped
+
+          def []=: (:build_id, ::String) -> ::String
+                 | (:task_queue_reachability, ::Temporalio::Api::TaskQueue::V1::TaskQueueReachability::field_array) -> ::Temporalio::Api::TaskQueue::V1::TaskQueueReachability::field_array
+                 | (:task_queue_reachability, ::Temporalio::Api::TaskQueue::V1::TaskQueueReachability::array) -> ::Temporalio::Api::TaskQueue::V1::TaskQueueReachability::array
+                 | (::Symbol, untyped) -> untyped
+
+          interface _ToProto
+            def to_proto: () -> BuildIdReachability
+          end
+
+          # The type of `#initialize` parameter.
+          type init = BuildIdReachability | _ToProto
+
+          # The type of `repeated` field.
+          type field_array = ::Protobuf::Field::FieldArray[BuildIdReachability, BuildIdReachability | _ToProto]
+
+          # The type of `map` field.
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, BuildIdReachability, BuildIdReachability | _ToProto]
+
+          type array = ::Array[BuildIdReachability | _ToProto]
+
+          type hash[KEY] = ::Hash[KEY, BuildIdReachability | _ToProto]
         end
       end
     end

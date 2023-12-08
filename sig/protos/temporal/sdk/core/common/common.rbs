@@ -2,6 +2,53 @@ module Temporalio
   module Bridge
     module Api
       module Common
+        # An indication of user's intent concerning what Build ID versioning approach should be used for
+        #  a specific command
+        #
+        class VersioningIntent < ::Protobuf::Enum
+          type names = :UNSPECIFIED | :COMPATIBLE | :DEFAULT
+
+          type strings = "UNSPECIFIED" | "COMPATIBLE" | "DEFAULT"
+
+          type tags = 0 | 1 | 2
+
+          type values = names | strings | tags
+
+          attr_reader name(): names
+
+          attr_reader tag(): tags
+
+          # Indicates that core should choose the most sensible default behavior for the type of
+          #  command, accounting for whether the command will be run on the same task queue as the current
+          #  worker.
+          #
+          UNSPECIFIED: VersioningIntent
+
+          # Indicates that the command should run on a worker with compatible version if possible. It may
+          #  not be possible if the target task queue does not also have knowledge of the current worker's
+          #  build ID.
+          #
+          COMPATIBLE: VersioningIntent
+
+          # Indicates that the command should run on the target task queue's current overall-default
+          #  build ID.
+          #
+          DEFAULT: VersioningIntent
+
+          # The type of `#initialize` parameter.
+          type init = VersioningIntent | values
+
+          # The type of `repeated` field.
+          type field_array = ::Protobuf::Field::FieldArray[VersioningIntent, VersioningIntent | values]
+
+          # The type of `map` field.
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, VersioningIntent, VersioningIntent | values]
+
+          type array = ::Array[VersioningIntent | values]
+
+          type hash[KEY] = ::Hash[KEY, VersioningIntent | values]
+        end
+
         # Identifying information about a particular workflow execution, including namespace
         #
         class NamespacedWorkflowExecution < ::Protobuf::Message

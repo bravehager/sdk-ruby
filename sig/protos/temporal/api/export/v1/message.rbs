@@ -1,0 +1,88 @@
+module Temporalio
+  module Api
+    module Export
+      module V1
+        class WorkflowExecution < ::Protobuf::Message
+          # Encode the message to a binary string
+          #
+          def self.encode: (WorkflowExecution) -> String
+
+          attr_accessor history(): ::Temporalio::Api::History::V1::History?
+
+          def history=: [M < ::Temporalio::Api::History::V1::History::_ToProto] (M?) -> M?
+                      | ...
+
+          def history!: () -> ::Temporalio::Api::History::V1::History?
+
+          def initialize: (?history: ::Temporalio::Api::History::V1::History::init?) -> void
+
+          def []: (:history) -> ::Temporalio::Api::History::V1::History?
+                | (::Symbol) -> untyped
+
+          def []=: (:history, ::Temporalio::Api::History::V1::History?) -> ::Temporalio::Api::History::V1::History?
+                 | [M < ::Temporalio::Api::History::V1::History::_ToProto] (:history, M?) -> M?
+                 | (::Symbol, untyped) -> untyped
+
+          interface _ToProto
+            def to_proto: () -> WorkflowExecution
+          end
+
+          # The type of `#initialize` parameter.
+          type init = WorkflowExecution | _ToProto
+
+          # The type of `repeated` field.
+          type field_array = ::Protobuf::Field::FieldArray[WorkflowExecution, WorkflowExecution | _ToProto]
+
+          # The type of `map` field.
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, WorkflowExecution, WorkflowExecution | _ToProto]
+
+          type array = ::Array[WorkflowExecution | _ToProto]
+
+          type hash[KEY] = ::Hash[KEY, WorkflowExecution | _ToProto]
+        end
+
+        # WorkflowExecutions is used by the Cloud Export feature to deserialize 
+        #  the exported file. It encapsulates a collection of workflow execution information.
+        #
+        class WorkflowExecutions < ::Protobuf::Message
+          # Encode the message to a binary string
+          #
+          def self.encode: (WorkflowExecutions) -> String
+
+          attr_accessor items(): ::Temporalio::Api::Export::V1::WorkflowExecution::field_array
+
+          def items=: (::Temporalio::Api::Export::V1::WorkflowExecution::array) -> ::Temporalio::Api::Export::V1::WorkflowExecution::array
+                    | ...
+
+          def items!: () -> ::Temporalio::Api::Export::V1::WorkflowExecution::field_array?
+
+          def initialize: (?items: ::Temporalio::Api::Export::V1::WorkflowExecution::array) -> void
+
+          def []: (:items) -> ::Temporalio::Api::Export::V1::WorkflowExecution::field_array
+                | (::Symbol) -> untyped
+
+          def []=: (:items, ::Temporalio::Api::Export::V1::WorkflowExecution::field_array) -> ::Temporalio::Api::Export::V1::WorkflowExecution::field_array
+                 | (:items, ::Temporalio::Api::Export::V1::WorkflowExecution::array) -> ::Temporalio::Api::Export::V1::WorkflowExecution::array
+                 | (::Symbol, untyped) -> untyped
+
+          interface _ToProto
+            def to_proto: () -> WorkflowExecutions
+          end
+
+          # The type of `#initialize` parameter.
+          type init = WorkflowExecutions | _ToProto
+
+          # The type of `repeated` field.
+          type field_array = ::Protobuf::Field::FieldArray[WorkflowExecutions, WorkflowExecutions | _ToProto]
+
+          # The type of `map` field.
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, WorkflowExecutions, WorkflowExecutions | _ToProto]
+
+          type array = ::Array[WorkflowExecutions | _ToProto]
+
+          type hash[KEY] = ::Hash[KEY, WorkflowExecutions | _ToProto]
+        end
+      end
+    end
+  end
+end

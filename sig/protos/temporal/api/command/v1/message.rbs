@@ -143,7 +143,15 @@ module Temporalio
 
           def request_eager_execution!: () -> bool?
 
-          def initialize: (?activity_id: ::String, ?activity_type: ::Temporalio::Api::Common::V1::ActivityType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?schedule_to_close_timeout: ::Google::Protobuf::Duration::init?, ?schedule_to_start_timeout: ::Google::Protobuf::Duration::init?, ?start_to_close_timeout: ::Google::Protobuf::Duration::init?, ?heartbeat_timeout: ::Google::Protobuf::Duration::init?, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?request_eager_execution: bool) -> void
+          # If this is set, the workflow executing this command wishes to start the activity using
+          #  a version compatible with the version that this workflow most recently ran on, if such
+          #  behavior is possible.
+          #
+          attr_accessor use_compatible_version(): bool
+
+          def use_compatible_version!: () -> bool?
+
+          def initialize: (?activity_id: ::String, ?activity_type: ::Temporalio::Api::Common::V1::ActivityType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?schedule_to_close_timeout: ::Google::Protobuf::Duration::init?, ?schedule_to_start_timeout: ::Google::Protobuf::Duration::init?, ?start_to_close_timeout: ::Google::Protobuf::Duration::init?, ?heartbeat_timeout: ::Google::Protobuf::Duration::init?, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?request_eager_execution: bool, ?use_compatible_version: bool) -> void
 
           def []: (:activity_id) -> ::String
                 | (:activity_type) -> ::Temporalio::Api::Common::V1::ActivityType?
@@ -156,6 +164,7 @@ module Temporalio
                 | (:heartbeat_timeout) -> ::Google::Protobuf::Duration?
                 | (:retry_policy) -> ::Temporalio::Api::Common::V1::RetryPolicy?
                 | (:request_eager_execution) -> bool
+                | (:use_compatible_version) -> bool
                 | (::Symbol) -> untyped
 
           def []=: (:activity_id, ::String) -> ::String
@@ -178,9 +187,12 @@ module Temporalio
                  | (:retry_policy, ::Temporalio::Api::Common::V1::RetryPolicy?) -> ::Temporalio::Api::Common::V1::RetryPolicy?
                  | [M < ::Temporalio::Api::Common::V1::RetryPolicy::_ToProto] (:retry_policy, M?) -> M?
                  | (:request_eager_execution, bool) -> bool
+                 | (:use_compatible_version, bool) -> bool
                  | (::Symbol, untyped) -> untyped
 
           def request_eager_execution?: () -> bool
+
+          def use_compatible_version?: () -> bool
 
           interface _ToProto
             def to_proto: () -> ScheduleActivityTaskCommandAttributes
@@ -904,7 +916,14 @@ module Temporalio
 
           def search_attributes!: () -> ::Temporalio::Api::Common::V1::SearchAttributes?
 
-          def initialize: (?workflow_type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?backoff_start_interval: ::Google::Protobuf::Duration::init?, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?initiator: ::Temporalio::Api::Enums::V1::ContinueAsNewInitiator::init, ?failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?last_completion_result: ::Temporalio::Api::Common::V1::Payloads::init?, ?cron_schedule: ::String, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?) -> void
+          # If this is set, the workflow executing this command wishes to continue as new using a version
+          #  compatible with the version that this workflow most recently ran on.
+          #
+          attr_accessor use_compatible_version(): bool
+
+          def use_compatible_version!: () -> bool?
+
+          def initialize: (?workflow_type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?backoff_start_interval: ::Google::Protobuf::Duration::init?, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?initiator: ::Temporalio::Api::Enums::V1::ContinueAsNewInitiator::init, ?failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?last_completion_result: ::Temporalio::Api::Common::V1::Payloads::init?, ?cron_schedule: ::String, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?, ?use_compatible_version: bool) -> void
 
           def []: (:workflow_type) -> ::Temporalio::Api::Common::V1::WorkflowType?
                 | (:task_queue) -> ::Temporalio::Api::TaskQueue::V1::TaskQueue?
@@ -920,6 +939,7 @@ module Temporalio
                 | (:header) -> ::Temporalio::Api::Common::V1::Header?
                 | (:memo) -> ::Temporalio::Api::Common::V1::Memo?
                 | (:search_attributes) -> ::Temporalio::Api::Common::V1::SearchAttributes?
+                | (:use_compatible_version) -> bool
                 | (::Symbol) -> untyped
 
           def []=: (:workflow_type, ::Temporalio::Api::Common::V1::WorkflowType?) -> ::Temporalio::Api::Common::V1::WorkflowType?
@@ -949,7 +969,10 @@ module Temporalio
                  | [M < ::Temporalio::Api::Common::V1::Memo::_ToProto] (:memo, M?) -> M?
                  | (:search_attributes, ::Temporalio::Api::Common::V1::SearchAttributes?) -> ::Temporalio::Api::Common::V1::SearchAttributes?
                  | [M < ::Temporalio::Api::Common::V1::SearchAttributes::_ToProto] (:search_attributes, M?) -> M?
+                 | (:use_compatible_version, bool) -> bool
                  | (::Symbol, untyped) -> untyped
+
+          def use_compatible_version?: () -> bool
 
           interface _ToProto
             def to_proto: () -> ContinueAsNewWorkflowExecutionCommandAttributes
@@ -1096,7 +1119,15 @@ module Temporalio
 
           def search_attributes!: () -> ::Temporalio::Api::Common::V1::SearchAttributes?
 
-          def initialize: (?namespace: ::String, ?workflow_id: ::String, ?workflow_type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?workflow_execution_timeout: ::Google::Protobuf::Duration::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?parent_close_policy: ::Temporalio::Api::Enums::V1::ParentClosePolicy::init, ?control: ::String, ?workflow_id_reuse_policy: ::Temporalio::Api::Enums::V1::WorkflowIdReusePolicy::init, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?cron_schedule: ::String, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?) -> void
+          # If this is set, the workflow executing this command wishes to start the child workflow using
+          #  a version compatible with the version that this workflow most recently ran on, if such
+          #  behavior is possible.
+          #
+          attr_accessor use_compatible_version(): bool
+
+          def use_compatible_version!: () -> bool?
+
+          def initialize: (?namespace: ::String, ?workflow_id: ::String, ?workflow_type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?workflow_execution_timeout: ::Google::Protobuf::Duration::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?parent_close_policy: ::Temporalio::Api::Enums::V1::ParentClosePolicy::init, ?control: ::String, ?workflow_id_reuse_policy: ::Temporalio::Api::Enums::V1::WorkflowIdReusePolicy::init, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?cron_schedule: ::String, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?, ?use_compatible_version: bool) -> void
 
           def []: (:namespace) -> ::String
                 | (:workflow_id) -> ::String
@@ -1114,6 +1145,7 @@ module Temporalio
                 | (:header) -> ::Temporalio::Api::Common::V1::Header?
                 | (:memo) -> ::Temporalio::Api::Common::V1::Memo?
                 | (:search_attributes) -> ::Temporalio::Api::Common::V1::SearchAttributes?
+                | (:use_compatible_version) -> bool
                 | (::Symbol) -> untyped
 
           def []=: (:namespace, ::String) -> ::String
@@ -1144,7 +1176,10 @@ module Temporalio
                  | [M < ::Temporalio::Api::Common::V1::Memo::_ToProto] (:memo, M?) -> M?
                  | (:search_attributes, ::Temporalio::Api::Common::V1::SearchAttributes?) -> ::Temporalio::Api::Common::V1::SearchAttributes?
                  | [M < ::Temporalio::Api::Common::V1::SearchAttributes::_ToProto] (:search_attributes, M?) -> M?
+                 | (:use_compatible_version, bool) -> bool
                  | (::Symbol, untyped) -> untyped
+
+          def use_compatible_version?: () -> bool
 
           interface _ToProto
             def to_proto: () -> StartChildWorkflowExecutionCommandAttributes

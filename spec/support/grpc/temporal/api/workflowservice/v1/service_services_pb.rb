@@ -64,17 +64,15 @@ module Temporalio
             rpc :ListNamespaces, ::Temporalio::Api::WorkflowService::V1::ListNamespacesRequest, ::Temporalio::Api::WorkflowService::V1::ListNamespacesResponse
             # UpdateNamespace is used to update the information and configuration of a registered
             # namespace.
-            #
-            # (-- api-linter: core::0134::method-signature=disabled
-            #     aip.dev/not-precedent: UpdateNamespace RPC doesn't follow Google API format. --)
-            # (-- api-linter: core::0134::response-message-name=disabled
-            #     aip.dev/not-precedent: UpdateNamespace RPC doesn't follow Google API format. --)
             rpc :UpdateNamespace, ::Temporalio::Api::WorkflowService::V1::UpdateNamespaceRequest, ::Temporalio::Api::WorkflowService::V1::UpdateNamespaceResponse
             # DeprecateNamespace is used to update the state of a registered namespace to DEPRECATED.
             #
             # Once the namespace is deprecated it cannot be used to start new workflow executions. Existing
             # workflow executions will continue to run on deprecated namespaces.
             # Deprecated.
+            #
+            # (-- api-linter: core::0127::http-annotation=disabled
+            #     aip.dev/not-precedent: Deprecated --)
             rpc :DeprecateNamespace, ::Temporalio::Api::WorkflowService::V1::DeprecateNamespaceRequest, ::Temporalio::Api::WorkflowService::V1::DeprecateNamespaceResponse
             # StartWorkflowExecution starts a new workflow execution.
             #
@@ -95,6 +93,9 @@ module Temporalio
             # tasks. The worker is expected to call `RespondWorkflowTaskCompleted` when it is done
             # processing the task. The service will create a `WorkflowTaskStarted` event in the history for
             # this task before handing it to the worker.
+            #
+            # (-- api-linter: core::0127::http-annotation=disabled
+            #     aip.dev/not-precedent: We do not expose worker API to HTTP. --)
             rpc :PollWorkflowTaskQueue, ::Temporalio::Api::WorkflowService::V1::PollWorkflowTaskQueueRequest, ::Temporalio::Api::WorkflowService::V1::PollWorkflowTaskQueueResponse
             # RespondWorkflowTaskCompleted is called by workers to successfully complete workflow tasks
             # they received from `PollWorkflowTaskQueue`.
@@ -102,6 +103,9 @@ module Temporalio
             # Completing a WorkflowTask will write a `WORKFLOW_TASK_COMPLETED` event to the workflow's
             # history, along with events corresponding to whatever commands the SDK generated while
             # executing the task (ex timer started, activity task scheduled, etc).
+            #
+            # (-- api-linter: core::0127::http-annotation=disabled
+            #     aip.dev/not-precedent: We do not expose worker API to HTTP. --)
             rpc :RespondWorkflowTaskCompleted, ::Temporalio::Api::WorkflowService::V1::RespondWorkflowTaskCompletedRequest, ::Temporalio::Api::WorkflowService::V1::RespondWorkflowTaskCompletedResponse
             # RespondWorkflowTaskFailed is called by workers to indicate the processing of a workflow task
             # failed.
@@ -112,6 +116,9 @@ module Temporalio
             #
             # Temporal will only append first WorkflowTaskFailed event to the history of workflow execution
             # for consecutive failures.
+            #
+            # (-- api-linter: core::0127::http-annotation=disabled
+            #     aip.dev/not-precedent: We do not expose worker API to HTTP. --)
             rpc :RespondWorkflowTaskFailed, ::Temporalio::Api::WorkflowService::V1::RespondWorkflowTaskFailedRequest, ::Temporalio::Api::WorkflowService::V1::RespondWorkflowTaskFailedResponse
             # PollActivityTaskQueue is called by workers to process activity tasks from a specific task
             # queue.
@@ -125,6 +132,9 @@ module Temporalio
             # (`ACTIVITY_TASK_COMPLETED` / `ACTIVITY_TASK_FAILED` / `ACTIVITY_TASK_TIMED_OUT`) will both be
             # written permanently to Workflow execution history when Activity is finished. This is done to
             # avoid writing many events in the case of a failure/retry loop.
+            #
+            # (-- api-linter: core::0127::http-annotation=disabled
+            #     aip.dev/not-precedent: We do not expose worker API to HTTP. --)
             rpc :PollActivityTaskQueue, ::Temporalio::Api::WorkflowService::V1::PollActivityTaskQueueRequest, ::Temporalio::Api::WorkflowService::V1::PollActivityTaskQueueResponse
             # RecordActivityTaskHeartbeat is optionally called by workers while they execute activities.
             #
@@ -214,30 +224,44 @@ module Temporalio
             # WorkflowExecution.run_id is provided) or the latest Workflow Execution (when
             # WorkflowExecution.run_id is not provided). If the Workflow Execution is Running, it will be
             # terminated before deletion.
-            # (-- api-linter: core::0135::method-signature=disabled
-            #     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
-            # (-- api-linter: core::0135::response-message-name=disabled
-            #     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+            #
+            # (-- api-linter: core::0127::http-annotation=disabled
+            #     aip.dev/not-precedent: Workflow deletion not exposed to HTTP, users should use cancel or terminate. --)
             rpc :DeleteWorkflowExecution, ::Temporalio::Api::WorkflowService::V1::DeleteWorkflowExecutionRequest, ::Temporalio::Api::WorkflowService::V1::DeleteWorkflowExecutionResponse
             # ListOpenWorkflowExecutions is a visibility API to list the open executions in a specific namespace.
+            #
+            # (-- api-linter: core::0127::http-annotation=disabled
+            #     aip.dev/not-precedent: HTTP users should use ListWorkflowExecutions instead. --)
             rpc :ListOpenWorkflowExecutions, ::Temporalio::Api::WorkflowService::V1::ListOpenWorkflowExecutionsRequest, ::Temporalio::Api::WorkflowService::V1::ListOpenWorkflowExecutionsResponse
             # ListClosedWorkflowExecutions is a visibility API to list the closed executions in a specific namespace.
+            #
+            # (-- api-linter: core::0127::http-annotation=disabled
+            #     aip.dev/not-precedent: HTTP users should use ListWorkflowExecutions instead. --)
             rpc :ListClosedWorkflowExecutions, ::Temporalio::Api::WorkflowService::V1::ListClosedWorkflowExecutionsRequest, ::Temporalio::Api::WorkflowService::V1::ListClosedWorkflowExecutionsResponse
             # ListWorkflowExecutions is a visibility API to list workflow executions in a specific namespace.
             rpc :ListWorkflowExecutions, ::Temporalio::Api::WorkflowService::V1::ListWorkflowExecutionsRequest, ::Temporalio::Api::WorkflowService::V1::ListWorkflowExecutionsResponse
             # ListArchivedWorkflowExecutions is a visibility API to list archived workflow executions in a specific namespace.
             rpc :ListArchivedWorkflowExecutions, ::Temporalio::Api::WorkflowService::V1::ListArchivedWorkflowExecutionsRequest, ::Temporalio::Api::WorkflowService::V1::ListArchivedWorkflowExecutionsResponse
             # ScanWorkflowExecutions is a visibility API to list large amount of workflow executions in a specific namespace without order.
+            #
+            # (-- api-linter: core::0127::http-annotation=disabled
+            #     aip.dev/not-precedent: HTTP users should use ListWorkflowExecutions instead. --)
             rpc :ScanWorkflowExecutions, ::Temporalio::Api::WorkflowService::V1::ScanWorkflowExecutionsRequest, ::Temporalio::Api::WorkflowService::V1::ScanWorkflowExecutionsResponse
             # CountWorkflowExecutions is a visibility API to count of workflow executions in a specific namespace.
             rpc :CountWorkflowExecutions, ::Temporalio::Api::WorkflowService::V1::CountWorkflowExecutionsRequest, ::Temporalio::Api::WorkflowService::V1::CountWorkflowExecutionsResponse
             # GetSearchAttributes is a visibility API to get all legal keys that could be used in list APIs
+            #
+            # (-- api-linter: core::0127::http-annotation=disabled
+            #     aip.dev/not-precedent: We do not expose this search attribute API to HTTP (but may expose on OperatorService). --)
             rpc :GetSearchAttributes, ::Temporalio::Api::WorkflowService::V1::GetSearchAttributesRequest, ::Temporalio::Api::WorkflowService::V1::GetSearchAttributesResponse
             # RespondQueryTaskCompleted is called by workers to complete queries which were delivered on
             # the `query` (not `queries`) field of a `PollWorkflowTaskQueueResponse`.
             #
             # Completing the query will unblock the corresponding client call to `QueryWorkflow` and return
             # the query result a response.
+            #
+            # (-- api-linter: core::0127::http-annotation=disabled
+            #     aip.dev/not-precedent: We do not expose worker API to HTTP. --)
             rpc :RespondQueryTaskCompleted, ::Temporalio::Api::WorkflowService::V1::RespondQueryTaskCompletedRequest, ::Temporalio::Api::WorkflowService::V1::RespondQueryTaskCompletedResponse
             # ResetStickyTaskQueue resets the sticky task queue related information in the mutable state of
             # a given workflow. This is prudent for workers to perform if a workflow has been paged out of
@@ -246,6 +270,9 @@ module Temporalio
             # Things cleared are:
             # 1. StickyTaskQueue
             # 2. StickyScheduleToStartTimeout
+            #
+            # (-- api-linter: core::0127::http-annotation=disabled
+            #     aip.dev/not-precedent: We do not expose worker API to HTTP. --)
             rpc :ResetStickyTaskQueue, ::Temporalio::Api::WorkflowService::V1::ResetStickyTaskQueueRequest, ::Temporalio::Api::WorkflowService::V1::ResetStickyTaskQueueResponse
             # QueryWorkflow requests a query be executed for a specified workflow execution.
             rpc :QueryWorkflow, ::Temporalio::Api::WorkflowService::V1::QueryWorkflowRequest, ::Temporalio::Api::WorkflowService::V1::QueryWorkflowResponse
@@ -257,51 +284,64 @@ module Temporalio
             rpc :GetClusterInfo, ::Temporalio::Api::WorkflowService::V1::GetClusterInfoRequest, ::Temporalio::Api::WorkflowService::V1::GetClusterInfoResponse
             # GetSystemInfo returns information about the system.
             rpc :GetSystemInfo, ::Temporalio::Api::WorkflowService::V1::GetSystemInfoRequest, ::Temporalio::Api::WorkflowService::V1::GetSystemInfoResponse
+            # (-- api-linter: core::0127::http-annotation=disabled
+            #     aip.dev/not-precedent: We do not expose this low-level API to HTTP. --)
             rpc :ListTaskQueuePartitions, ::Temporalio::Api::WorkflowService::V1::ListTaskQueuePartitionsRequest, ::Temporalio::Api::WorkflowService::V1::ListTaskQueuePartitionsResponse
             # Creates a new schedule.
-            # (-- api-linter: core::0133::method-signature=disabled
-            #     aip.dev/not-precedent: CreateSchedule doesn't follow Google API format --)
-            # (-- api-linter: core::0133::response-message-name=disabled
-            #     aip.dev/not-precedent: CreateSchedule doesn't follow Google API format --)
-            # (-- api-linter: core::0133::http-uri-parent=disabled
-            #     aip.dev/not-precedent: CreateSchedule doesn't follow Google API format --)
             rpc :CreateSchedule, ::Temporalio::Api::WorkflowService::V1::CreateScheduleRequest, ::Temporalio::Api::WorkflowService::V1::CreateScheduleResponse
             # Returns the schedule description and current state of an existing schedule.
             rpc :DescribeSchedule, ::Temporalio::Api::WorkflowService::V1::DescribeScheduleRequest, ::Temporalio::Api::WorkflowService::V1::DescribeScheduleResponse
             # Changes the configuration or state of an existing schedule.
-            # (-- api-linter: core::0134::response-message-name=disabled
-            #     aip.dev/not-precedent: UpdateSchedule RPC doesn't follow Google API format. --)
-            # (-- api-linter: core::0134::method-signature=disabled
-            #     aip.dev/not-precedent: UpdateSchedule RPC doesn't follow Google API format. --)
             rpc :UpdateSchedule, ::Temporalio::Api::WorkflowService::V1::UpdateScheduleRequest, ::Temporalio::Api::WorkflowService::V1::UpdateScheduleResponse
             # Makes a specific change to a schedule or triggers an immediate action.
-            # (-- api-linter: core::0134::synonyms=disabled
-            #     aip.dev/not-precedent: we have both patch and update. --)
             rpc :PatchSchedule, ::Temporalio::Api::WorkflowService::V1::PatchScheduleRequest, ::Temporalio::Api::WorkflowService::V1::PatchScheduleResponse
             # Lists matching times within a range.
             rpc :ListScheduleMatchingTimes, ::Temporalio::Api::WorkflowService::V1::ListScheduleMatchingTimesRequest, ::Temporalio::Api::WorkflowService::V1::ListScheduleMatchingTimesResponse
             # Deletes a schedule, removing it from the system.
-            # (-- api-linter: core::0135::method-signature=disabled
-            #     aip.dev/not-precedent: DeleteSchedule doesn't follow Google API format --)
-            # (-- api-linter: core::0135::response-message-name=disabled
-            #     aip.dev/not-precedent: DeleteSchedule doesn't follow Google API format --)
             rpc :DeleteSchedule, ::Temporalio::Api::WorkflowService::V1::DeleteScheduleRequest, ::Temporalio::Api::WorkflowService::V1::DeleteScheduleResponse
             # List all schedules in a namespace.
             rpc :ListSchedules, ::Temporalio::Api::WorkflowService::V1::ListSchedulesRequest, ::Temporalio::Api::WorkflowService::V1::ListSchedulesResponse
-            # Allows users to specify a graph of worker build id based versions on a
-            # per task queue basis. Versions are ordered, and may be either compatible
-            # with some extant version, or a new incompatible version.
-            # (-- api-linter: core::0134::response-message-name=disabled
-            #     aip.dev/not-precedent: UpdateWorkerBuildIdOrdering RPC doesn't follow Google API format. --)
-            # (-- api-linter: core::0134::method-signature=disabled
-            #     aip.dev/not-precedent: UpdateWorkerBuildIdOrdering RPC doesn't follow Google API format. --)
-            rpc :UpdateWorkerBuildIdOrdering, ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdOrderingRequest, ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdOrderingResponse
-            # Fetches the worker build id versioning graph for some task queue.
-            rpc :GetWorkerBuildIdOrdering, ::Temporalio::Api::WorkflowService::V1::GetWorkerBuildIdOrderingRequest, ::Temporalio::Api::WorkflowService::V1::GetWorkerBuildIdOrderingResponse
+            # Allows users to specify sets of worker build id versions on a per task queue basis. Versions
+            # are ordered, and may be either compatible with some extant version, or a new incompatible
+            # version, forming sets of ids which are incompatible with each other, but whose contained
+            # members are compatible with one another.
+            #
+            # A single build id may be mapped to multiple task queues using this API for cases where a single process hosts
+            # multiple workers. 
+            # 
+            # To query which workers can be retired, use the `GetWorkerTaskReachability` API.
+            #
+            # NOTE: The number of task queues mapped to a single build id is limited by the `limit.taskQueuesPerBuildId`
+            # (default is 20), if this limit is exceeded this API will error with a FailedPrecondition.
+            #
+            # (-- api-linter: core::0127::http-annotation=disabled
+            #     aip.dev/not-precedent: We do yet expose versioning API to HTTP. --)
+            rpc :UpdateWorkerBuildIdCompatibility, ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest, ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityResponse
+            # Fetches the worker build id versioning sets for a task queue.
+            rpc :GetWorkerBuildIdCompatibility, ::Temporalio::Api::WorkflowService::V1::GetWorkerBuildIdCompatibilityRequest, ::Temporalio::Api::WorkflowService::V1::GetWorkerBuildIdCompatibilityResponse
+            # Fetches task reachability to determine whether a worker may be retired.
+            # The request may specify task queues to query for or let the server fetch all task queues mapped to the given
+            # build IDs.
+            #
+            # When requesting a large number of task queues or all task queues associated with the given build ids in a
+            # namespace, all task queues will be listed in the response but some of them may not contain reachability
+            # information due to a server enforced limit. When reaching the limit, task queues that reachability information
+            # could not be retrieved for will be marked with a single TASK_REACHABILITY_UNSPECIFIED entry. The caller may issue
+            # another call to get the reachability for those task queues.
+            #
+            # Open source users can adjust this limit by setting the server's dynamic config value for
+            # `limit.reachabilityTaskQueueScan` with the caveat that this call can strain the visibility store.
+            rpc :GetWorkerTaskReachability, ::Temporalio::Api::WorkflowService::V1::GetWorkerTaskReachabilityRequest, ::Temporalio::Api::WorkflowService::V1::GetWorkerTaskReachabilityResponse
             # Invokes the specified update function on user workflow code.
-            # (-- api-linter: core::0134=disabled
-            #     aip.dev/not-precedent: UpdateWorkflowExecution doesn't follow Google API format --)
             rpc :UpdateWorkflowExecution, ::Temporalio::Api::WorkflowService::V1::UpdateWorkflowExecutionRequest, ::Temporalio::Api::WorkflowService::V1::UpdateWorkflowExecutionResponse
+            # Polls a workflow execution for the outcome of a workflow execution update
+            # previously issued through the UpdateWorkflowExecution RPC. The effective
+            # timeout on this call will be shorter of the the caller-supplied gRPC
+            # timeout and the server's configured long-poll timeout.
+            #
+            # (-- api-linter: core::0127::http-annotation=disabled
+            #     aip.dev/not-precedent: We don't expose update polling API to HTTP in favor of a potential future non-blocking form. --)
+            rpc :PollWorkflowExecutionUpdate, ::Temporalio::Api::WorkflowService::V1::PollWorkflowExecutionUpdateRequest, ::Temporalio::Api::WorkflowService::V1::PollWorkflowExecutionUpdateResponse
             # StartBatchOperation starts a new batch operation
             rpc :StartBatchOperation, ::Temporalio::Api::WorkflowService::V1::StartBatchOperationRequest, ::Temporalio::Api::WorkflowService::V1::StartBatchOperationResponse
             # StopBatchOperation stops a batch operation

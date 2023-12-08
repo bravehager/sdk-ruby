@@ -794,7 +794,22 @@ module Temporalio
 
           def last_completion_result!: () -> ::Temporalio::Api::Common::V1::Payloads?
 
-          def initialize: (?namespace: ::String, ?workflow_id: ::String, ?workflow_type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?workflow_execution_timeout: ::Google::Protobuf::Duration::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?identity: ::String, ?request_id: ::String, ?workflow_id_reuse_policy: ::Temporalio::Api::Enums::V1::WorkflowIdReusePolicy::init, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?cron_schedule: ::String, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?request_eager_execution: bool, ?continued_failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?last_completion_result: ::Temporalio::Api::Common::V1::Payloads::init?) -> void
+          # Time to wait before dispatching the first workflow task. Cannot be used with `cron_schedule`.
+          #  If the workflow gets a signal before the delay, a workflow task will be dispatched and the rest
+          #  of the delay will be ignored.
+          #
+          attr_accessor workflow_start_delay(): ::Google::Protobuf::Duration?
+
+          # Time to wait before dispatching the first workflow task. Cannot be used with `cron_schedule`.
+          #  If the workflow gets a signal before the delay, a workflow task will be dispatched and the rest
+          #  of the delay will be ignored.
+          #
+          def workflow_start_delay=: [M < ::Google::Protobuf::Duration::_ToProto] (M?) -> M?
+                                   | ...
+
+          def workflow_start_delay!: () -> ::Google::Protobuf::Duration?
+
+          def initialize: (?namespace: ::String, ?workflow_id: ::String, ?workflow_type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?workflow_execution_timeout: ::Google::Protobuf::Duration::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?identity: ::String, ?request_id: ::String, ?workflow_id_reuse_policy: ::Temporalio::Api::Enums::V1::WorkflowIdReusePolicy::init, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?cron_schedule: ::String, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?request_eager_execution: bool, ?continued_failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?last_completion_result: ::Temporalio::Api::Common::V1::Payloads::init?, ?workflow_start_delay: ::Google::Protobuf::Duration::init?) -> void
 
           def []: (:namespace) -> ::String
                 | (:workflow_id) -> ::String
@@ -815,6 +830,7 @@ module Temporalio
                 | (:request_eager_execution) -> bool
                 | (:continued_failure) -> ::Temporalio::Api::Failure::V1::Failure?
                 | (:last_completion_result) -> ::Temporalio::Api::Common::V1::Payloads?
+                | (:workflow_start_delay) -> ::Google::Protobuf::Duration?
                 | (::Symbol) -> untyped
 
           def []=: (:namespace, ::String) -> ::String
@@ -849,6 +865,8 @@ module Temporalio
                  | [M < ::Temporalio::Api::Failure::V1::Failure::_ToProto] (:continued_failure, M?) -> M?
                  | (:last_completion_result, ::Temporalio::Api::Common::V1::Payloads?) -> ::Temporalio::Api::Common::V1::Payloads?
                  | [M < ::Temporalio::Api::Common::V1::Payloads::_ToProto] (:last_completion_result, M?) -> M?
+                 | (:workflow_start_delay, ::Google::Protobuf::Duration?) -> ::Google::Protobuf::Duration?
+                 | [M < ::Google::Protobuf::Duration::_ToProto] (:workflow_start_delay, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           def request_eager_execution?: () -> bool
@@ -1216,39 +1234,34 @@ module Temporalio
 
           def identity!: () -> ::String?
 
-          # Each worker process should provide an ID unique to the specific set of code it is running
+          # DEPRECATED since 1.21 - use `worker_version_capabilities` instead.
+          #  Each worker process should provide an ID unique to the specific set of code it is running
           #  "checksum" in this field name isn't very accurate, it should be though of as an id.
           #
           attr_accessor binary_checksum(): ::String
 
           def binary_checksum!: () -> ::String?
 
-          # If set, the worker is opting in to build-id based versioning and wishes to only
-          #  receive tasks that are considered compatible with the version provided.
-          #  Doing so only makes sense in conjunction with the `UpdateWorkerBuildIdOrdering` API.
-          #  When `worker_versioning_id` has a `worker_build_id`, and `binary_checksum` is not
-          #  set, that value should also be considered as the `binary_checksum`.
+          # Information about this worker's build identifier and if it is choosing to use the versioning
+          #  feature. See the `WorkerVersionCapabilities` docstring for more.
           #
-          attr_accessor worker_versioning_id(): ::Temporalio::Api::TaskQueue::V1::VersionId?
+          attr_accessor worker_version_capabilities(): ::Temporalio::Api::Common::V1::WorkerVersionCapabilities?
 
-          # If set, the worker is opting in to build-id based versioning and wishes to only
-          #  receive tasks that are considered compatible with the version provided.
-          #  Doing so only makes sense in conjunction with the `UpdateWorkerBuildIdOrdering` API.
-          #  When `worker_versioning_id` has a `worker_build_id`, and `binary_checksum` is not
-          #  set, that value should also be considered as the `binary_checksum`.
+          # Information about this worker's build identifier and if it is choosing to use the versioning
+          #  feature. See the `WorkerVersionCapabilities` docstring for more.
           #
-          def worker_versioning_id=: [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (M?) -> M?
-                                   | ...
+          def worker_version_capabilities=: [M < ::Temporalio::Api::Common::V1::WorkerVersionCapabilities::_ToProto] (M?) -> M?
+                                          | ...
 
-          def worker_versioning_id!: () -> ::Temporalio::Api::TaskQueue::V1::VersionId?
+          def worker_version_capabilities!: () -> ::Temporalio::Api::Common::V1::WorkerVersionCapabilities?
 
-          def initialize: (?namespace: ::String, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?identity: ::String, ?binary_checksum: ::String, ?worker_versioning_id: ::Temporalio::Api::TaskQueue::V1::VersionId::init?) -> void
+          def initialize: (?namespace: ::String, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?identity: ::String, ?binary_checksum: ::String, ?worker_version_capabilities: ::Temporalio::Api::Common::V1::WorkerVersionCapabilities::init?) -> void
 
           def []: (:namespace) -> ::String
                 | (:task_queue) -> ::Temporalio::Api::TaskQueue::V1::TaskQueue?
                 | (:identity) -> ::String
                 | (:binary_checksum) -> ::String
-                | (:worker_versioning_id) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
+                | (:worker_version_capabilities) -> ::Temporalio::Api::Common::V1::WorkerVersionCapabilities?
                 | (::Symbol) -> untyped
 
           def []=: (:namespace, ::String) -> ::String
@@ -1256,8 +1269,8 @@ module Temporalio
                  | [M < ::Temporalio::Api::TaskQueue::V1::TaskQueue::_ToProto] (:task_queue, M?) -> M?
                  | (:identity, ::String) -> ::String
                  | (:binary_checksum, ::String) -> ::String
-                 | (:worker_versioning_id, ::Temporalio::Api::TaskQueue::V1::VersionId?) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
-                 | [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (:worker_versioning_id, M?) -> M?
+                 | (:worker_version_capabilities, ::Temporalio::Api::Common::V1::WorkerVersionCapabilities?) -> ::Temporalio::Api::Common::V1::WorkerVersionCapabilities?
+                 | [M < ::Temporalio::Api::Common::V1::WorkerVersionCapabilities::_ToProto] (:worker_version_capabilities, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -1311,7 +1324,9 @@ module Temporalio
           def previous_started_event_id!: () -> ::Integer?
 
           # The id of the most recent workflow task started event, which will have been generated as a
-          #  result of this poll request being served.
+          #  result of this poll request being served. Will be zero if the task
+          #  does not contain any events which would advance history (no new WFT started).
+          #  Currently this can happen for queries.
           #
           attr_accessor started_event_id(): ::Integer
 
@@ -1548,7 +1563,8 @@ module Temporalio
 
           def force_create_new_workflow_task!: () -> bool?
 
-          # Worker process' unique binary id
+          # DEPRECATED since 1.21 - use `worker_version_stamp` instead.
+          #  Worker process' unique binary id
           #
           attr_accessor binary_checksum(): ::String
 
@@ -1569,22 +1585,20 @@ module Temporalio
 
           def namespace!: () -> ::String?
 
-          # If using versioning, worker should send the same id here that it used to
-          #  poll for the workflow task.
-          #  When `worker_versioning_id` has a `worker_build_id`, and `binary_checksum` is not
-          #  set, that value should also be considered as the `binary_checksum`.
+          # Version info of the worker who processed this task. This message's `build_id` field should
+          #  always be set by SDKs. Workers opting into versioning will also set the `use_versioning`
+          #  field to true. See message docstrings for more.
           #
-          attr_accessor worker_versioning_id(): ::Temporalio::Api::TaskQueue::V1::VersionId?
+          attr_accessor worker_version_stamp(): ::Temporalio::Api::Common::V1::WorkerVersionStamp?
 
-          # If using versioning, worker should send the same id here that it used to
-          #  poll for the workflow task.
-          #  When `worker_versioning_id` has a `worker_build_id`, and `binary_checksum` is not
-          #  set, that value should also be considered as the `binary_checksum`.
+          # Version info of the worker who processed this task. This message's `build_id` field should
+          #  always be set by SDKs. Workers opting into versioning will also set the `use_versioning`
+          #  field to true. See message docstrings for more.
           #
-          def worker_versioning_id=: [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (M?) -> M?
+          def worker_version_stamp=: [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (M?) -> M?
                                    | ...
 
-          def worker_versioning_id!: () -> ::Temporalio::Api::TaskQueue::V1::VersionId?
+          def worker_version_stamp!: () -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
 
           # Protocol messages piggybacking on a WFT as a transport
           #
@@ -1621,7 +1635,7 @@ module Temporalio
 
           def metering_metadata!: () -> ::Temporalio::Api::Common::V1::MeteringMetadata?
 
-          def initialize: (?task_token: ::String, ?commands: ::Temporalio::Api::Command::V1::Command::array, ?identity: ::String, ?sticky_attributes: ::Temporalio::Api::TaskQueue::V1::StickyExecutionAttributes::init?, ?return_new_workflow_task: bool, ?force_create_new_workflow_task: bool, ?binary_checksum: ::String, ?query_results: ::Temporalio::Api::Query::V1::WorkflowQueryResult::hash[::String], ?namespace: ::String, ?worker_versioning_id: ::Temporalio::Api::TaskQueue::V1::VersionId::init?, ?messages: ::Temporalio::Api::Protocol::V1::Message::array, ?sdk_metadata: ::Temporalio::Api::Sdk::V1::WorkflowTaskCompletedMetadata::init?, ?metering_metadata: ::Temporalio::Api::Common::V1::MeteringMetadata::init?) -> void
+          def initialize: (?task_token: ::String, ?commands: ::Temporalio::Api::Command::V1::Command::array, ?identity: ::String, ?sticky_attributes: ::Temporalio::Api::TaskQueue::V1::StickyExecutionAttributes::init?, ?return_new_workflow_task: bool, ?force_create_new_workflow_task: bool, ?binary_checksum: ::String, ?query_results: ::Temporalio::Api::Query::V1::WorkflowQueryResult::hash[::String], ?namespace: ::String, ?worker_version_stamp: ::Temporalio::Api::Common::V1::WorkerVersionStamp::init?, ?messages: ::Temporalio::Api::Protocol::V1::Message::array, ?sdk_metadata: ::Temporalio::Api::Sdk::V1::WorkflowTaskCompletedMetadata::init?, ?metering_metadata: ::Temporalio::Api::Common::V1::MeteringMetadata::init?) -> void
 
           def []: (:task_token) -> ::String
                 | (:commands) -> ::Temporalio::Api::Command::V1::Command::field_array
@@ -1632,7 +1646,7 @@ module Temporalio
                 | (:binary_checksum) -> ::String
                 | (:query_results) -> ::Temporalio::Api::Query::V1::WorkflowQueryResult::field_hash[::String]
                 | (:namespace) -> ::String
-                | (:worker_versioning_id) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
+                | (:worker_version_stamp) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
                 | (:messages) -> ::Temporalio::Api::Protocol::V1::Message::field_array
                 | (:sdk_metadata) -> ::Temporalio::Api::Sdk::V1::WorkflowTaskCompletedMetadata?
                 | (:metering_metadata) -> ::Temporalio::Api::Common::V1::MeteringMetadata?
@@ -1650,8 +1664,8 @@ module Temporalio
                  | (:query_results, ::Temporalio::Api::Query::V1::WorkflowQueryResult::field_hash[::String]) -> ::Temporalio::Api::Query::V1::WorkflowQueryResult::field_hash[::String]
                  | (:query_results, ::Temporalio::Api::Query::V1::WorkflowQueryResult::hash[::String]) -> ::Temporalio::Api::Query::V1::WorkflowQueryResult::hash[::String]
                  | (:namespace, ::String) -> ::String
-                 | (:worker_versioning_id, ::Temporalio::Api::TaskQueue::V1::VersionId?) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
-                 | [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (:worker_versioning_id, M?) -> M?
+                 | (:worker_version_stamp, ::Temporalio::Api::Common::V1::WorkerVersionStamp?) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+                 | [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (:worker_version_stamp, M?) -> M?
                  | (:messages, ::Temporalio::Api::Protocol::V1::Message::field_array) -> ::Temporalio::Api::Protocol::V1::Message::field_array
                  | (:messages, ::Temporalio::Api::Protocol::V1::Message::array) -> ::Temporalio::Api::Protocol::V1::Message::array
                  | (:sdk_metadata, ::Temporalio::Api::Sdk::V1::WorkflowTaskCompletedMetadata?) -> ::Temporalio::Api::Sdk::V1::WorkflowTaskCompletedMetadata?
@@ -1786,7 +1800,8 @@ module Temporalio
 
           def identity!: () -> ::String?
 
-          # Worker process' unique binary id
+          # DEPRECATED since 1.21 - use `worker_version_stamp` instead.
+          #  Worker process' unique binary id
           #
           attr_accessor binary_checksum(): ::String
 
@@ -1807,7 +1822,22 @@ module Temporalio
 
           def messages!: () -> ::Temporalio::Api::Protocol::V1::Message::field_array?
 
-          def initialize: (?task_token: ::String, ?cause: ::Temporalio::Api::Enums::V1::WorkflowTaskFailedCause::init, ?failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?identity: ::String, ?binary_checksum: ::String, ?namespace: ::String, ?messages: ::Temporalio::Api::Protocol::V1::Message::array) -> void
+          # Version info of the worker who processed this task. This message's `build_id` field should
+          #  always be set by SDKs. Workers opting into versioning will also set the `use_versioning`
+          #  field to true. See message docstrings for more.
+          #
+          attr_accessor worker_version(): ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          # Version info of the worker who processed this task. This message's `build_id` field should
+          #  always be set by SDKs. Workers opting into versioning will also set the `use_versioning`
+          #  field to true. See message docstrings for more.
+          #
+          def worker_version=: [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (M?) -> M?
+                             | ...
+
+          def worker_version!: () -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          def initialize: (?task_token: ::String, ?cause: ::Temporalio::Api::Enums::V1::WorkflowTaskFailedCause::init, ?failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?identity: ::String, ?binary_checksum: ::String, ?namespace: ::String, ?messages: ::Temporalio::Api::Protocol::V1::Message::array, ?worker_version: ::Temporalio::Api::Common::V1::WorkerVersionStamp::init?) -> void
 
           def []: (:task_token) -> ::String
                 | (:cause) -> ::Temporalio::Api::Enums::V1::WorkflowTaskFailedCause
@@ -1816,6 +1846,7 @@ module Temporalio
                 | (:binary_checksum) -> ::String
                 | (:namespace) -> ::String
                 | (:messages) -> ::Temporalio::Api::Protocol::V1::Message::field_array
+                | (:worker_version) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
                 | (::Symbol) -> untyped
 
           def []=: (:task_token, ::String) -> ::String
@@ -1828,6 +1859,8 @@ module Temporalio
                  | (:namespace, ::String) -> ::String
                  | (:messages, ::Temporalio::Api::Protocol::V1::Message::field_array) -> ::Temporalio::Api::Protocol::V1::Message::field_array
                  | (:messages, ::Temporalio::Api::Protocol::V1::Message::array) -> ::Temporalio::Api::Protocol::V1::Message::array
+                 | (:worker_version, ::Temporalio::Api::Common::V1::WorkerVersionStamp?) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+                 | [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (:worker_version, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -1902,28 +1935,26 @@ module Temporalio
 
           def task_queue_metadata!: () -> ::Temporalio::Api::TaskQueue::V1::TaskQueueMetadata?
 
-          # If set, the worker is opting in to build-id based versioning and wishes to only
-          #  receive tasks that are considered compatible with the version provided.
-          #  Doing so only makes sense in conjunction with the `UpdateWorkerBuildIdOrdering` API.
+          # Information about this worker's build identifier and if it is choosing to use the versioning
+          #  feature. See the `WorkerVersionCapabilities` docstring for more.
           #
-          attr_accessor worker_versioning_id(): ::Temporalio::Api::TaskQueue::V1::VersionId?
+          attr_accessor worker_version_capabilities(): ::Temporalio::Api::Common::V1::WorkerVersionCapabilities?
 
-          # If set, the worker is opting in to build-id based versioning and wishes to only
-          #  receive tasks that are considered compatible with the version provided.
-          #  Doing so only makes sense in conjunction with the `UpdateWorkerBuildIdOrdering` API.
+          # Information about this worker's build identifier and if it is choosing to use the versioning
+          #  feature. See the `WorkerVersionCapabilities` docstring for more.
           #
-          def worker_versioning_id=: [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (M?) -> M?
-                                   | ...
+          def worker_version_capabilities=: [M < ::Temporalio::Api::Common::V1::WorkerVersionCapabilities::_ToProto] (M?) -> M?
+                                          | ...
 
-          def worker_versioning_id!: () -> ::Temporalio::Api::TaskQueue::V1::VersionId?
+          def worker_version_capabilities!: () -> ::Temporalio::Api::Common::V1::WorkerVersionCapabilities?
 
-          def initialize: (?namespace: ::String, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?identity: ::String, ?task_queue_metadata: ::Temporalio::Api::TaskQueue::V1::TaskQueueMetadata::init?, ?worker_versioning_id: ::Temporalio::Api::TaskQueue::V1::VersionId::init?) -> void
+          def initialize: (?namespace: ::String, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?identity: ::String, ?task_queue_metadata: ::Temporalio::Api::TaskQueue::V1::TaskQueueMetadata::init?, ?worker_version_capabilities: ::Temporalio::Api::Common::V1::WorkerVersionCapabilities::init?) -> void
 
           def []: (:namespace) -> ::String
                 | (:task_queue) -> ::Temporalio::Api::TaskQueue::V1::TaskQueue?
                 | (:identity) -> ::String
                 | (:task_queue_metadata) -> ::Temporalio::Api::TaskQueue::V1::TaskQueueMetadata?
-                | (:worker_versioning_id) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
+                | (:worker_version_capabilities) -> ::Temporalio::Api::Common::V1::WorkerVersionCapabilities?
                 | (::Symbol) -> untyped
 
           def []=: (:namespace, ::String) -> ::String
@@ -1932,8 +1963,8 @@ module Temporalio
                  | (:identity, ::String) -> ::String
                  | (:task_queue_metadata, ::Temporalio::Api::TaskQueue::V1::TaskQueueMetadata?) -> ::Temporalio::Api::TaskQueue::V1::TaskQueueMetadata?
                  | [M < ::Temporalio::Api::TaskQueue::V1::TaskQueueMetadata::_ToProto] (:task_queue_metadata, M?) -> M?
-                 | (:worker_versioning_id, ::Temporalio::Api::TaskQueue::V1::VersionId?) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
-                 | [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (:worker_versioning_id, M?) -> M?
+                 | (:worker_version_capabilities, ::Temporalio::Api::Common::V1::WorkerVersionCapabilities?) -> ::Temporalio::Api::Common::V1::WorkerVersionCapabilities?
+                 | [M < ::Temporalio::Api::Common::V1::WorkerVersionCapabilities::_ToProto] (:worker_version_capabilities, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -2475,12 +2506,28 @@ module Temporalio
 
           def namespace!: () -> ::String?
 
-          def initialize: (?task_token: ::String, ?result: ::Temporalio::Api::Common::V1::Payloads::init?, ?identity: ::String, ?namespace: ::String) -> void
+          # Version info of the worker who processed this task. This message's `build_id` field should
+          #  always be set by SDKs. Workers opting into versioning will also set the `use_versioning`
+          #  field to true. See message docstrings for more.
+          #
+          attr_accessor worker_version(): ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          # Version info of the worker who processed this task. This message's `build_id` field should
+          #  always be set by SDKs. Workers opting into versioning will also set the `use_versioning`
+          #  field to true. See message docstrings for more.
+          #
+          def worker_version=: [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (M?) -> M?
+                             | ...
+
+          def worker_version!: () -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          def initialize: (?task_token: ::String, ?result: ::Temporalio::Api::Common::V1::Payloads::init?, ?identity: ::String, ?namespace: ::String, ?worker_version: ::Temporalio::Api::Common::V1::WorkerVersionStamp::init?) -> void
 
           def []: (:task_token) -> ::String
                 | (:result) -> ::Temporalio::Api::Common::V1::Payloads?
                 | (:identity) -> ::String
                 | (:namespace) -> ::String
+                | (:worker_version) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
                 | (::Symbol) -> untyped
 
           def []=: (:task_token, ::String) -> ::String
@@ -2488,6 +2535,8 @@ module Temporalio
                  | [M < ::Temporalio::Api::Common::V1::Payloads::_ToProto] (:result, M?) -> M?
                  | (:identity, ::String) -> ::String
                  | (:namespace, ::String) -> ::String
+                 | (:worker_version, ::Temporalio::Api::Common::V1::WorkerVersionStamp?) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+                 | [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (:worker_version, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -2684,13 +2733,29 @@ module Temporalio
 
           def last_heartbeat_details!: () -> ::Temporalio::Api::Common::V1::Payloads?
 
-          def initialize: (?task_token: ::String, ?failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?identity: ::String, ?namespace: ::String, ?last_heartbeat_details: ::Temporalio::Api::Common::V1::Payloads::init?) -> void
+          # Version info of the worker who processed this task. This message's `build_id` field should
+          #  always be set by SDKs. Workers opting into versioning will also set the `use_versioning`
+          #  field to true. See message docstrings for more.
+          #
+          attr_accessor worker_version(): ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          # Version info of the worker who processed this task. This message's `build_id` field should
+          #  always be set by SDKs. Workers opting into versioning will also set the `use_versioning`
+          #  field to true. See message docstrings for more.
+          #
+          def worker_version=: [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (M?) -> M?
+                             | ...
+
+          def worker_version!: () -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          def initialize: (?task_token: ::String, ?failure: ::Temporalio::Api::Failure::V1::Failure::init?, ?identity: ::String, ?namespace: ::String, ?last_heartbeat_details: ::Temporalio::Api::Common::V1::Payloads::init?, ?worker_version: ::Temporalio::Api::Common::V1::WorkerVersionStamp::init?) -> void
 
           def []: (:task_token) -> ::String
                 | (:failure) -> ::Temporalio::Api::Failure::V1::Failure?
                 | (:identity) -> ::String
                 | (:namespace) -> ::String
                 | (:last_heartbeat_details) -> ::Temporalio::Api::Common::V1::Payloads?
+                | (:worker_version) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
                 | (::Symbol) -> untyped
 
           def []=: (:task_token, ::String) -> ::String
@@ -2700,6 +2765,8 @@ module Temporalio
                  | (:namespace, ::String) -> ::String
                  | (:last_heartbeat_details, ::Temporalio::Api::Common::V1::Payloads?) -> ::Temporalio::Api::Common::V1::Payloads?
                  | [M < ::Temporalio::Api::Common::V1::Payloads::_ToProto] (:last_heartbeat_details, M?) -> M?
+                 | (:worker_version, ::Temporalio::Api::Common::V1::WorkerVersionStamp?) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+                 | [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (:worker_version, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -2939,12 +3006,28 @@ module Temporalio
 
           def namespace!: () -> ::String?
 
-          def initialize: (?task_token: ::String, ?details: ::Temporalio::Api::Common::V1::Payloads::init?, ?identity: ::String, ?namespace: ::String) -> void
+          # Version info of the worker who processed this task. This message's `build_id` field should
+          #  always be set by SDKs. Workers opting into versioning will also set the `use_versioning`
+          #  field to true. See message docstrings for more.
+          #
+          attr_accessor worker_version(): ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          # Version info of the worker who processed this task. This message's `build_id` field should
+          #  always be set by SDKs. Workers opting into versioning will also set the `use_versioning`
+          #  field to true. See message docstrings for more.
+          #
+          def worker_version=: [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (M?) -> M?
+                             | ...
+
+          def worker_version!: () -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          def initialize: (?task_token: ::String, ?details: ::Temporalio::Api::Common::V1::Payloads::init?, ?identity: ::String, ?namespace: ::String, ?worker_version: ::Temporalio::Api::Common::V1::WorkerVersionStamp::init?) -> void
 
           def []: (:task_token) -> ::String
                 | (:details) -> ::Temporalio::Api::Common::V1::Payloads?
                 | (:identity) -> ::String
                 | (:namespace) -> ::String
+                | (:worker_version) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
                 | (::Symbol) -> untyped
 
           def []=: (:task_token, ::String) -> ::String
@@ -2952,6 +3035,8 @@ module Temporalio
                  | [M < ::Temporalio::Api::Common::V1::Payloads::_ToProto] (:details, M?) -> M?
                  | (:identity, ::String) -> ::String
                  | (:namespace, ::String) -> ::String
+                 | (:worker_version, ::Temporalio::Api::Common::V1::WorkerVersionStamp?) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+                 | [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (:worker_version, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -3273,7 +3358,13 @@ module Temporalio
 
           def header!: () -> ::Temporalio::Api::Common::V1::Header?
 
-          def initialize: (?namespace: ::String, ?workflow_execution: ::Temporalio::Api::Common::V1::WorkflowExecution::init?, ?signal_name: ::String, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?identity: ::String, ?request_id: ::String, ?control: ::String, ?header: ::Temporalio::Api::Common::V1::Header::init?) -> void
+          # Indicates that a new workflow task should not be generated when this signal is received.
+          #
+          attr_accessor skip_generate_workflow_task(): bool
+
+          def skip_generate_workflow_task!: () -> bool?
+
+          def initialize: (?namespace: ::String, ?workflow_execution: ::Temporalio::Api::Common::V1::WorkflowExecution::init?, ?signal_name: ::String, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?identity: ::String, ?request_id: ::String, ?control: ::String, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?skip_generate_workflow_task: bool) -> void
 
           def []: (:namespace) -> ::String
                 | (:workflow_execution) -> ::Temporalio::Api::Common::V1::WorkflowExecution?
@@ -3283,6 +3374,7 @@ module Temporalio
                 | (:request_id) -> ::String
                 | (:control) -> ::String
                 | (:header) -> ::Temporalio::Api::Common::V1::Header?
+                | (:skip_generate_workflow_task) -> bool
                 | (::Symbol) -> untyped
 
           def []=: (:namespace, ::String) -> ::String
@@ -3296,7 +3388,10 @@ module Temporalio
                  | (:control, ::String) -> ::String
                  | (:header, ::Temporalio::Api::Common::V1::Header?) -> ::Temporalio::Api::Common::V1::Header?
                  | [M < ::Temporalio::Api::Common::V1::Header::_ToProto] (:header, M?) -> M?
+                 | (:skip_generate_workflow_task, bool) -> bool
                  | (::Symbol, untyped) -> untyped
+
+          def skip_generate_workflow_task?: () -> bool
 
           interface _ToProto
             def to_proto: () -> SignalWorkflowExecutionRequest
@@ -3496,7 +3591,34 @@ module Temporalio
 
           def header!: () -> ::Temporalio::Api::Common::V1::Header?
 
-          def initialize: (?namespace: ::String, ?workflow_id: ::String, ?workflow_type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?workflow_execution_timeout: ::Google::Protobuf::Duration::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?identity: ::String, ?request_id: ::String, ?workflow_id_reuse_policy: ::Temporalio::Api::Enums::V1::WorkflowIdReusePolicy::init, ?signal_name: ::String, ?signal_input: ::Temporalio::Api::Common::V1::Payloads::init?, ?control: ::String, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?cron_schedule: ::String, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?, ?header: ::Temporalio::Api::Common::V1::Header::init?) -> void
+          # Time to wait before dispatching the first workflow task. Cannot be used with `cron_schedule`.
+          #  Note that the signal will be delivered with the first workflow task. If the workflow gets
+          #  another SignalWithStartWorkflow before the delay and `skip_generate_workflow_task` is false
+          #  or not set, a workflow task will be dispatched immediately and the rest of the delay period
+          #  will be ignored, even if that request also had a delay. Signal via SignalWorkflowExecution
+          #  will not unblock the workflow.
+          #
+          attr_accessor workflow_start_delay(): ::Google::Protobuf::Duration?
+
+          # Time to wait before dispatching the first workflow task. Cannot be used with `cron_schedule`.
+          #  Note that the signal will be delivered with the first workflow task. If the workflow gets
+          #  another SignalWithStartWorkflow before the delay and `skip_generate_workflow_task` is false
+          #  or not set, a workflow task will be dispatched immediately and the rest of the delay period
+          #  will be ignored, even if that request also had a delay. Signal via SignalWorkflowExecution
+          #  will not unblock the workflow.
+          #
+          def workflow_start_delay=: [M < ::Google::Protobuf::Duration::_ToProto] (M?) -> M?
+                                   | ...
+
+          def workflow_start_delay!: () -> ::Google::Protobuf::Duration?
+
+          # Indicates that a new workflow task should not be generated when this signal is received.
+          #
+          attr_accessor skip_generate_workflow_task(): bool
+
+          def skip_generate_workflow_task!: () -> bool?
+
+          def initialize: (?namespace: ::String, ?workflow_id: ::String, ?workflow_type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?task_queue: ::Temporalio::Api::TaskQueue::V1::TaskQueue::init?, ?input: ::Temporalio::Api::Common::V1::Payloads::init?, ?workflow_execution_timeout: ::Google::Protobuf::Duration::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?identity: ::String, ?request_id: ::String, ?workflow_id_reuse_policy: ::Temporalio::Api::Enums::V1::WorkflowIdReusePolicy::init, ?signal_name: ::String, ?signal_input: ::Temporalio::Api::Common::V1::Payloads::init?, ?control: ::String, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?cron_schedule: ::String, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?, ?header: ::Temporalio::Api::Common::V1::Header::init?, ?workflow_start_delay: ::Google::Protobuf::Duration::init?, ?skip_generate_workflow_task: bool) -> void
 
           def []: (:namespace) -> ::String
                 | (:workflow_id) -> ::String
@@ -3517,6 +3639,8 @@ module Temporalio
                 | (:memo) -> ::Temporalio::Api::Common::V1::Memo?
                 | (:search_attributes) -> ::Temporalio::Api::Common::V1::SearchAttributes?
                 | (:header) -> ::Temporalio::Api::Common::V1::Header?
+                | (:workflow_start_delay) -> ::Google::Protobuf::Duration?
+                | (:skip_generate_workflow_task) -> bool
                 | (::Symbol) -> untyped
 
           def []=: (:namespace, ::String) -> ::String
@@ -3550,7 +3674,12 @@ module Temporalio
                  | [M < ::Temporalio::Api::Common::V1::SearchAttributes::_ToProto] (:search_attributes, M?) -> M?
                  | (:header, ::Temporalio::Api::Common::V1::Header?) -> ::Temporalio::Api::Common::V1::Header?
                  | [M < ::Temporalio::Api::Common::V1::Header::_ToProto] (:header, M?) -> M?
+                 | (:workflow_start_delay, ::Google::Protobuf::Duration?) -> ::Google::Protobuf::Duration?
+                 | [M < ::Google::Protobuf::Duration::_ToProto] (:workflow_start_delay, M?) -> M?
+                 | (:skip_generate_workflow_task, bool) -> bool
                  | (::Symbol, untyped) -> untyped
+
+          def skip_generate_workflow_task?: () -> bool
 
           interface _ToProto
             def to_proto: () -> SignalWithStartWorkflowExecutionRequest
@@ -3638,11 +3767,11 @@ module Temporalio
 
           def request_id!: () -> ::String?
 
-          # Reset reapplay(replay) options.
+          # Reset reapply (replay) options.
           #
           attr_accessor reset_reapply_type(): ::Temporalio::Api::Enums::V1::ResetReapplyType
 
-          # Reset reapplay(replay) options.
+          # Reset reapply (replay) options.
           #
           def reset_reapply_type=: (::Temporalio::Api::Enums::V1::ResetReapplyType::values) -> ::Temporalio::Api::Enums::V1::ResetReapplyType::values
                                  | ...
@@ -4503,16 +4632,83 @@ module Temporalio
           #
           def self.encode: (CountWorkflowExecutionsResponse) -> String
 
+          class AggregationGroup < ::Protobuf::Message
+            # Encode the message to a binary string
+            #
+            def self.encode: (AggregationGroup) -> String
+
+            attr_accessor group_values(): ::Temporalio::Api::Common::V1::Payload::field_array
+
+            def group_values=: (::Temporalio::Api::Common::V1::Payload::array) -> ::Temporalio::Api::Common::V1::Payload::array
+                             | ...
+
+            def group_values!: () -> ::Temporalio::Api::Common::V1::Payload::field_array?
+
+            attr_accessor count(): ::Integer
+
+            def count!: () -> ::Integer?
+
+            def initialize: (?group_values: ::Temporalio::Api::Common::V1::Payload::array, ?count: ::Integer) -> void
+
+            def []: (:group_values) -> ::Temporalio::Api::Common::V1::Payload::field_array
+                  | (:count) -> ::Integer
+                  | (::Symbol) -> untyped
+
+            def []=: (:group_values, ::Temporalio::Api::Common::V1::Payload::field_array) -> ::Temporalio::Api::Common::V1::Payload::field_array
+                   | (:group_values, ::Temporalio::Api::Common::V1::Payload::array) -> ::Temporalio::Api::Common::V1::Payload::array
+                   | (:count, ::Integer) -> ::Integer
+                   | (::Symbol, untyped) -> untyped
+
+            interface _ToProto
+              def to_proto: () -> AggregationGroup
+            end
+
+            # The type of `#initialize` parameter.
+            type init = AggregationGroup | _ToProto
+
+            # The type of `repeated` field.
+            type field_array = ::Protobuf::Field::FieldArray[AggregationGroup, AggregationGroup | _ToProto]
+
+            # The type of `map` field.
+            type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, AggregationGroup, AggregationGroup | _ToProto]
+
+            type array = ::Array[AggregationGroup | _ToProto]
+
+            type hash[KEY] = ::Hash[KEY, AggregationGroup | _ToProto]
+          end
+
+          # If `query` is not grouping by any field, the count is an approximate number
+          #  of workflows that matches the query.
+          #  If `query` is grouping by a field, the count is simply the sum of the counts
+          #  of the groups returned in the response. This number can be smaller than the
+          #  total number of workflows matching the query.
+          #
           attr_accessor count(): ::Integer
 
           def count!: () -> ::Integer?
 
-          def initialize: (?count: ::Integer) -> void
+          # `groups` contains the groups if the request is grouping by a field.
+          #  The list might not be complete, and the counts of each group is approximate.
+          #
+          attr_accessor groups(): ::Temporalio::Api::WorkflowService::V1::CountWorkflowExecutionsResponse::AggregationGroup::field_array
+
+          # `groups` contains the groups if the request is grouping by a field.
+          #  The list might not be complete, and the counts of each group is approximate.
+          #
+          def groups=: (::Temporalio::Api::WorkflowService::V1::CountWorkflowExecutionsResponse::AggregationGroup::array) -> ::Temporalio::Api::WorkflowService::V1::CountWorkflowExecutionsResponse::AggregationGroup::array
+                     | ...
+
+          def groups!: () -> ::Temporalio::Api::WorkflowService::V1::CountWorkflowExecutionsResponse::AggregationGroup::field_array?
+
+          def initialize: (?count: ::Integer, ?groups: ::Temporalio::Api::WorkflowService::V1::CountWorkflowExecutionsResponse::AggregationGroup::array) -> void
 
           def []: (:count) -> ::Integer
+                | (:groups) -> ::Temporalio::Api::WorkflowService::V1::CountWorkflowExecutionsResponse::AggregationGroup::field_array
                 | (::Symbol) -> untyped
 
           def []=: (:count, ::Integer) -> ::Integer
+                 | (:groups, ::Temporalio::Api::WorkflowService::V1::CountWorkflowExecutionsResponse::AggregationGroup::field_array) -> ::Temporalio::Api::WorkflowService::V1::CountWorkflowExecutionsResponse::AggregationGroup::field_array
+                 | (:groups, ::Temporalio::Api::WorkflowService::V1::CountWorkflowExecutionsResponse::AggregationGroup::array) -> ::Temporalio::Api::WorkflowService::V1::CountWorkflowExecutionsResponse::AggregationGroup::array
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -5019,8 +5215,12 @@ module Temporalio
 
           def task_queue!: () -> ::Temporalio::Api::TaskQueue::V1::TaskQueue?
 
+          # If unspecified (TASK_QUEUE_TYPE_UNSPECIFIED), then default value (TASK_QUEUE_TYPE_WORKFLOW) will be used.
+          #
           attr_accessor task_queue_type(): ::Temporalio::Api::Enums::V1::TaskQueueType
 
+          # If unspecified (TASK_QUEUE_TYPE_UNSPECIFIED), then default value (TASK_QUEUE_TYPE_WORKFLOW) will be used.
+          #
           def task_queue_type=: (::Temporalio::Api::Enums::V1::TaskQueueType::values) -> ::Temporalio::Api::Enums::V1::TaskQueueType::values
                               | ...
 
@@ -5331,7 +5531,14 @@ module Temporalio
 
             def sdk_metadata!: () -> bool?
 
-            def initialize: (?signal_and_query_header: bool, ?internal_error_differentiation: bool, ?activity_failure_include_heartbeat: bool, ?supports_schedules: bool, ?encoded_failure_attributes: bool, ?build_id_based_versioning: bool, ?upsert_memo: bool, ?eager_workflow_start: bool, ?sdk_metadata: bool) -> void
+            # True if the server supports count group by execution status
+            #  (-- api-linter: core::0140::prepositions=disabled --)
+            #
+            attr_accessor count_group_by_execution_status(): bool
+
+            def count_group_by_execution_status!: () -> bool?
+
+            def initialize: (?signal_and_query_header: bool, ?internal_error_differentiation: bool, ?activity_failure_include_heartbeat: bool, ?supports_schedules: bool, ?encoded_failure_attributes: bool, ?build_id_based_versioning: bool, ?upsert_memo: bool, ?eager_workflow_start: bool, ?sdk_metadata: bool, ?count_group_by_execution_status: bool) -> void
 
             def []: (:signal_and_query_header) -> bool
                   | (:internal_error_differentiation) -> bool
@@ -5342,6 +5549,7 @@ module Temporalio
                   | (:upsert_memo) -> bool
                   | (:eager_workflow_start) -> bool
                   | (:sdk_metadata) -> bool
+                  | (:count_group_by_execution_status) -> bool
                   | (::Symbol) -> untyped
 
             def []=: (:signal_and_query_header, bool) -> bool
@@ -5353,6 +5561,7 @@ module Temporalio
                    | (:upsert_memo, bool) -> bool
                    | (:eager_workflow_start, bool) -> bool
                    | (:sdk_metadata, bool) -> bool
+                   | (:count_group_by_execution_status, bool) -> bool
                    | (::Symbol, untyped) -> untyped
 
             def signal_and_query_header?: () -> bool
@@ -5372,6 +5581,8 @@ module Temporalio
             def eager_workflow_start?: () -> bool
 
             def sdk_metadata?: () -> bool
+
+            def count_group_by_execution_status?: () -> bool
 
             interface _ToProto
               def to_proto: () -> Capabilities
@@ -6338,241 +6549,520 @@ module Temporalio
         end
 
         # (-- api-linter: core::0134::request-mask-required=disabled
-        #      aip.dev/not-precedent: UpdateWorkerBuildIdOrderingRequest doesn't follow Google API format --)
+        #      aip.dev/not-precedent: UpdateWorkerBuildIdCompatibilityRequest doesn't follow Google API format --)
         #  (-- api-linter: core::0134::request-resource-required=disabled
-        #      aip.dev/not-precedent: UpdateWorkerBuildIdOrderingRequest RPC doesn't follow Google API format. --)
+        #      aip.dev/not-precedent: UpdateWorkerBuildIdCompatibilityRequest RPC doesn't follow Google API format. --)
         #
-        class UpdateWorkerBuildIdOrderingRequest < ::Protobuf::Message
+        class UpdateWorkerBuildIdCompatibilityRequest < ::Protobuf::Message
           # Encode the message to a binary string
           #
-          def self.encode: (UpdateWorkerBuildIdOrderingRequest) -> String
+          def self.encode: (UpdateWorkerBuildIdCompatibilityRequest) -> String
+
+          class AddNewCompatibleVersion < ::Protobuf::Message
+            # Encode the message to a binary string
+            #
+            def self.encode: (AddNewCompatibleVersion) -> String
+
+            # A new id to be added to an existing compatible set.
+            #
+            attr_accessor new_build_id(): ::String
+
+            def new_build_id!: () -> ::String?
+
+            # A build id which must already exist in the version sets known by the task queue. The new
+            #  id will be stored in the set containing this id, marking it as compatible with
+            #  the versions within.
+            #
+            attr_accessor existing_compatible_build_id(): ::String
+
+            def existing_compatible_build_id!: () -> ::String?
+
+            # When set, establishes the compatible set being targeted as the overall default for the
+            #  queue. If a different set was the current default, the targeted set will replace it as
+            #  the new default.
+            #
+            attr_accessor make_set_default(): bool
+
+            def make_set_default!: () -> bool?
+
+            def initialize: (?new_build_id: ::String, ?existing_compatible_build_id: ::String, ?make_set_default: bool) -> void
+
+            def []: (:new_build_id) -> ::String
+                  | (:existing_compatible_build_id) -> ::String
+                  | (:make_set_default) -> bool
+                  | (::Symbol) -> untyped
+
+            def []=: (:new_build_id, ::String) -> ::String
+                   | (:existing_compatible_build_id, ::String) -> ::String
+                   | (:make_set_default, bool) -> bool
+                   | (::Symbol, untyped) -> untyped
+
+            def make_set_default?: () -> bool
+
+            interface _ToProto
+              def to_proto: () -> AddNewCompatibleVersion
+            end
+
+            # The type of `#initialize` parameter.
+            type init = AddNewCompatibleVersion | _ToProto
+
+            # The type of `repeated` field.
+            type field_array = ::Protobuf::Field::FieldArray[AddNewCompatibleVersion, AddNewCompatibleVersion | _ToProto]
+
+            # The type of `map` field.
+            type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, AddNewCompatibleVersion, AddNewCompatibleVersion | _ToProto]
+
+            type array = ::Array[AddNewCompatibleVersion | _ToProto]
+
+            type hash[KEY] = ::Hash[KEY, AddNewCompatibleVersion | _ToProto]
+          end
+
+          class MergeSets < ::Protobuf::Message
+            # Encode the message to a binary string
+            #
+            def self.encode: (MergeSets) -> String
+
+            # A build ID in the set whose default will become the merged set default
+            #
+            attr_accessor primary_set_build_id(): ::String
+
+            def primary_set_build_id!: () -> ::String?
+
+            # A build ID in the set which will be merged into the primary set
+            #
+            attr_accessor secondary_set_build_id(): ::String
+
+            def secondary_set_build_id!: () -> ::String?
+
+            def initialize: (?primary_set_build_id: ::String, ?secondary_set_build_id: ::String) -> void
+
+            def []: (:primary_set_build_id) -> ::String
+                  | (:secondary_set_build_id) -> ::String
+                  | (::Symbol) -> untyped
+
+            def []=: (:primary_set_build_id, ::String) -> ::String
+                   | (:secondary_set_build_id, ::String) -> ::String
+                   | (::Symbol, untyped) -> untyped
+
+            interface _ToProto
+              def to_proto: () -> MergeSets
+            end
+
+            # The type of `#initialize` parameter.
+            type init = MergeSets | _ToProto
+
+            # The type of `repeated` field.
+            type field_array = ::Protobuf::Field::FieldArray[MergeSets, MergeSets | _ToProto]
+
+            # The type of `map` field.
+            type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, MergeSets, MergeSets | _ToProto]
+
+            type array = ::Array[MergeSets | _ToProto]
+
+            type hash[KEY] = ::Hash[KEY, MergeSets | _ToProto]
+          end
 
           attr_accessor namespace(): ::String
 
           def namespace!: () -> ::String?
 
-          # Must be set, the task queue to apply changes to. Because all workers on
-          #  a given task queue must have the same set of workflow & activity
-          #  implementations, there is no reason to specify a task queue type here.
+          # Must be set, the task queue to apply changes to. Because all workers on a given task queue
+          #  must have the same set of workflow & activity implementations, there is no reason to specify
+          #  a task queue type here.
           #
           attr_accessor task_queue(): ::String
 
           def task_queue!: () -> ::String?
 
-          # The version id we are targeting.
+          # A new build id. This operation will create a new set which will be the new overall
+          #  default version for the queue, with this id as its only member. This new set is
+          #  incompatible with all previous sets/versions.
           #
-          attr_accessor version_id(): ::Temporalio::Api::TaskQueue::V1::VersionId?
+          #  (-- api-linter: core::0140::prepositions=disabled
+          #      aip.dev/not-precedent: In makes perfect sense here. --)
+          #
+          attr_accessor add_new_build_id_in_new_default_set(): ::String
 
-          # The version id we are targeting.
+          def add_new_build_id_in_new_default_set!: () -> ::String?
+
+          # Adds a new id to an existing compatible set, see sub-message definition for more.
           #
-          def version_id=: [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (M?) -> M?
+          attr_accessor add_new_compatible_build_id(): ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::AddNewCompatibleVersion?
+
+          # Adds a new id to an existing compatible set, see sub-message definition for more.
+          #
+          def add_new_compatible_build_id=: [M < ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::AddNewCompatibleVersion::_ToProto] (M?) -> M?
+                                          | ...
+
+          def add_new_compatible_build_id!: () -> ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::AddNewCompatibleVersion?
+
+          # Promote an existing set to be the current default (if it isn't already) by targeting
+          #  an existing build id within it. This field's value is the extant build id.
+          #
+          #  (-- api-linter: core::0140::prepositions=disabled
+          #      aip.dev/not-precedent: Names are hard. --)
+          #
+          attr_accessor promote_set_by_build_id(): ::String
+
+          def promote_set_by_build_id!: () -> ::String?
+
+          # Promote an existing build id within some set to be the current default for that set.
+          #
+          #  (-- api-linter: core::0140::prepositions=disabled
+          #      aip.dev/not-precedent: Within makes perfect sense here. --)
+          #
+          attr_accessor promote_build_id_within_set(): ::String
+
+          def promote_build_id_within_set!: () -> ::String?
+
+          # Merge two existing sets together, thus declaring all build IDs in both sets compatible
+          #  with one another. The primary set's default will become the default for the merged set.
+          #  This is useful if you've accidentally declared a new ID as incompatible you meant to
+          #  declare as compatible. The unusual case of incomplete replication during failover could
+          #  also result in a split set, which this operation can repair.
+          #
+          attr_accessor merge_sets(): ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::MergeSets?
+
+          # Merge two existing sets together, thus declaring all build IDs in both sets compatible
+          #  with one another. The primary set's default will become the default for the merged set.
+          #  This is useful if you've accidentally declared a new ID as incompatible you meant to
+          #  declare as compatible. The unusual case of incomplete replication during failover could
+          #  also result in a split set, which this operation can repair.
+          #
+          def merge_sets=: [M < ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::MergeSets::_ToProto] (M?) -> M?
                          | ...
 
-          def version_id!: () -> ::Temporalio::Api::TaskQueue::V1::VersionId?
+          def merge_sets!: () -> ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::MergeSets?
 
-          # When set, indicates that the `version_id` in this message is compatible
-          #  with the one specified in this field. Because compatability should form
-          #  a DAG, any build id can only be the "next compatible" version for one
-          #  other ID of a certain type at a time, and any setting which would create a cycle is invalid.
-          #
-          attr_accessor previous_compatible(): ::Temporalio::Api::TaskQueue::V1::VersionId?
-
-          # When set, indicates that the `version_id` in this message is compatible
-          #  with the one specified in this field. Because compatability should form
-          #  a DAG, any build id can only be the "next compatible" version for one
-          #  other ID of a certain type at a time, and any setting which would create a cycle is invalid.
-          #
-          def previous_compatible=: [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (M?) -> M?
-                                  | ...
-
-          def previous_compatible!: () -> ::Temporalio::Api::TaskQueue::V1::VersionId?
-
-          # When set, establishes the specified `version_id` as the default of it's type
-          #  for the queue. Workers matching it will begin processing new workflow executions.
-          #  The existing default will be marked as a previous incompatible version
-          #  to this one, assuming it is not also in `is_compatible_with`.
-          #
-          attr_accessor become_default(): bool
-
-          def become_default!: () -> bool?
-
-          def initialize: (?namespace: ::String, ?task_queue: ::String, ?version_id: ::Temporalio::Api::TaskQueue::V1::VersionId::init?, ?previous_compatible: ::Temporalio::Api::TaskQueue::V1::VersionId::init?, ?become_default: bool) -> void
+          def initialize: (?namespace: ::String, ?task_queue: ::String, ?add_new_build_id_in_new_default_set: ::String, ?add_new_compatible_build_id: ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::AddNewCompatibleVersion::init?, ?promote_set_by_build_id: ::String, ?promote_build_id_within_set: ::String, ?merge_sets: ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::MergeSets::init?) -> void
 
           def []: (:namespace) -> ::String
                 | (:task_queue) -> ::String
-                | (:version_id) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
-                | (:previous_compatible) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
-                | (:become_default) -> bool
+                | (:add_new_build_id_in_new_default_set) -> ::String
+                | (:add_new_compatible_build_id) -> ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::AddNewCompatibleVersion?
+                | (:promote_set_by_build_id) -> ::String
+                | (:promote_build_id_within_set) -> ::String
+                | (:merge_sets) -> ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::MergeSets?
                 | (::Symbol) -> untyped
 
           def []=: (:namespace, ::String) -> ::String
                  | (:task_queue, ::String) -> ::String
-                 | (:version_id, ::Temporalio::Api::TaskQueue::V1::VersionId?) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
-                 | [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (:version_id, M?) -> M?
-                 | (:previous_compatible, ::Temporalio::Api::TaskQueue::V1::VersionId?) -> ::Temporalio::Api::TaskQueue::V1::VersionId?
-                 | [M < ::Temporalio::Api::TaskQueue::V1::VersionId::_ToProto] (:previous_compatible, M?) -> M?
-                 | (:become_default, bool) -> bool
+                 | (:add_new_build_id_in_new_default_set, ::String) -> ::String
+                 | (:add_new_compatible_build_id, ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::AddNewCompatibleVersion?) -> ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::AddNewCompatibleVersion?
+                 | [M < ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::AddNewCompatibleVersion::_ToProto] (:add_new_compatible_build_id, M?) -> M?
+                 | (:promote_set_by_build_id, ::String) -> ::String
+                 | (:promote_build_id_within_set, ::String) -> ::String
+                 | (:merge_sets, ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::MergeSets?) -> ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::MergeSets?
+                 | [M < ::Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest::MergeSets::_ToProto] (:merge_sets, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
-          def become_default?: () -> bool
-
           interface _ToProto
-            def to_proto: () -> UpdateWorkerBuildIdOrderingRequest
+            def to_proto: () -> UpdateWorkerBuildIdCompatibilityRequest
           end
 
           # The type of `#initialize` parameter.
-          type init = UpdateWorkerBuildIdOrderingRequest | _ToProto
+          type init = UpdateWorkerBuildIdCompatibilityRequest | _ToProto
 
           # The type of `repeated` field.
-          type field_array = ::Protobuf::Field::FieldArray[UpdateWorkerBuildIdOrderingRequest, UpdateWorkerBuildIdOrderingRequest | _ToProto]
+          type field_array = ::Protobuf::Field::FieldArray[UpdateWorkerBuildIdCompatibilityRequest, UpdateWorkerBuildIdCompatibilityRequest | _ToProto]
 
           # The type of `map` field.
-          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, UpdateWorkerBuildIdOrderingRequest, UpdateWorkerBuildIdOrderingRequest | _ToProto]
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, UpdateWorkerBuildIdCompatibilityRequest, UpdateWorkerBuildIdCompatibilityRequest | _ToProto]
 
-          type array = ::Array[UpdateWorkerBuildIdOrderingRequest | _ToProto]
+          type array = ::Array[UpdateWorkerBuildIdCompatibilityRequest | _ToProto]
 
-          type hash[KEY] = ::Hash[KEY, UpdateWorkerBuildIdOrderingRequest | _ToProto]
+          type hash[KEY] = ::Hash[KEY, UpdateWorkerBuildIdCompatibilityRequest | _ToProto]
         end
 
-        class UpdateWorkerBuildIdOrderingResponse < ::Protobuf::Message
+        class UpdateWorkerBuildIdCompatibilityResponse < ::Protobuf::Message
           # Encode the message to a binary string
           #
-          def self.encode: (UpdateWorkerBuildIdOrderingResponse) -> String
+          def self.encode: (UpdateWorkerBuildIdCompatibilityResponse) -> String
 
           def initialize: () -> void
 
           interface _ToProto
-            def to_proto: () -> UpdateWorkerBuildIdOrderingResponse
+            def to_proto: () -> UpdateWorkerBuildIdCompatibilityResponse
           end
 
           # The type of `#initialize` parameter.
-          type init = UpdateWorkerBuildIdOrderingResponse | _ToProto
+          type init = UpdateWorkerBuildIdCompatibilityResponse | _ToProto
 
           # The type of `repeated` field.
-          type field_array = ::Protobuf::Field::FieldArray[UpdateWorkerBuildIdOrderingResponse, UpdateWorkerBuildIdOrderingResponse | _ToProto]
+          type field_array = ::Protobuf::Field::FieldArray[UpdateWorkerBuildIdCompatibilityResponse, UpdateWorkerBuildIdCompatibilityResponse | _ToProto]
 
           # The type of `map` field.
-          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, UpdateWorkerBuildIdOrderingResponse, UpdateWorkerBuildIdOrderingResponse | _ToProto]
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, UpdateWorkerBuildIdCompatibilityResponse, UpdateWorkerBuildIdCompatibilityResponse | _ToProto]
 
-          type array = ::Array[UpdateWorkerBuildIdOrderingResponse | _ToProto]
+          type array = ::Array[UpdateWorkerBuildIdCompatibilityResponse | _ToProto]
 
-          type hash[KEY] = ::Hash[KEY, UpdateWorkerBuildIdOrderingResponse | _ToProto]
+          type hash[KEY] = ::Hash[KEY, UpdateWorkerBuildIdCompatibilityResponse | _ToProto]
         end
 
         # (-- api-linter: core::0134::request-resource-required=disabled
-        #      aip.dev/not-precedent: GetWorkerBuildIdOrderingRequest RPC doesn't follow Google API format. --)
+        #      aip.dev/not-precedent: GetWorkerBuildIdCompatibilityRequest RPC doesn't follow Google API format. --)
         #
-        class GetWorkerBuildIdOrderingRequest < ::Protobuf::Message
+        class GetWorkerBuildIdCompatibilityRequest < ::Protobuf::Message
           # Encode the message to a binary string
           #
-          def self.encode: (GetWorkerBuildIdOrderingRequest) -> String
+          def self.encode: (GetWorkerBuildIdCompatibilityRequest) -> String
 
           attr_accessor namespace(): ::String
 
           def namespace!: () -> ::String?
 
-          # Must be set, the task queue to interrogate about worker id ordering
+          # Must be set, the task queue to interrogate about worker id compatibility.
           #
           attr_accessor task_queue(): ::String
 
           def task_queue!: () -> ::String?
 
-          # Limits how deep the returned DAG will go. 1 will return only the
-          #  default build id. A default/0 value will return the entire graph.
+          # Limits how many compatible sets will be returned. Specify 1 to only return the current
+          #  default major version set. 0 returns all sets.
           #
-          attr_accessor max_depth(): ::Integer
+          attr_accessor max_sets(): ::Integer
 
-          def max_depth!: () -> ::Integer?
+          def max_sets!: () -> ::Integer?
 
-          def initialize: (?namespace: ::String, ?task_queue: ::String, ?max_depth: ::Integer) -> void
+          def initialize: (?namespace: ::String, ?task_queue: ::String, ?max_sets: ::Integer) -> void
 
           def []: (:namespace) -> ::String
                 | (:task_queue) -> ::String
-                | (:max_depth) -> ::Integer
+                | (:max_sets) -> ::Integer
                 | (::Symbol) -> untyped
 
           def []=: (:namespace, ::String) -> ::String
                  | (:task_queue, ::String) -> ::String
-                 | (:max_depth, ::Integer) -> ::Integer
+                 | (:max_sets, ::Integer) -> ::Integer
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
-            def to_proto: () -> GetWorkerBuildIdOrderingRequest
+            def to_proto: () -> GetWorkerBuildIdCompatibilityRequest
           end
 
           # The type of `#initialize` parameter.
-          type init = GetWorkerBuildIdOrderingRequest | _ToProto
+          type init = GetWorkerBuildIdCompatibilityRequest | _ToProto
 
           # The type of `repeated` field.
-          type field_array = ::Protobuf::Field::FieldArray[GetWorkerBuildIdOrderingRequest, GetWorkerBuildIdOrderingRequest | _ToProto]
+          type field_array = ::Protobuf::Field::FieldArray[GetWorkerBuildIdCompatibilityRequest, GetWorkerBuildIdCompatibilityRequest | _ToProto]
 
           # The type of `map` field.
-          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, GetWorkerBuildIdOrderingRequest, GetWorkerBuildIdOrderingRequest | _ToProto]
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, GetWorkerBuildIdCompatibilityRequest, GetWorkerBuildIdCompatibilityRequest | _ToProto]
 
-          type array = ::Array[GetWorkerBuildIdOrderingRequest | _ToProto]
+          type array = ::Array[GetWorkerBuildIdCompatibilityRequest | _ToProto]
 
-          type hash[KEY] = ::Hash[KEY, GetWorkerBuildIdOrderingRequest | _ToProto]
+          type hash[KEY] = ::Hash[KEY, GetWorkerBuildIdCompatibilityRequest | _ToProto]
         end
 
-        class GetWorkerBuildIdOrderingResponse < ::Protobuf::Message
+        class GetWorkerBuildIdCompatibilityResponse < ::Protobuf::Message
           # Encode the message to a binary string
           #
-          def self.encode: (GetWorkerBuildIdOrderingResponse) -> String
+          def self.encode: (GetWorkerBuildIdCompatibilityResponse) -> String
 
-          # The currently established default version
+          # Major version sets, in order from oldest to newest. The last element of the list will always
+          #  be the current default major version. IE: New workflows will target the most recent version
+          #  in that version set.
           #
-          attr_accessor current_default(): ::Temporalio::Api::TaskQueue::V1::VersionIdNode?
-
-          # The currently established default version
+          #  There may be fewer sets returned than exist, if the request chose to limit this response.
           #
-          def current_default=: [M < ::Temporalio::Api::TaskQueue::V1::VersionIdNode::_ToProto] (M?) -> M?
-                              | ...
+          attr_accessor major_version_sets(): ::Temporalio::Api::TaskQueue::V1::CompatibleVersionSet::field_array
 
-          def current_default!: () -> ::Temporalio::Api::TaskQueue::V1::VersionIdNode?
-
-          # Other current latest-compatible versions who are not the overall default. These are the
-          #  versions that will be used when generating new tasks by following the graph from the
-          #  version of the last task out to a leaf.
+          # Major version sets, in order from oldest to newest. The last element of the list will always
+          #  be the current default major version. IE: New workflows will target the most recent version
+          #  in that version set.
           #
-          attr_accessor compatible_leaves(): ::Temporalio::Api::TaskQueue::V1::VersionIdNode::field_array
-
-          # Other current latest-compatible versions who are not the overall default. These are the
-          #  versions that will be used when generating new tasks by following the graph from the
-          #  version of the last task out to a leaf.
+          #  There may be fewer sets returned than exist, if the request chose to limit this response.
           #
-          def compatible_leaves=: (::Temporalio::Api::TaskQueue::V1::VersionIdNode::array) -> ::Temporalio::Api::TaskQueue::V1::VersionIdNode::array
-                                | ...
+          def major_version_sets=: (::Temporalio::Api::TaskQueue::V1::CompatibleVersionSet::array) -> ::Temporalio::Api::TaskQueue::V1::CompatibleVersionSet::array
+                                 | ...
 
-          def compatible_leaves!: () -> ::Temporalio::Api::TaskQueue::V1::VersionIdNode::field_array?
+          def major_version_sets!: () -> ::Temporalio::Api::TaskQueue::V1::CompatibleVersionSet::field_array?
 
-          def initialize: (?current_default: ::Temporalio::Api::TaskQueue::V1::VersionIdNode::init?, ?compatible_leaves: ::Temporalio::Api::TaskQueue::V1::VersionIdNode::array) -> void
+          def initialize: (?major_version_sets: ::Temporalio::Api::TaskQueue::V1::CompatibleVersionSet::array) -> void
 
-          def []: (:current_default) -> ::Temporalio::Api::TaskQueue::V1::VersionIdNode?
-                | (:compatible_leaves) -> ::Temporalio::Api::TaskQueue::V1::VersionIdNode::field_array
+          def []: (:major_version_sets) -> ::Temporalio::Api::TaskQueue::V1::CompatibleVersionSet::field_array
                 | (::Symbol) -> untyped
 
-          def []=: (:current_default, ::Temporalio::Api::TaskQueue::V1::VersionIdNode?) -> ::Temporalio::Api::TaskQueue::V1::VersionIdNode?
-                 | [M < ::Temporalio::Api::TaskQueue::V1::VersionIdNode::_ToProto] (:current_default, M?) -> M?
-                 | (:compatible_leaves, ::Temporalio::Api::TaskQueue::V1::VersionIdNode::field_array) -> ::Temporalio::Api::TaskQueue::V1::VersionIdNode::field_array
-                 | (:compatible_leaves, ::Temporalio::Api::TaskQueue::V1::VersionIdNode::array) -> ::Temporalio::Api::TaskQueue::V1::VersionIdNode::array
+          def []=: (:major_version_sets, ::Temporalio::Api::TaskQueue::V1::CompatibleVersionSet::field_array) -> ::Temporalio::Api::TaskQueue::V1::CompatibleVersionSet::field_array
+                 | (:major_version_sets, ::Temporalio::Api::TaskQueue::V1::CompatibleVersionSet::array) -> ::Temporalio::Api::TaskQueue::V1::CompatibleVersionSet::array
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
-            def to_proto: () -> GetWorkerBuildIdOrderingResponse
+            def to_proto: () -> GetWorkerBuildIdCompatibilityResponse
           end
 
           # The type of `#initialize` parameter.
-          type init = GetWorkerBuildIdOrderingResponse | _ToProto
+          type init = GetWorkerBuildIdCompatibilityResponse | _ToProto
 
           # The type of `repeated` field.
-          type field_array = ::Protobuf::Field::FieldArray[GetWorkerBuildIdOrderingResponse, GetWorkerBuildIdOrderingResponse | _ToProto]
+          type field_array = ::Protobuf::Field::FieldArray[GetWorkerBuildIdCompatibilityResponse, GetWorkerBuildIdCompatibilityResponse | _ToProto]
 
           # The type of `map` field.
-          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, GetWorkerBuildIdOrderingResponse, GetWorkerBuildIdOrderingResponse | _ToProto]
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, GetWorkerBuildIdCompatibilityResponse, GetWorkerBuildIdCompatibilityResponse | _ToProto]
 
-          type array = ::Array[GetWorkerBuildIdOrderingResponse | _ToProto]
+          type array = ::Array[GetWorkerBuildIdCompatibilityResponse | _ToProto]
 
-          type hash[KEY] = ::Hash[KEY, GetWorkerBuildIdOrderingResponse | _ToProto]
+          type hash[KEY] = ::Hash[KEY, GetWorkerBuildIdCompatibilityResponse | _ToProto]
+        end
+
+        class GetWorkerTaskReachabilityRequest < ::Protobuf::Message
+          # Encode the message to a binary string
+          #
+          def self.encode: (GetWorkerTaskReachabilityRequest) -> String
+
+          attr_accessor namespace(): ::String
+
+          def namespace!: () -> ::String?
+
+          # Build ids to retrieve reachability for. An empty string will be interpreted as an unversioned worker.
+          #  The number of build ids that can be queried in a single API call is limited.
+          #  Open source users can adjust this limit by setting the server's dynamic config value for
+          #  `limit.reachabilityQueryBuildIds` with the caveat that this call can strain the visibility store.
+          #
+          attr_accessor build_ids(): ::Protobuf::field_array[::String]
+
+          # Build ids to retrieve reachability for. An empty string will be interpreted as an unversioned worker.
+          #  The number of build ids that can be queried in a single API call is limited.
+          #  Open source users can adjust this limit by setting the server's dynamic config value for
+          #  `limit.reachabilityQueryBuildIds` with the caveat that this call can strain the visibility store.
+          #
+          def build_ids=: (::Array[::String]) -> ::Array[::String]
+                        | ...
+
+          def build_ids!: () -> ::Protobuf::field_array[::String]?
+
+          # Task queues to retrieve reachability for. Leave this empty to query for all task queues associated with given
+          #  build ids in the namespace.
+          #  Must specify at least one task queue if querying for an unversioned worker.
+          #  The number of task queues that the server will fetch reachability information for is limited.
+          #  See the `GetWorkerTaskReachabilityResponse` documentation for more information.
+          #
+          attr_accessor task_queues(): ::Protobuf::field_array[::String]
+
+          # Task queues to retrieve reachability for. Leave this empty to query for all task queues associated with given
+          #  build ids in the namespace.
+          #  Must specify at least one task queue if querying for an unversioned worker.
+          #  The number of task queues that the server will fetch reachability information for is limited.
+          #  See the `GetWorkerTaskReachabilityResponse` documentation for more information.
+          #
+          def task_queues=: (::Array[::String]) -> ::Array[::String]
+                          | ...
+
+          def task_queues!: () -> ::Protobuf::field_array[::String]?
+
+          # Type of reachability to query for.
+          #  `TASK_REACHABILITY_NEW_WORKFLOWS` is always returned in the response.
+          #  Use `TASK_REACHABILITY_EXISTING_WORKFLOWS` if your application needs to respond to queries on closed workflows.
+          #  Otherwise, use `TASK_REACHABILITY_OPEN_WORKFLOWS`. Default is `TASK_REACHABILITY_EXISTING_WORKFLOWS` if left
+          #  unspecified.
+          #  See the TaskReachability docstring for information about each enum variant.
+          #
+          attr_accessor reachability(): ::Temporalio::Api::Enums::V1::TaskReachability
+
+          # Type of reachability to query for.
+          #  `TASK_REACHABILITY_NEW_WORKFLOWS` is always returned in the response.
+          #  Use `TASK_REACHABILITY_EXISTING_WORKFLOWS` if your application needs to respond to queries on closed workflows.
+          #  Otherwise, use `TASK_REACHABILITY_OPEN_WORKFLOWS`. Default is `TASK_REACHABILITY_EXISTING_WORKFLOWS` if left
+          #  unspecified.
+          #  See the TaskReachability docstring for information about each enum variant.
+          #
+          def reachability=: (::Temporalio::Api::Enums::V1::TaskReachability::values) -> ::Temporalio::Api::Enums::V1::TaskReachability::values
+                           | ...
+
+          def reachability!: () -> ::Temporalio::Api::Enums::V1::TaskReachability?
+
+          def initialize: (?namespace: ::String, ?build_ids: ::Array[::String], ?task_queues: ::Array[::String], ?reachability: ::Temporalio::Api::Enums::V1::TaskReachability::init) -> void
+
+          def []: (:namespace) -> ::String
+                | (:build_ids) -> ::Protobuf::field_array[::String]
+                | (:task_queues) -> ::Protobuf::field_array[::String]
+                | (:reachability) -> ::Temporalio::Api::Enums::V1::TaskReachability
+                | (::Symbol) -> untyped
+
+          def []=: (:namespace, ::String) -> ::String
+                 | (:build_ids, ::Protobuf::field_array[::String]) -> ::Protobuf::field_array[::String]
+                 | (:build_ids, ::Array[::String]) -> ::Array[::String]
+                 | (:task_queues, ::Protobuf::field_array[::String]) -> ::Protobuf::field_array[::String]
+                 | (:task_queues, ::Array[::String]) -> ::Array[::String]
+                 | (:reachability, ::Temporalio::Api::Enums::V1::TaskReachability) -> ::Temporalio::Api::Enums::V1::TaskReachability
+                 | (:reachability, ::Temporalio::Api::Enums::V1::TaskReachability::values) -> ::Temporalio::Api::Enums::V1::TaskReachability::values
+                 | (::Symbol, untyped) -> untyped
+
+          interface _ToProto
+            def to_proto: () -> GetWorkerTaskReachabilityRequest
+          end
+
+          # The type of `#initialize` parameter.
+          type init = GetWorkerTaskReachabilityRequest | _ToProto
+
+          # The type of `repeated` field.
+          type field_array = ::Protobuf::Field::FieldArray[GetWorkerTaskReachabilityRequest, GetWorkerTaskReachabilityRequest | _ToProto]
+
+          # The type of `map` field.
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, GetWorkerTaskReachabilityRequest, GetWorkerTaskReachabilityRequest | _ToProto]
+
+          type array = ::Array[GetWorkerTaskReachabilityRequest | _ToProto]
+
+          type hash[KEY] = ::Hash[KEY, GetWorkerTaskReachabilityRequest | _ToProto]
+        end
+
+        class GetWorkerTaskReachabilityResponse < ::Protobuf::Message
+          # Encode the message to a binary string
+          #
+          def self.encode: (GetWorkerTaskReachabilityResponse) -> String
+
+          # Task reachability, broken down by build id and then task queue.
+          #  When requesting a large number of task queues or all task queues associated with the given build ids in a
+          #  namespace, all task queues will be listed in the response but some of them may not contain reachability
+          #  information due to a server enforced limit. When reaching the limit, task queues that reachability information
+          #  could not be retrieved for will be marked with a single TASK_REACHABILITY_UNSPECIFIED entry. The caller may issue
+          #  another call to get the reachability for those task queues.
+          #
+          #  Open source users can adjust this limit by setting the server's dynamic config value for
+          #  `limit.reachabilityTaskQueueScan` with the caveat that this call can strain the visibility store.
+          #
+          attr_accessor build_id_reachability(): ::Temporalio::Api::TaskQueue::V1::BuildIdReachability::field_array
+
+          # Task reachability, broken down by build id and then task queue.
+          #  When requesting a large number of task queues or all task queues associated with the given build ids in a
+          #  namespace, all task queues will be listed in the response but some of them may not contain reachability
+          #  information due to a server enforced limit. When reaching the limit, task queues that reachability information
+          #  could not be retrieved for will be marked with a single TASK_REACHABILITY_UNSPECIFIED entry. The caller may issue
+          #  another call to get the reachability for those task queues.
+          #
+          #  Open source users can adjust this limit by setting the server's dynamic config value for
+          #  `limit.reachabilityTaskQueueScan` with the caveat that this call can strain the visibility store.
+          #
+          def build_id_reachability=: (::Temporalio::Api::TaskQueue::V1::BuildIdReachability::array) -> ::Temporalio::Api::TaskQueue::V1::BuildIdReachability::array
+                                    | ...
+
+          def build_id_reachability!: () -> ::Temporalio::Api::TaskQueue::V1::BuildIdReachability::field_array?
+
+          def initialize: (?build_id_reachability: ::Temporalio::Api::TaskQueue::V1::BuildIdReachability::array) -> void
+
+          def []: (:build_id_reachability) -> ::Temporalio::Api::TaskQueue::V1::BuildIdReachability::field_array
+                | (::Symbol) -> untyped
+
+          def []=: (:build_id_reachability, ::Temporalio::Api::TaskQueue::V1::BuildIdReachability::field_array) -> ::Temporalio::Api::TaskQueue::V1::BuildIdReachability::field_array
+                 | (:build_id_reachability, ::Temporalio::Api::TaskQueue::V1::BuildIdReachability::array) -> ::Temporalio::Api::TaskQueue::V1::BuildIdReachability::array
+                 | (::Symbol, untyped) -> untyped
+
+          interface _ToProto
+            def to_proto: () -> GetWorkerTaskReachabilityResponse
+          end
+
+          # The type of `#initialize` parameter.
+          type init = GetWorkerTaskReachabilityResponse | _ToProto
+
+          # The type of `repeated` field.
+          type field_array = ::Protobuf::Field::FieldArray[GetWorkerTaskReachabilityResponse, GetWorkerTaskReachabilityResponse | _ToProto]
+
+          # The type of `map` field.
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, GetWorkerTaskReachabilityResponse, GetWorkerTaskReachabilityResponse | _ToProto]
+
+          type array = ::Array[GetWorkerTaskReachabilityResponse | _ToProto]
+
+          type hash[KEY] = ::Hash[KEY, GetWorkerTaskReachabilityResponse | _ToProto]
         end
 
         # (-- api-linter: core::0134=disabled
@@ -6706,16 +7196,48 @@ module Temporalio
 
           def outcome!: () -> ::Temporalio::Api::Update::V1::Outcome?
 
-          def initialize: (?update_ref: ::Temporalio::Api::Update::V1::UpdateRef::init?, ?outcome: ::Temporalio::Api::Update::V1::Outcome::init?) -> void
+          # The most advanced lifecycle stage that the Update is known to have
+          #  reached, where lifecycle stages are ordered
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_UNSPECIFIED <
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_ADMITTED <
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_ACCEPTED <
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_COMPLETED.
+          #  UNSPECIFIED will be returned if and only if the server's maximum wait
+          #  time was reached before the Update reached the stage specified in the
+          #  request WaitPolicy, and before the context deadline expired; clients may
+          #  may then retry the call as needed.
+          #
+          attr_accessor stage(): ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage
+
+          # The most advanced lifecycle stage that the Update is known to have
+          #  reached, where lifecycle stages are ordered
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_UNSPECIFIED <
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_ADMITTED <
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_ACCEPTED <
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_COMPLETED.
+          #  UNSPECIFIED will be returned if and only if the server's maximum wait
+          #  time was reached before the Update reached the stage specified in the
+          #  request WaitPolicy, and before the context deadline expired; clients may
+          #  may then retry the call as needed.
+          #
+          def stage=: (::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage::values) -> ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage::values
+                    | ...
+
+          def stage!: () -> ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage?
+
+          def initialize: (?update_ref: ::Temporalio::Api::Update::V1::UpdateRef::init?, ?outcome: ::Temporalio::Api::Update::V1::Outcome::init?, ?stage: ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage::init) -> void
 
           def []: (:update_ref) -> ::Temporalio::Api::Update::V1::UpdateRef?
                 | (:outcome) -> ::Temporalio::Api::Update::V1::Outcome?
+                | (:stage) -> ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage
                 | (::Symbol) -> untyped
 
           def []=: (:update_ref, ::Temporalio::Api::Update::V1::UpdateRef?) -> ::Temporalio::Api::Update::V1::UpdateRef?
                  | [M < ::Temporalio::Api::Update::V1::UpdateRef::_ToProto] (:update_ref, M?) -> M?
                  | (:outcome, ::Temporalio::Api::Update::V1::Outcome?) -> ::Temporalio::Api::Update::V1::Outcome?
                  | [M < ::Temporalio::Api::Update::V1::Outcome::_ToProto] (:outcome, M?) -> M?
+                 | (:stage, ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage) -> ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage
+                 | (:stage, ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage::values) -> ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage::values
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -6748,7 +7270,7 @@ module Temporalio
           def namespace!: () -> ::String?
 
           # Visibility query defines the the group of workflow to apply the batch operation
-          #  This field and Executions are mutually exclusive
+          #  This field and `executions` are mutually exclusive
           #
           attr_accessor visibility_query(): ::String
 
@@ -6767,17 +7289,28 @@ module Temporalio
           def reason!: () -> ::String?
 
           # Executions to apply the batch operation
-          #  This field and VisibilityQuery are mutually exclusive
+          #  This field and `visibility_query` are mutually exclusive
           #
           attr_accessor executions(): ::Temporalio::Api::Common::V1::WorkflowExecution::field_array
 
           # Executions to apply the batch operation
-          #  This field and VisibilityQuery are mutually exclusive
+          #  This field and `visibility_query` are mutually exclusive
           #
           def executions=: (::Temporalio::Api::Common::V1::WorkflowExecution::array) -> ::Temporalio::Api::Common::V1::WorkflowExecution::array
                          | ...
 
           def executions!: () -> ::Temporalio::Api::Common::V1::WorkflowExecution::field_array?
+
+          # Limit for the number of operations processed per second within this batch.
+          #  Its purpose is to reduce the stress on the system caused by batch operations, which helps to prevent system
+          #  overload and minimize potential delays in executing ongoing tasks for user workers.
+          #  Note that when no explicit limit is provided, the server will operate according to its limit defined by the
+          #  dynamic configuration key `worker.batcherRPS`. This also applies if the value in this field exceeds the
+          #  server's configured limit.
+          #
+          attr_accessor max_operations_per_second(): ::Float
+
+          def max_operations_per_second!: () -> ::Float?
 
           attr_accessor termination_operation(): ::Temporalio::Api::Batch::V1::BatchOperationTermination?
 
@@ -6807,17 +7340,26 @@ module Temporalio
 
           def deletion_operation!: () -> ::Temporalio::Api::Batch::V1::BatchOperationDeletion?
 
-          def initialize: (?namespace: ::String, ?visibility_query: ::String, ?job_id: ::String, ?reason: ::String, ?executions: ::Temporalio::Api::Common::V1::WorkflowExecution::array, ?termination_operation: ::Temporalio::Api::Batch::V1::BatchOperationTermination::init?, ?signal_operation: ::Temporalio::Api::Batch::V1::BatchOperationSignal::init?, ?cancellation_operation: ::Temporalio::Api::Batch::V1::BatchOperationCancellation::init?, ?deletion_operation: ::Temporalio::Api::Batch::V1::BatchOperationDeletion::init?) -> void
+          attr_accessor reset_operation(): ::Temporalio::Api::Batch::V1::BatchOperationReset?
+
+          def reset_operation=: [M < ::Temporalio::Api::Batch::V1::BatchOperationReset::_ToProto] (M?) -> M?
+                              | ...
+
+          def reset_operation!: () -> ::Temporalio::Api::Batch::V1::BatchOperationReset?
+
+          def initialize: (?namespace: ::String, ?visibility_query: ::String, ?job_id: ::String, ?reason: ::String, ?executions: ::Temporalio::Api::Common::V1::WorkflowExecution::array, ?max_operations_per_second: ::Float, ?termination_operation: ::Temporalio::Api::Batch::V1::BatchOperationTermination::init?, ?signal_operation: ::Temporalio::Api::Batch::V1::BatchOperationSignal::init?, ?cancellation_operation: ::Temporalio::Api::Batch::V1::BatchOperationCancellation::init?, ?deletion_operation: ::Temporalio::Api::Batch::V1::BatchOperationDeletion::init?, ?reset_operation: ::Temporalio::Api::Batch::V1::BatchOperationReset::init?) -> void
 
           def []: (:namespace) -> ::String
                 | (:visibility_query) -> ::String
                 | (:job_id) -> ::String
                 | (:reason) -> ::String
                 | (:executions) -> ::Temporalio::Api::Common::V1::WorkflowExecution::field_array
+                | (:max_operations_per_second) -> ::Float
                 | (:termination_operation) -> ::Temporalio::Api::Batch::V1::BatchOperationTermination?
                 | (:signal_operation) -> ::Temporalio::Api::Batch::V1::BatchOperationSignal?
                 | (:cancellation_operation) -> ::Temporalio::Api::Batch::V1::BatchOperationCancellation?
                 | (:deletion_operation) -> ::Temporalio::Api::Batch::V1::BatchOperationDeletion?
+                | (:reset_operation) -> ::Temporalio::Api::Batch::V1::BatchOperationReset?
                 | (::Symbol) -> untyped
 
           def []=: (:namespace, ::String) -> ::String
@@ -6826,6 +7368,7 @@ module Temporalio
                  | (:reason, ::String) -> ::String
                  | (:executions, ::Temporalio::Api::Common::V1::WorkflowExecution::field_array) -> ::Temporalio::Api::Common::V1::WorkflowExecution::field_array
                  | (:executions, ::Temporalio::Api::Common::V1::WorkflowExecution::array) -> ::Temporalio::Api::Common::V1::WorkflowExecution::array
+                 | (:max_operations_per_second, ::Float) -> ::Float
                  | (:termination_operation, ::Temporalio::Api::Batch::V1::BatchOperationTermination?) -> ::Temporalio::Api::Batch::V1::BatchOperationTermination?
                  | [M < ::Temporalio::Api::Batch::V1::BatchOperationTermination::_ToProto] (:termination_operation, M?) -> M?
                  | (:signal_operation, ::Temporalio::Api::Batch::V1::BatchOperationSignal?) -> ::Temporalio::Api::Batch::V1::BatchOperationSignal?
@@ -6834,6 +7377,8 @@ module Temporalio
                  | [M < ::Temporalio::Api::Batch::V1::BatchOperationCancellation::_ToProto] (:cancellation_operation, M?) -> M?
                  | (:deletion_operation, ::Temporalio::Api::Batch::V1::BatchOperationDeletion?) -> ::Temporalio::Api::Batch::V1::BatchOperationDeletion?
                  | [M < ::Temporalio::Api::Batch::V1::BatchOperationDeletion::_ToProto] (:deletion_operation, M?) -> M?
+                 | (:reset_operation, ::Temporalio::Api::Batch::V1::BatchOperationReset?) -> ::Temporalio::Api::Batch::V1::BatchOperationReset?
+                 | [M < ::Temporalio::Api::Batch::V1::BatchOperationReset::_ToProto] (:reset_operation, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -7243,6 +7788,181 @@ module Temporalio
           type array = ::Array[ListBatchOperationsResponse | _ToProto]
 
           type hash[KEY] = ::Hash[KEY, ListBatchOperationsResponse | _ToProto]
+        end
+
+        class PollWorkflowExecutionUpdateRequest < ::Protobuf::Message
+          # Encode the message to a binary string
+          #
+          def self.encode: (PollWorkflowExecutionUpdateRequest) -> String
+
+          # The namespace of the workflow execution to which the update was
+          #  originally issued.
+          #
+          attr_accessor namespace(): ::String
+
+          def namespace!: () -> ::String?
+
+          # The update reference returned in the initial
+          #  UpdateWorkflowExecutionResponse
+          #
+          attr_accessor update_ref(): ::Temporalio::Api::Update::V1::UpdateRef?
+
+          # The update reference returned in the initial
+          #  UpdateWorkflowExecutionResponse
+          #
+          def update_ref=: [M < ::Temporalio::Api::Update::V1::UpdateRef::_ToProto] (M?) -> M?
+                         | ...
+
+          def update_ref!: () -> ::Temporalio::Api::Update::V1::UpdateRef?
+
+          # The identity of the worker/client who is polling this update outcome
+          #
+          attr_accessor identity(): ::String
+
+          def identity!: () -> ::String?
+
+          # Describes when this poll request should return a response.
+          #  Omit to request a non-blocking poll.
+          #
+          attr_accessor wait_policy(): ::Temporalio::Api::Update::V1::WaitPolicy?
+
+          # Describes when this poll request should return a response.
+          #  Omit to request a non-blocking poll.
+          #
+          def wait_policy=: [M < ::Temporalio::Api::Update::V1::WaitPolicy::_ToProto] (M?) -> M?
+                          | ...
+
+          def wait_policy!: () -> ::Temporalio::Api::Update::V1::WaitPolicy?
+
+          def initialize: (?namespace: ::String, ?update_ref: ::Temporalio::Api::Update::V1::UpdateRef::init?, ?identity: ::String, ?wait_policy: ::Temporalio::Api::Update::V1::WaitPolicy::init?) -> void
+
+          def []: (:namespace) -> ::String
+                | (:update_ref) -> ::Temporalio::Api::Update::V1::UpdateRef?
+                | (:identity) -> ::String
+                | (:wait_policy) -> ::Temporalio::Api::Update::V1::WaitPolicy?
+                | (::Symbol) -> untyped
+
+          def []=: (:namespace, ::String) -> ::String
+                 | (:update_ref, ::Temporalio::Api::Update::V1::UpdateRef?) -> ::Temporalio::Api::Update::V1::UpdateRef?
+                 | [M < ::Temporalio::Api::Update::V1::UpdateRef::_ToProto] (:update_ref, M?) -> M?
+                 | (:identity, ::String) -> ::String
+                 | (:wait_policy, ::Temporalio::Api::Update::V1::WaitPolicy?) -> ::Temporalio::Api::Update::V1::WaitPolicy?
+                 | [M < ::Temporalio::Api::Update::V1::WaitPolicy::_ToProto] (:wait_policy, M?) -> M?
+                 | (::Symbol, untyped) -> untyped
+
+          interface _ToProto
+            def to_proto: () -> PollWorkflowExecutionUpdateRequest
+          end
+
+          # The type of `#initialize` parameter.
+          type init = PollWorkflowExecutionUpdateRequest | _ToProto
+
+          # The type of `repeated` field.
+          type field_array = ::Protobuf::Field::FieldArray[PollWorkflowExecutionUpdateRequest, PollWorkflowExecutionUpdateRequest | _ToProto]
+
+          # The type of `map` field.
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, PollWorkflowExecutionUpdateRequest, PollWorkflowExecutionUpdateRequest | _ToProto]
+
+          type array = ::Array[PollWorkflowExecutionUpdateRequest | _ToProto]
+
+          type hash[KEY] = ::Hash[KEY, PollWorkflowExecutionUpdateRequest | _ToProto]
+        end
+
+        class PollWorkflowExecutionUpdateResponse < ::Protobuf::Message
+          # Encode the message to a binary string
+          #
+          def self.encode: (PollWorkflowExecutionUpdateResponse) -> String
+
+          # The outcome of the update if and only if the update has completed. If
+          #  this response is being returned before the update has completed (e.g. due
+          #  to the specification of a wait policy that only waits on
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_ACCEPTED) then this field will
+          #  not be set.
+          #
+          attr_accessor outcome(): ::Temporalio::Api::Update::V1::Outcome?
+
+          # The outcome of the update if and only if the update has completed. If
+          #  this response is being returned before the update has completed (e.g. due
+          #  to the specification of a wait policy that only waits on
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_ACCEPTED) then this field will
+          #  not be set.
+          #
+          def outcome=: [M < ::Temporalio::Api::Update::V1::Outcome::_ToProto] (M?) -> M?
+                      | ...
+
+          def outcome!: () -> ::Temporalio::Api::Update::V1::Outcome?
+
+          # The most advanced lifecycle stage that the Update is known to have
+          #  reached, where lifecycle stages are ordered
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_UNSPECIFIED <
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_ADMITTED <
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_ACCEPTED <
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_COMPLETED.
+          #  UNSPECIFIED will be returned if and only if the server's maximum wait
+          #  time was reached before the Update reached the stage specified in the
+          #  request WaitPolicy, and before the context deadline expired; clients may
+          #  may then retry the call as needed.
+          #
+          attr_accessor stage(): ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage
+
+          # The most advanced lifecycle stage that the Update is known to have
+          #  reached, where lifecycle stages are ordered
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_UNSPECIFIED <
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_ADMITTED <
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_ACCEPTED <
+          #  UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_COMPLETED.
+          #  UNSPECIFIED will be returned if and only if the server's maximum wait
+          #  time was reached before the Update reached the stage specified in the
+          #  request WaitPolicy, and before the context deadline expired; clients may
+          #  may then retry the call as needed.
+          #
+          def stage=: (::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage::values) -> ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage::values
+                    | ...
+
+          def stage!: () -> ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage?
+
+          # Sufficient information to address this update.
+          #
+          attr_accessor update_ref(): ::Temporalio::Api::Update::V1::UpdateRef?
+
+          # Sufficient information to address this update.
+          #
+          def update_ref=: [M < ::Temporalio::Api::Update::V1::UpdateRef::_ToProto] (M?) -> M?
+                         | ...
+
+          def update_ref!: () -> ::Temporalio::Api::Update::V1::UpdateRef?
+
+          def initialize: (?outcome: ::Temporalio::Api::Update::V1::Outcome::init?, ?stage: ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage::init, ?update_ref: ::Temporalio::Api::Update::V1::UpdateRef::init?) -> void
+
+          def []: (:outcome) -> ::Temporalio::Api::Update::V1::Outcome?
+                | (:stage) -> ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage
+                | (:update_ref) -> ::Temporalio::Api::Update::V1::UpdateRef?
+                | (::Symbol) -> untyped
+
+          def []=: (:outcome, ::Temporalio::Api::Update::V1::Outcome?) -> ::Temporalio::Api::Update::V1::Outcome?
+                 | [M < ::Temporalio::Api::Update::V1::Outcome::_ToProto] (:outcome, M?) -> M?
+                 | (:stage, ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage) -> ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage
+                 | (:stage, ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage::values) -> ::Temporalio::Api::Enums::V1::UpdateWorkflowExecutionLifecycleStage::values
+                 | (:update_ref, ::Temporalio::Api::Update::V1::UpdateRef?) -> ::Temporalio::Api::Update::V1::UpdateRef?
+                 | [M < ::Temporalio::Api::Update::V1::UpdateRef::_ToProto] (:update_ref, M?) -> M?
+                 | (::Symbol, untyped) -> untyped
+
+          interface _ToProto
+            def to_proto: () -> PollWorkflowExecutionUpdateResponse
+          end
+
+          # The type of `#initialize` parameter.
+          type init = PollWorkflowExecutionUpdateResponse | _ToProto
+
+          # The type of `repeated` field.
+          type field_array = ::Protobuf::Field::FieldArray[PollWorkflowExecutionUpdateResponse, PollWorkflowExecutionUpdateResponse | _ToProto]
+
+          # The type of `map` field.
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, PollWorkflowExecutionUpdateResponse, PollWorkflowExecutionUpdateResponse | _ToProto]
+
+          type array = ::Array[PollWorkflowExecutionUpdateResponse | _ToProto]
+
+          type hash[KEY] = ::Hash[KEY, PollWorkflowExecutionUpdateResponse | _ToProto]
         end
       end
     end

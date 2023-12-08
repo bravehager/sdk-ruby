@@ -545,6 +545,43 @@ module Temporalio
 
           type hash[KEY] = ::Hash[KEY, WorkflowNotReadyFailure | _ToProto]
         end
+
+        class NewerBuildExistsFailure < ::Protobuf::Message
+          # Encode the message to a binary string
+          #
+          def self.encode: (NewerBuildExistsFailure) -> String
+
+          # The current default compatible build ID which will receive tasks
+          #
+          attr_accessor default_build_id(): ::String
+
+          def default_build_id!: () -> ::String?
+
+          def initialize: (?default_build_id: ::String) -> void
+
+          def []: (:default_build_id) -> ::String
+                | (::Symbol) -> untyped
+
+          def []=: (:default_build_id, ::String) -> ::String
+                 | (::Symbol, untyped) -> untyped
+
+          interface _ToProto
+            def to_proto: () -> NewerBuildExistsFailure
+          end
+
+          # The type of `#initialize` parameter.
+          type init = NewerBuildExistsFailure | _ToProto
+
+          # The type of `repeated` field.
+          type field_array = ::Protobuf::Field::FieldArray[NewerBuildExistsFailure, NewerBuildExistsFailure | _ToProto]
+
+          # The type of `map` field.
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, NewerBuildExistsFailure, NewerBuildExistsFailure | _ToProto]
+
+          type array = ::Array[NewerBuildExistsFailure | _ToProto]
+
+          type hash[KEY] = ::Hash[KEY, NewerBuildExistsFailure | _ToProto]
+        end
       end
     end
   end

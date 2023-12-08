@@ -2,8 +2,7 @@ module Temporalio
   module Bridge
     module Api
       module ChildWorkflow
-        # *
-        #  Used by the service to determine the fate of a child workflow
+        # Used by the service to determine the fate of a child workflow
         #  in case its parent is closed.
         #
         class ParentClosePolicy < ::Protobuf::Enum
@@ -19,19 +18,19 @@ module Temporalio
 
           attr_reader tag(): tags
 
-          # * Let's the server set the default.
+          # Let's the server set the default.
           #
           PARENT_CLOSE_POLICY_UNSPECIFIED: ParentClosePolicy
 
-          # * Terminate means terminating the child workflow.
+          # Terminate means terminating the child workflow.
           #
           PARENT_CLOSE_POLICY_TERMINATE: ParentClosePolicy
 
-          # * Abandon means not doing anything on the child workflow.
+          # Abandon means not doing anything on the child workflow.
           #
           PARENT_CLOSE_POLICY_ABANDON: ParentClosePolicy
 
-          # * Cancel means requesting cancellation on the child workflow.
+          # Cancel means requesting cancellation on the child workflow.
           #
           PARENT_CLOSE_POLICY_REQUEST_CANCEL: ParentClosePolicy
 
@@ -49,7 +48,7 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, ParentClosePolicy | values]
         end
 
-        # * Possible causes of failure to start a child workflow
+        # Possible causes of failure to start a child workflow
         #
         class StartChildWorkflowExecutionFailedCause < ::Protobuf::Enum
           type names = :START_CHILD_WORKFLOW_EXECUTION_FAILED_CAUSE_UNSPECIFIED | :START_CHILD_WORKFLOW_EXECUTION_FAILED_CAUSE_WORKFLOW_ALREADY_EXISTS
@@ -82,8 +81,7 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, StartChildWorkflowExecutionFailedCause | values]
         end
 
-        # *
-        #  Controls at which point to report back to lang when a child workflow is cancelled
+        # Controls at which point to report back to lang when a child workflow is cancelled
         #
         class ChildWorkflowCancellationType < ::Protobuf::Enum
           type names = :ABANDON | :TRY_CANCEL | :WAIT_CANCELLATION_COMPLETED | :WAIT_CANCELLATION_REQUESTED
@@ -98,19 +96,19 @@ module Temporalio
 
           attr_reader tag(): tags
 
-          # * Do not request cancellation of the child workflow if already scheduled
+          # Do not request cancellation of the child workflow if already scheduled
           #
           ABANDON: ChildWorkflowCancellationType
 
-          # * Initiate a cancellation request and immediately report cancellation to the parent.
+          # Initiate a cancellation request and immediately report cancellation to the parent.
           #
           TRY_CANCEL: ChildWorkflowCancellationType
 
-          # * Wait for child cancellation completion.
+          # Wait for child cancellation completion.
           #
           WAIT_CANCELLATION_COMPLETED: ChildWorkflowCancellationType
 
-          # * Request cancellation of the child and wait for confirmation that the request was received.
+          # Request cancellation of the child and wait for confirmation that the request was received.
           #
           WAIT_CANCELLATION_REQUESTED: ChildWorkflowCancellationType
 
@@ -128,8 +126,7 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, ChildWorkflowCancellationType | values]
         end
 
-        # *
-        #  Used by core to resolve child workflow executions.
+        # Used by core to resolve child workflow executions.
         #
         class ChildWorkflowResult < ::Protobuf::Message
           # Encode the message to a binary string
@@ -190,8 +187,7 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, ChildWorkflowResult | _ToProto]
         end
 
-        # *
-        #  Used in ChildWorkflowResult to report successful completion.
+        # Used in ChildWorkflowResult to report successful completion.
         #
         class Success < ::Protobuf::Message
           # Encode the message to a binary string
@@ -232,8 +228,7 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, Success | _ToProto]
         end
 
-        # *
-        #  Used in ChildWorkflowResult to report non successful outcomes such as
+        # Used in ChildWorkflowResult to report non successful outcomes such as
         #  application failures, timeouts, terminations, and cancellations.
         #
         class Failure < ::Protobuf::Message
@@ -275,8 +270,7 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, Failure | _ToProto]
         end
 
-        # *
-        #  Used in ChildWorkflowResult to report cancellation.
+        # Used in ChildWorkflowResult to report cancellation.
         #  Failure should be ChildWorkflowFailure with a CanceledFailure cause.
         #
         class Cancellation < ::Protobuf::Message

@@ -636,30 +636,43 @@ module Temporalio
         Temporalio::Api::WorkflowService::V1::ListSchedulesResponse.decode(response)
       end
 
-      # @param request [Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdOrderingRequest]
+      # @param request [Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest]
       # @param metadata [Hash<String, String>] Headers used on the RPC call.
       #   Keys here override client-level RPC metadata keys.
       # @param timeout [Integer] Optional RPC deadline to set for each RPC call.
       #
-      # @return [Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdOrderingResponse]
-      def update_worker_build_id_ordering(request, metadata: {}, timeout: nil)
-        encoded = Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdOrderingRequest.encode(request)
-        response = call(:update_worker_build_id_ordering, encoded, metadata, timeout)
+      # @return [Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityResponse]
+      def update_worker_build_id_compatibility(request, metadata: {}, timeout: nil)
+        encoded = Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityRequest.encode(request)
+        response = call(:update_worker_build_id_compatibility, encoded, metadata, timeout)
 
-        Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdOrderingResponse.decode(response)
+        Temporalio::Api::WorkflowService::V1::UpdateWorkerBuildIdCompatibilityResponse.decode(response)
       end
 
-      # @param request [Temporalio::Api::WorkflowService::V1::GetWorkerBuildIdOrderingRequest]
+      # @param request [Temporalio::Api::WorkflowService::V1::GetWorkerBuildIdCompatibilityRequest]
       # @param metadata [Hash<String, String>] Headers used on the RPC call.
       #   Keys here override client-level RPC metadata keys.
       # @param timeout [Integer] Optional RPC deadline to set for each RPC call.
       #
-      # @return [Temporalio::Api::WorkflowService::V1::GetWorkerBuildIdOrderingResponse]
-      def get_worker_build_id_ordering(request, metadata: {}, timeout: nil)
-        encoded = Temporalio::Api::WorkflowService::V1::GetWorkerBuildIdOrderingRequest.encode(request)
-        response = call(:get_worker_build_id_ordering, encoded, metadata, timeout)
+      # @return [Temporalio::Api::WorkflowService::V1::GetWorkerBuildIdCompatibilityResponse]
+      def get_worker_build_id_compatibility(request, metadata: {}, timeout: nil)
+        encoded = Temporalio::Api::WorkflowService::V1::GetWorkerBuildIdCompatibilityRequest.encode(request)
+        response = call(:get_worker_build_id_compatibility, encoded, metadata, timeout)
 
-        Temporalio::Api::WorkflowService::V1::GetWorkerBuildIdOrderingResponse.decode(response)
+        Temporalio::Api::WorkflowService::V1::GetWorkerBuildIdCompatibilityResponse.decode(response)
+      end
+
+      # @param request [Temporalio::Api::WorkflowService::V1::GetWorkerTaskReachabilityRequest]
+      # @param metadata [Hash<String, String>] Headers used on the RPC call.
+      #   Keys here override client-level RPC metadata keys.
+      # @param timeout [Integer] Optional RPC deadline to set for each RPC call.
+      #
+      # @return [Temporalio::Api::WorkflowService::V1::GetWorkerTaskReachabilityResponse]
+      def get_worker_task_reachability(request, metadata: {}, timeout: nil)
+        encoded = Temporalio::Api::WorkflowService::V1::GetWorkerTaskReachabilityRequest.encode(request)
+        response = call(:get_worker_task_reachability, encoded, metadata, timeout)
+
+        Temporalio::Api::WorkflowService::V1::GetWorkerTaskReachabilityResponse.decode(response)
       end
 
       # @param request [Temporalio::Api::WorkflowService::V1::UpdateWorkflowExecutionRequest]
@@ -673,6 +686,18 @@ module Temporalio
         response = call(:update_workflow_execution, encoded, metadata, timeout)
 
         Temporalio::Api::WorkflowService::V1::UpdateWorkflowExecutionResponse.decode(response)
+      end
+
+      # @param request [Temporalio::Api::WorkflowService::V1::PollWorkflowExecutionUpdateRequest]
+      # @param metadata [Hash<String, String>] Headers used on the RPC call.
+      #   Keys here override client-level RPC metadata keys.
+      # @param timeout [Integer] Optional RPC deadline to set for each RPC call.
+      #
+      def poll_workflow_execution_update(request, metadata: {}, timeout: nil)
+        encoded = Temporalio::Api::WorkflowService::V1::PollWorkflowExecutionUpdateRequest.encode(request)
+        response = call(:poll_workflow_execution_update, encoded, metadata, timeout)
+
+        Temporalio::Api::WorkflowService::V1::PollWorkflowExecutionUpdateResponse.decode(response)
       end
 
       # @param request [Temporalio::Api::WorkflowService::V1::StartBatchOperationRequest]

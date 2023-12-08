@@ -10,15 +10,15 @@ anyhow = "1.0"
 lazy_static = "1.4.0"
 parking_lot = { version = "0.12", features = ["send_guard"] }
 prost = "0.11"
-rutie = { version = "0.8.4", features = ["no-link"] }
+rutie = { git = "https://github.com/bravehager/rutie.git", branch = "temporal-sdk", features = ["no-link"] }
 temporal-client = { version = "0.1.0", path = "./sdk-core/client" }
-temporal-sdk-core = { version = "0.1.0", path = "./sdk-core/core" }
+temporal-sdk-core = { version = "0.1.0", path = "./sdk-core/core", features = ["ephemeral-server"] }
 temporal-sdk-core-api = { version = "0.1.0", path = "./sdk-core/core-api" }
 temporal-sdk-core-protos = { version = "0.1.0", path = "./sdk-core/sdk-core-protos" }
 thiserror = "1.0.31"
 tokio = "1.23"
 tokio-util = "0.7.4"
-tonic = "0.8"
+tonic = "0.9"
 url = "2.2"
 
 [lib]

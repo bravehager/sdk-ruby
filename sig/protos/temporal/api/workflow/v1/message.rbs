@@ -97,7 +97,18 @@ module Temporalio
 
           def history_size_bytes!: () -> ::Integer?
 
-          def initialize: (?execution: ::Temporalio::Api::Common::V1::WorkflowExecution::init?, ?type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?start_time: ::Google::Protobuf::Timestamp::init?, ?close_time: ::Google::Protobuf::Timestamp::init?, ?status: ::Temporalio::Api::Enums::V1::WorkflowExecutionStatus::init, ?history_length: ::Integer, ?parent_namespace_id: ::String, ?parent_execution: ::Temporalio::Api::Common::V1::WorkflowExecution::init?, ?execution_time: ::Google::Protobuf::Timestamp::init?, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?, ?auto_reset_points: ::Temporalio::Api::Workflow::V1::ResetPoints::init?, ?task_queue: ::String, ?state_transition_count: ::Integer, ?history_size_bytes: ::Integer) -> void
+          # If set, the most recent worker version stamp that appeared in a workflow task completion
+          #
+          attr_accessor most_recent_worker_version_stamp(): ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          # If set, the most recent worker version stamp that appeared in a workflow task completion
+          #
+          def most_recent_worker_version_stamp=: [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (M?) -> M?
+                                               | ...
+
+          def most_recent_worker_version_stamp!: () -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+
+          def initialize: (?execution: ::Temporalio::Api::Common::V1::WorkflowExecution::init?, ?type: ::Temporalio::Api::Common::V1::WorkflowType::init?, ?start_time: ::Google::Protobuf::Timestamp::init?, ?close_time: ::Google::Protobuf::Timestamp::init?, ?status: ::Temporalio::Api::Enums::V1::WorkflowExecutionStatus::init, ?history_length: ::Integer, ?parent_namespace_id: ::String, ?parent_execution: ::Temporalio::Api::Common::V1::WorkflowExecution::init?, ?execution_time: ::Google::Protobuf::Timestamp::init?, ?memo: ::Temporalio::Api::Common::V1::Memo::init?, ?search_attributes: ::Temporalio::Api::Common::V1::SearchAttributes::init?, ?auto_reset_points: ::Temporalio::Api::Workflow::V1::ResetPoints::init?, ?task_queue: ::String, ?state_transition_count: ::Integer, ?history_size_bytes: ::Integer, ?most_recent_worker_version_stamp: ::Temporalio::Api::Common::V1::WorkerVersionStamp::init?) -> void
 
           def []: (:execution) -> ::Temporalio::Api::Common::V1::WorkflowExecution?
                 | (:type) -> ::Temporalio::Api::Common::V1::WorkflowType?
@@ -114,6 +125,7 @@ module Temporalio
                 | (:task_queue) -> ::String
                 | (:state_transition_count) -> ::Integer
                 | (:history_size_bytes) -> ::Integer
+                | (:most_recent_worker_version_stamp) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
                 | (::Symbol) -> untyped
 
           def []=: (:execution, ::Temporalio::Api::Common::V1::WorkflowExecution?) -> ::Temporalio::Api::Common::V1::WorkflowExecution?
@@ -141,6 +153,8 @@ module Temporalio
                  | (:task_queue, ::String) -> ::String
                  | (:state_transition_count, ::Integer) -> ::Integer
                  | (:history_size_bytes, ::Integer) -> ::Integer
+                 | (:most_recent_worker_version_stamp, ::Temporalio::Api::Common::V1::WorkerVersionStamp?) -> ::Temporalio::Api::Common::V1::WorkerVersionStamp?
+                 | [M < ::Temporalio::Api::Common::V1::WorkerVersionStamp::_ToProto] (:most_recent_worker_version_stamp, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -559,14 +573,21 @@ module Temporalio
           #
           def self.encode: (ResetPointInfo) -> String
 
+          # A worker binary version identifier, will be deprecated and superseded by a newer concept of
+          #  build_id.
+          #
           attr_accessor binary_checksum(): ::String
 
           def binary_checksum!: () -> ::String?
 
+          # The first run ID in the execution chain that was touched by this worker build.
+          #
           attr_accessor run_id(): ::String
 
           def run_id!: () -> ::String?
 
+          # Event ID of the first WorkflowTaskCompleted event processed by this worker build.
+          #
           attr_accessor first_workflow_task_completed_id(): ::Integer
 
           def first_workflow_task_completed_id!: () -> ::Integer?

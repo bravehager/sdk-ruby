@@ -15,18 +15,18 @@ module Temporalio
 
           attr_reader tag(): tags
 
-          # / Initiate a cancellation request and immediately report cancellation to the workflow.
+          # Initiate a cancellation request and immediately report cancellation to the workflow.
           #
           TRY_CANCEL: ActivityCancellationType
 
-          # / Wait for activity cancellation completion. Note that activity must heartbeat to receive a
-          # / cancellation notification. This can block the cancellation for a long time if activity
-          # / doesn't heartbeat or chooses to ignore the cancellation request.
+          # Wait for activity cancellation completion. Note that activity must heartbeat to receive a
+          #  cancellation notification. This can block the cancellation for a long time if activity
+          #  doesn't heartbeat or chooses to ignore the cancellation request.
           #
           WAIT_CANCELLATION_COMPLETED: ActivityCancellationType
 
-          # / Do not request cancellation of the activity and immediately report cancellation to the
-          # / workflow
+          # Do not request cancellation of the activity and immediately report cancellation to the
+          #  workflow
           #
           ABANDON: ActivityCancellationType
 
@@ -182,7 +182,14 @@ module Temporalio
 
           def modify_workflow_properties!: () -> ::Temporalio::Bridge::Api::WorkflowCommands::ModifyWorkflowProperties?
 
-          def initialize: (?start_timer: ::Temporalio::Bridge::Api::WorkflowCommands::StartTimer::init?, ?schedule_activity: ::Temporalio::Bridge::Api::WorkflowCommands::ScheduleActivity::init?, ?respond_to_query: ::Temporalio::Bridge::Api::WorkflowCommands::QueryResult::init?, ?request_cancel_activity: ::Temporalio::Bridge::Api::WorkflowCommands::RequestCancelActivity::init?, ?cancel_timer: ::Temporalio::Bridge::Api::WorkflowCommands::CancelTimer::init?, ?complete_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::CompleteWorkflowExecution::init?, ?fail_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::FailWorkflowExecution::init?, ?continue_as_new_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::ContinueAsNewWorkflowExecution::init?, ?cancel_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::CancelWorkflowExecution::init?, ?set_patch_marker: ::Temporalio::Bridge::Api::WorkflowCommands::SetPatchMarker::init?, ?start_child_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::StartChildWorkflowExecution::init?, ?cancel_child_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::CancelChildWorkflowExecution::init?, ?request_cancel_external_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::RequestCancelExternalWorkflowExecution::init?, ?signal_external_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::SignalExternalWorkflowExecution::init?, ?cancel_signal_workflow: ::Temporalio::Bridge::Api::WorkflowCommands::CancelSignalWorkflow::init?, ?schedule_local_activity: ::Temporalio::Bridge::Api::WorkflowCommands::ScheduleLocalActivity::init?, ?request_cancel_local_activity: ::Temporalio::Bridge::Api::WorkflowCommands::RequestCancelLocalActivity::init?, ?upsert_workflow_search_attributes: ::Temporalio::Bridge::Api::WorkflowCommands::UpsertWorkflowSearchAttributes::init?, ?modify_workflow_properties: ::Temporalio::Bridge::Api::WorkflowCommands::ModifyWorkflowProperties::init?) -> void
+          attr_accessor update_response(): ::Temporalio::Bridge::Api::WorkflowCommands::UpdateResponse?
+
+          def update_response=: [M < ::Temporalio::Bridge::Api::WorkflowCommands::UpdateResponse::_ToProto] (M?) -> M?
+                              | ...
+
+          def update_response!: () -> ::Temporalio::Bridge::Api::WorkflowCommands::UpdateResponse?
+
+          def initialize: (?start_timer: ::Temporalio::Bridge::Api::WorkflowCommands::StartTimer::init?, ?schedule_activity: ::Temporalio::Bridge::Api::WorkflowCommands::ScheduleActivity::init?, ?respond_to_query: ::Temporalio::Bridge::Api::WorkflowCommands::QueryResult::init?, ?request_cancel_activity: ::Temporalio::Bridge::Api::WorkflowCommands::RequestCancelActivity::init?, ?cancel_timer: ::Temporalio::Bridge::Api::WorkflowCommands::CancelTimer::init?, ?complete_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::CompleteWorkflowExecution::init?, ?fail_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::FailWorkflowExecution::init?, ?continue_as_new_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::ContinueAsNewWorkflowExecution::init?, ?cancel_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::CancelWorkflowExecution::init?, ?set_patch_marker: ::Temporalio::Bridge::Api::WorkflowCommands::SetPatchMarker::init?, ?start_child_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::StartChildWorkflowExecution::init?, ?cancel_child_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::CancelChildWorkflowExecution::init?, ?request_cancel_external_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::RequestCancelExternalWorkflowExecution::init?, ?signal_external_workflow_execution: ::Temporalio::Bridge::Api::WorkflowCommands::SignalExternalWorkflowExecution::init?, ?cancel_signal_workflow: ::Temporalio::Bridge::Api::WorkflowCommands::CancelSignalWorkflow::init?, ?schedule_local_activity: ::Temporalio::Bridge::Api::WorkflowCommands::ScheduleLocalActivity::init?, ?request_cancel_local_activity: ::Temporalio::Bridge::Api::WorkflowCommands::RequestCancelLocalActivity::init?, ?upsert_workflow_search_attributes: ::Temporalio::Bridge::Api::WorkflowCommands::UpsertWorkflowSearchAttributes::init?, ?modify_workflow_properties: ::Temporalio::Bridge::Api::WorkflowCommands::ModifyWorkflowProperties::init?, ?update_response: ::Temporalio::Bridge::Api::WorkflowCommands::UpdateResponse::init?) -> void
 
           def []: (:start_timer) -> ::Temporalio::Bridge::Api::WorkflowCommands::StartTimer?
                 | (:schedule_activity) -> ::Temporalio::Bridge::Api::WorkflowCommands::ScheduleActivity?
@@ -203,6 +210,7 @@ module Temporalio
                 | (:request_cancel_local_activity) -> ::Temporalio::Bridge::Api::WorkflowCommands::RequestCancelLocalActivity?
                 | (:upsert_workflow_search_attributes) -> ::Temporalio::Bridge::Api::WorkflowCommands::UpsertWorkflowSearchAttributes?
                 | (:modify_workflow_properties) -> ::Temporalio::Bridge::Api::WorkflowCommands::ModifyWorkflowProperties?
+                | (:update_response) -> ::Temporalio::Bridge::Api::WorkflowCommands::UpdateResponse?
                 | (::Symbol) -> untyped
 
           def []=: (:start_timer, ::Temporalio::Bridge::Api::WorkflowCommands::StartTimer?) -> ::Temporalio::Bridge::Api::WorkflowCommands::StartTimer?
@@ -243,6 +251,8 @@ module Temporalio
                  | [M < ::Temporalio::Bridge::Api::WorkflowCommands::UpsertWorkflowSearchAttributes::_ToProto] (:upsert_workflow_search_attributes, M?) -> M?
                  | (:modify_workflow_properties, ::Temporalio::Bridge::Api::WorkflowCommands::ModifyWorkflowProperties?) -> ::Temporalio::Bridge::Api::WorkflowCommands::ModifyWorkflowProperties?
                  | [M < ::Temporalio::Bridge::Api::WorkflowCommands::ModifyWorkflowProperties::_ToProto] (:modify_workflow_properties, M?) -> M?
+                 | (:update_response, ::Temporalio::Bridge::Api::WorkflowCommands::UpdateResponse?) -> ::Temporalio::Bridge::Api::WorkflowCommands::UpdateResponse?
+                 | [M < ::Temporalio::Bridge::Api::WorkflowCommands::UpdateResponse::_ToProto] (:update_response, M?) -> M?
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -268,7 +278,7 @@ module Temporalio
           #
           def self.encode: (StartTimer) -> String
 
-          # / Lang's incremental sequence number, used as the operation identifier
+          # Lang's incremental sequence number, used as the operation identifier
           #
           attr_accessor seq(): ::Integer
 
@@ -315,7 +325,7 @@ module Temporalio
           #
           def self.encode: (CancelTimer) -> String
 
-          # / Lang's incremental sequence number as passed to `StartTimer`
+          # Lang's incremental sequence number as passed to `StartTimer`
           #
           attr_accessor seq(): ::Integer
 
@@ -352,7 +362,7 @@ module Temporalio
           #
           def self.encode: (ScheduleActivity) -> String
 
-          # / Lang's incremental sequence number, used as the operation identifier
+          # Lang's incremental sequence number, used as the operation identifier
           #
           attr_accessor seq(): ::Integer
 
@@ -379,106 +389,117 @@ module Temporalio
 
           def headers!: () -> ::Temporalio::Api::Common::V1::Payload::field_hash[::String]?
 
-          # / Arguments/input to the activity. Called "input" upstream.
+          # Arguments/input to the activity. Called "input" upstream.
           #
           attr_accessor arguments(): ::Temporalio::Api::Common::V1::Payload::field_array
 
-          # / Arguments/input to the activity. Called "input" upstream.
+          # Arguments/input to the activity. Called "input" upstream.
           #
           def arguments=: (::Temporalio::Api::Common::V1::Payload::array) -> ::Temporalio::Api::Common::V1::Payload::array
                         | ...
 
           def arguments!: () -> ::Temporalio::Api::Common::V1::Payload::field_array?
 
-          # / Indicates how long the caller is willing to wait for an activity completion. Limits how long
-          # / retries will be attempted. Either this or start_to_close_timeout_seconds must be specified.
-          # / When not specified defaults to the workflow execution timeout.
+          # Indicates how long the caller is willing to wait for an activity completion. Limits how long
+          #  retries will be attempted. Either this or start_to_close_timeout_seconds must be specified.
+          #  When not specified defaults to the workflow execution timeout.
           #
           attr_accessor schedule_to_close_timeout(): ::Google::Protobuf::Duration?
 
-          # / Indicates how long the caller is willing to wait for an activity completion. Limits how long
-          # / retries will be attempted. Either this or start_to_close_timeout_seconds must be specified.
-          # / When not specified defaults to the workflow execution timeout.
+          # Indicates how long the caller is willing to wait for an activity completion. Limits how long
+          #  retries will be attempted. Either this or start_to_close_timeout_seconds must be specified.
+          #  When not specified defaults to the workflow execution timeout.
           #
           def schedule_to_close_timeout=: [M < ::Google::Protobuf::Duration::_ToProto] (M?) -> M?
                                         | ...
 
           def schedule_to_close_timeout!: () -> ::Google::Protobuf::Duration?
 
-          # / Limits time an activity task can stay in a task queue before a worker picks it up. This
-          # / timeout is always non retryable as all a retry would achieve is to put it back into the same
-          # / queue. Defaults to schedule_to_close_timeout or workflow execution timeout if not specified.
+          # Limits time an activity task can stay in a task queue before a worker picks it up. This
+          #  timeout is always non retryable as all a retry would achieve is to put it back into the same
+          #  queue. Defaults to schedule_to_close_timeout or workflow execution timeout if not specified.
           #
           attr_accessor schedule_to_start_timeout(): ::Google::Protobuf::Duration?
 
-          # / Limits time an activity task can stay in a task queue before a worker picks it up. This
-          # / timeout is always non retryable as all a retry would achieve is to put it back into the same
-          # / queue. Defaults to schedule_to_close_timeout or workflow execution timeout if not specified.
+          # Limits time an activity task can stay in a task queue before a worker picks it up. This
+          #  timeout is always non retryable as all a retry would achieve is to put it back into the same
+          #  queue. Defaults to schedule_to_close_timeout or workflow execution timeout if not specified.
           #
           def schedule_to_start_timeout=: [M < ::Google::Protobuf::Duration::_ToProto] (M?) -> M?
                                         | ...
 
           def schedule_to_start_timeout!: () -> ::Google::Protobuf::Duration?
 
-          # / Maximum time an activity is allowed to execute after a pick up by a worker. This timeout is
-          # / always retryable. Either this or schedule_to_close_timeout must be specified.
+          # Maximum time an activity is allowed to execute after a pick up by a worker. This timeout is
+          #  always retryable. Either this or schedule_to_close_timeout must be specified.
           #
           attr_accessor start_to_close_timeout(): ::Google::Protobuf::Duration?
 
-          # / Maximum time an activity is allowed to execute after a pick up by a worker. This timeout is
-          # / always retryable. Either this or schedule_to_close_timeout must be specified.
+          # Maximum time an activity is allowed to execute after a pick up by a worker. This timeout is
+          #  always retryable. Either this or schedule_to_close_timeout must be specified.
           #
           def start_to_close_timeout=: [M < ::Google::Protobuf::Duration::_ToProto] (M?) -> M?
                                      | ...
 
           def start_to_close_timeout!: () -> ::Google::Protobuf::Duration?
 
-          # / Maximum time allowed between successful worker heartbeats.
+          # Maximum time allowed between successful worker heartbeats.
           #
           attr_accessor heartbeat_timeout(): ::Google::Protobuf::Duration?
 
-          # / Maximum time allowed between successful worker heartbeats.
+          # Maximum time allowed between successful worker heartbeats.
           #
           def heartbeat_timeout=: [M < ::Google::Protobuf::Duration::_ToProto] (M?) -> M?
                                 | ...
 
           def heartbeat_timeout!: () -> ::Google::Protobuf::Duration?
 
-          # / Activities are provided by a default retry policy controlled through the service dynamic
-          # / configuration. Retries are happening up to schedule_to_close_timeout. To disable retries set
-          # / retry_policy.maximum_attempts to 1.
+          # Activities are provided by a default retry policy controlled through the service dynamic
+          #  configuration. Retries are happening up to schedule_to_close_timeout. To disable retries set
+          #  retry_policy.maximum_attempts to 1.
           #
           attr_accessor retry_policy(): ::Temporalio::Api::Common::V1::RetryPolicy?
 
-          # / Activities are provided by a default retry policy controlled through the service dynamic
-          # / configuration. Retries are happening up to schedule_to_close_timeout. To disable retries set
-          # / retry_policy.maximum_attempts to 1.
+          # Activities are provided by a default retry policy controlled through the service dynamic
+          #  configuration. Retries are happening up to schedule_to_close_timeout. To disable retries set
+          #  retry_policy.maximum_attempts to 1.
           #
           def retry_policy=: [M < ::Temporalio::Api::Common::V1::RetryPolicy::_ToProto] (M?) -> M?
                            | ...
 
           def retry_policy!: () -> ::Temporalio::Api::Common::V1::RetryPolicy?
 
-          # / Defines how the workflow will wait (or not) for cancellation of the activity to be confirmed
+          # Defines how the workflow will wait (or not) for cancellation of the activity to be confirmed
           #
           attr_accessor cancellation_type(): ::Temporalio::Bridge::Api::WorkflowCommands::ActivityCancellationType
 
-          # / Defines how the workflow will wait (or not) for cancellation of the activity to be confirmed
+          # Defines how the workflow will wait (or not) for cancellation of the activity to be confirmed
           #
           def cancellation_type=: (::Temporalio::Bridge::Api::WorkflowCommands::ActivityCancellationType::values) -> ::Temporalio::Bridge::Api::WorkflowCommands::ActivityCancellationType::values
                                 | ...
 
           def cancellation_type!: () -> ::Temporalio::Bridge::Api::WorkflowCommands::ActivityCancellationType?
 
-          # / If set, the worker will not tell the service that it can immediately start executing this
-          # / activity. When unset/default, workers will always attempt to do so if activity execution
-          # / slots are available.
+          # If set, the worker will not tell the service that it can immediately start executing this
+          #  activity. When unset/default, workers will always attempt to do so if activity execution
+          #  slots are available.
           #
           attr_accessor do_not_eagerly_execute(): bool
 
           def do_not_eagerly_execute!: () -> bool?
 
-          def initialize: (?seq: ::Integer, ?activity_id: ::String, ?activity_type: ::String, ?task_queue: ::String, ?headers: ::Temporalio::Api::Common::V1::Payload::hash[::String], ?arguments: ::Temporalio::Api::Common::V1::Payload::array, ?schedule_to_close_timeout: ::Google::Protobuf::Duration::init?, ?schedule_to_start_timeout: ::Google::Protobuf::Duration::init?, ?start_to_close_timeout: ::Google::Protobuf::Duration::init?, ?heartbeat_timeout: ::Google::Protobuf::Duration::init?, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?cancellation_type: ::Temporalio::Bridge::Api::WorkflowCommands::ActivityCancellationType::init, ?do_not_eagerly_execute: bool) -> void
+          # Whether this activity should run on a worker with a compatible build id or not.
+          #
+          attr_accessor versioning_intent(): ::Temporalio::Bridge::Api::Common::VersioningIntent
+
+          # Whether this activity should run on a worker with a compatible build id or not.
+          #
+          def versioning_intent=: (::Temporalio::Bridge::Api::Common::VersioningIntent::values) -> ::Temporalio::Bridge::Api::Common::VersioningIntent::values
+                                | ...
+
+          def versioning_intent!: () -> ::Temporalio::Bridge::Api::Common::VersioningIntent?
+
+          def initialize: (?seq: ::Integer, ?activity_id: ::String, ?activity_type: ::String, ?task_queue: ::String, ?headers: ::Temporalio::Api::Common::V1::Payload::hash[::String], ?arguments: ::Temporalio::Api::Common::V1::Payload::array, ?schedule_to_close_timeout: ::Google::Protobuf::Duration::init?, ?schedule_to_start_timeout: ::Google::Protobuf::Duration::init?, ?start_to_close_timeout: ::Google::Protobuf::Duration::init?, ?heartbeat_timeout: ::Google::Protobuf::Duration::init?, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?cancellation_type: ::Temporalio::Bridge::Api::WorkflowCommands::ActivityCancellationType::init, ?do_not_eagerly_execute: bool, ?versioning_intent: ::Temporalio::Bridge::Api::Common::VersioningIntent::init) -> void
 
           def []: (:seq) -> ::Integer
                 | (:activity_id) -> ::String
@@ -493,6 +514,7 @@ module Temporalio
                 | (:retry_policy) -> ::Temporalio::Api::Common::V1::RetryPolicy?
                 | (:cancellation_type) -> ::Temporalio::Bridge::Api::WorkflowCommands::ActivityCancellationType
                 | (:do_not_eagerly_execute) -> bool
+                | (:versioning_intent) -> ::Temporalio::Bridge::Api::Common::VersioningIntent
                 | (::Symbol) -> untyped
 
           def []=: (:seq, ::Integer) -> ::Integer
@@ -516,6 +538,8 @@ module Temporalio
                  | (:cancellation_type, ::Temporalio::Bridge::Api::WorkflowCommands::ActivityCancellationType) -> ::Temporalio::Bridge::Api::WorkflowCommands::ActivityCancellationType
                  | (:cancellation_type, ::Temporalio::Bridge::Api::WorkflowCommands::ActivityCancellationType::values) -> ::Temporalio::Bridge::Api::WorkflowCommands::ActivityCancellationType::values
                  | (:do_not_eagerly_execute, bool) -> bool
+                 | (:versioning_intent, ::Temporalio::Bridge::Api::Common::VersioningIntent) -> ::Temporalio::Bridge::Api::Common::VersioningIntent
+                 | (:versioning_intent, ::Temporalio::Bridge::Api::Common::VersioningIntent::values) -> ::Temporalio::Bridge::Api::Common::VersioningIntent::values
                  | (::Symbol, untyped) -> untyped
 
           def do_not_eagerly_execute?: () -> bool
@@ -543,7 +567,7 @@ module Temporalio
           #
           def self.encode: (ScheduleLocalActivity) -> String
 
-          # / Lang's incremental sequence number, used as the operation identifier
+          # Lang's incremental sequence number, used as the operation identifier
           #
           attr_accessor seq(): ::Integer
 
@@ -557,21 +581,21 @@ module Temporalio
 
           def activity_type!: () -> ::String?
 
-          # / Local activities can start with a non-1 attempt, if lang has been told to backoff using
-          # / a timer before retrying. It should pass the attempt number from a `DoBackoff` activity
-          # / resolution.
+          # Local activities can start with a non-1 attempt, if lang has been told to backoff using
+          #  a timer before retrying. It should pass the attempt number from a `DoBackoff` activity
+          #  resolution.
           #
           attr_accessor attempt(): ::Integer
 
           def attempt!: () -> ::Integer?
 
-          # / If this local activity is a retry (as per the attempt field) this needs to be the original
-          # / scheduling time (as provided in `DoBackoff`)
+          # If this local activity is a retry (as per the attempt field) this needs to be the original
+          #  scheduling time (as provided in `DoBackoff`)
           #
           attr_accessor original_schedule_time(): ::Google::Protobuf::Timestamp?
 
-          # / If this local activity is a retry (as per the attempt field) this needs to be the original
-          # / scheduling time (as provided in `DoBackoff`)
+          # If this local activity is a retry (as per the attempt field) this needs to be the original
+          #  scheduling time (as provided in `DoBackoff`)
           #
           def original_schedule_time=: [M < ::Google::Protobuf::Timestamp::_ToProto] (M?) -> M?
                                      | ...
@@ -585,105 +609,105 @@ module Temporalio
 
           def headers!: () -> ::Temporalio::Api::Common::V1::Payload::field_hash[::String]?
 
-          # / Arguments/input to the activity.
+          # Arguments/input to the activity.
           #
           attr_accessor arguments(): ::Temporalio::Api::Common::V1::Payload::field_array
 
-          # / Arguments/input to the activity.
+          # Arguments/input to the activity.
           #
           def arguments=: (::Temporalio::Api::Common::V1::Payload::array) -> ::Temporalio::Api::Common::V1::Payload::array
                         | ...
 
           def arguments!: () -> ::Temporalio::Api::Common::V1::Payload::field_array?
 
-          # / Indicates how long the caller is willing to wait for local activity completion. Limits how
-          # / long retries will be attempted. When not specified defaults to the workflow execution
-          # / timeout (which may be unset).
+          # Indicates how long the caller is willing to wait for local activity completion. Limits how
+          #  long retries will be attempted. When not specified defaults to the workflow execution
+          #  timeout (which may be unset).
           #
           attr_accessor schedule_to_close_timeout(): ::Google::Protobuf::Duration?
 
-          # / Indicates how long the caller is willing to wait for local activity completion. Limits how
-          # / long retries will be attempted. When not specified defaults to the workflow execution
-          # / timeout (which may be unset).
+          # Indicates how long the caller is willing to wait for local activity completion. Limits how
+          #  long retries will be attempted. When not specified defaults to the workflow execution
+          #  timeout (which may be unset).
           #
           def schedule_to_close_timeout=: [M < ::Google::Protobuf::Duration::_ToProto] (M?) -> M?
                                         | ...
 
           def schedule_to_close_timeout!: () -> ::Google::Protobuf::Duration?
 
-          # / Limits time the local activity can idle internally before being executed. That can happen if
-          # / the worker is currently at max concurrent local activity executions. This timeout is always
-          # / non retryable as all a retry would achieve is to put it back into the same queue. Defaults
-          # / to `schedule_to_close_timeout` if not specified and that is set. Must be <=
-          # / `schedule_to_close_timeout` when set, otherwise, it will be clamped down.
+          # Limits time the local activity can idle internally before being executed. That can happen if
+          #  the worker is currently at max concurrent local activity executions. This timeout is always
+          #  non retryable as all a retry would achieve is to put it back into the same queue. Defaults
+          #  to `schedule_to_close_timeout` if not specified and that is set. Must be <=
+          #  `schedule_to_close_timeout` when set, otherwise, it will be clamped down.
           #
           attr_accessor schedule_to_start_timeout(): ::Google::Protobuf::Duration?
 
-          # / Limits time the local activity can idle internally before being executed. That can happen if
-          # / the worker is currently at max concurrent local activity executions. This timeout is always
-          # / non retryable as all a retry would achieve is to put it back into the same queue. Defaults
-          # / to `schedule_to_close_timeout` if not specified and that is set. Must be <=
-          # / `schedule_to_close_timeout` when set, otherwise, it will be clamped down.
+          # Limits time the local activity can idle internally before being executed. That can happen if
+          #  the worker is currently at max concurrent local activity executions. This timeout is always
+          #  non retryable as all a retry would achieve is to put it back into the same queue. Defaults
+          #  to `schedule_to_close_timeout` if not specified and that is set. Must be <=
+          #  `schedule_to_close_timeout` when set, otherwise, it will be clamped down.
           #
           def schedule_to_start_timeout=: [M < ::Google::Protobuf::Duration::_ToProto] (M?) -> M?
                                         | ...
 
           def schedule_to_start_timeout!: () -> ::Google::Protobuf::Duration?
 
-          # / Maximum time the local activity is allowed to execute after the task is dispatched. This
-          # / timeout is always retryable. Either or both of `schedule_to_close_timeout` and this must be
-          # / specified. If set, this must be <= `schedule_to_close_timeout`, otherwise, it will be
-          # / clamped down.
+          # Maximum time the local activity is allowed to execute after the task is dispatched. This
+          #  timeout is always retryable. Either or both of `schedule_to_close_timeout` and this must be
+          #  specified. If set, this must be <= `schedule_to_close_timeout`, otherwise, it will be
+          #  clamped down.
           #
           attr_accessor start_to_close_timeout(): ::Google::Protobuf::Duration?
 
-          # / Maximum time the local activity is allowed to execute after the task is dispatched. This
-          # / timeout is always retryable. Either or both of `schedule_to_close_timeout` and this must be
-          # / specified. If set, this must be <= `schedule_to_close_timeout`, otherwise, it will be
-          # / clamped down.
+          # Maximum time the local activity is allowed to execute after the task is dispatched. This
+          #  timeout is always retryable. Either or both of `schedule_to_close_timeout` and this must be
+          #  specified. If set, this must be <= `schedule_to_close_timeout`, otherwise, it will be
+          #  clamped down.
           #
           def start_to_close_timeout=: [M < ::Google::Protobuf::Duration::_ToProto] (M?) -> M?
                                      | ...
 
           def start_to_close_timeout!: () -> ::Google::Protobuf::Duration?
 
-          # / Specify a retry policy for the local activity. By default local activities will be retried
-          # / indefinitely.
+          # Specify a retry policy for the local activity. By default local activities will be retried
+          #  indefinitely.
           #
           attr_accessor retry_policy(): ::Temporalio::Api::Common::V1::RetryPolicy?
 
-          # / Specify a retry policy for the local activity. By default local activities will be retried
-          # / indefinitely.
+          # Specify a retry policy for the local activity. By default local activities will be retried
+          #  indefinitely.
           #
           def retry_policy=: [M < ::Temporalio::Api::Common::V1::RetryPolicy::_ToProto] (M?) -> M?
                            | ...
 
           def retry_policy!: () -> ::Temporalio::Api::Common::V1::RetryPolicy?
 
-          # / If the activity is retrying and backoff would exceed this value, lang will be told to
-          # / schedule a timer and retry the activity after. Otherwise, backoff will happen internally in
-          # / core. Defaults to 1 minute.
+          # If the activity is retrying and backoff would exceed this value, lang will be told to
+          #  schedule a timer and retry the activity after. Otherwise, backoff will happen internally in
+          #  core. Defaults to 1 minute.
           #
           attr_accessor local_retry_threshold(): ::Google::Protobuf::Duration?
 
-          # / If the activity is retrying and backoff would exceed this value, lang will be told to
-          # / schedule a timer and retry the activity after. Otherwise, backoff will happen internally in
-          # / core. Defaults to 1 minute.
+          # If the activity is retrying and backoff would exceed this value, lang will be told to
+          #  schedule a timer and retry the activity after. Otherwise, backoff will happen internally in
+          #  core. Defaults to 1 minute.
           #
           def local_retry_threshold=: [M < ::Google::Protobuf::Duration::_ToProto] (M?) -> M?
                                     | ...
 
           def local_retry_threshold!: () -> ::Google::Protobuf::Duration?
 
-          # / Defines how the workflow will wait (or not) for cancellation of the activity to be
-          # / confirmed. Lang should default this to `WAIT_CANCELLATION_COMPLETED`, even though proto
-          # / will default to `TRY_CANCEL` automatically.
+          # Defines how the workflow will wait (or not) for cancellation of the activity to be
+          #  confirmed. Lang should default this to `WAIT_CANCELLATION_COMPLETED`, even though proto
+          #  will default to `TRY_CANCEL` automatically.
           #
           attr_accessor cancellation_type(): ::Temporalio::Bridge::Api::WorkflowCommands::ActivityCancellationType
 
-          # / Defines how the workflow will wait (or not) for cancellation of the activity to be
-          # / confirmed. Lang should default this to `WAIT_CANCELLATION_COMPLETED`, even though proto
-          # / will default to `TRY_CANCEL` automatically.
+          # Defines how the workflow will wait (or not) for cancellation of the activity to be
+          #  confirmed. Lang should default this to `WAIT_CANCELLATION_COMPLETED`, even though proto
+          #  will default to `TRY_CANCEL` automatically.
           #
           def cancellation_type=: (::Temporalio::Bridge::Api::WorkflowCommands::ActivityCancellationType::values) -> ::Temporalio::Bridge::Api::WorkflowCommands::ActivityCancellationType::values
                                 | ...
@@ -754,7 +778,7 @@ module Temporalio
           #
           def self.encode: (RequestCancelActivity) -> String
 
-          # / Lang's incremental sequence number as passed to `ScheduleActivity`
+          # Lang's incremental sequence number as passed to `ScheduleActivity`
           #
           attr_accessor seq(): ::Integer
 
@@ -791,7 +815,7 @@ module Temporalio
           #
           def self.encode: (RequestCancelLocalActivity) -> String
 
-          # / Lang's incremental sequence number as passed to `ScheduleLocalActivity`
+          # Lang's incremental sequence number as passed to `ScheduleLocalActivity`
           #
           attr_accessor seq(): ::Integer
 
@@ -828,7 +852,7 @@ module Temporalio
           #
           def self.encode: (QueryResult) -> String
 
-          # / Corresponds to the id provided in the activation job
+          # Corresponds to the id provided in the activation job
           #
           attr_accessor query_id(): ::String
 
@@ -919,7 +943,7 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, QuerySuccess | _ToProto]
         end
 
-        # / Issued when the workflow completes successfully
+        # Issued when the workflow completes successfully
         #
         class CompleteWorkflowExecution < ::Protobuf::Message
           # Encode the message to a binary string
@@ -960,7 +984,7 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, CompleteWorkflowExecution | _ToProto]
         end
 
-        # / Issued when the workflow errors out
+        # Issued when the workflow errors out
         #
         class FailWorkflowExecution < ::Protobuf::Message
           # Encode the message to a binary string
@@ -1105,7 +1129,18 @@ module Temporalio
 
           def retry_policy!: () -> ::Temporalio::Api::Common::V1::RetryPolicy?
 
-          def initialize: (?workflow_type: ::String, ?task_queue: ::String, ?arguments: ::Temporalio::Api::Common::V1::Payload::array, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?memo: ::Temporalio::Api::Common::V1::Payload::hash[::String], ?headers: ::Temporalio::Api::Common::V1::Payload::hash[::String], ?search_attributes: ::Temporalio::Api::Common::V1::Payload::hash[::String], ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?) -> void
+          # Whether the continued workflow should run on a worker with a compatible build id or not.
+          #
+          attr_accessor versioning_intent(): ::Temporalio::Bridge::Api::Common::VersioningIntent
+
+          # Whether the continued workflow should run on a worker with a compatible build id or not.
+          #
+          def versioning_intent=: (::Temporalio::Bridge::Api::Common::VersioningIntent::values) -> ::Temporalio::Bridge::Api::Common::VersioningIntent::values
+                                | ...
+
+          def versioning_intent!: () -> ::Temporalio::Bridge::Api::Common::VersioningIntent?
+
+          def initialize: (?workflow_type: ::String, ?task_queue: ::String, ?arguments: ::Temporalio::Api::Common::V1::Payload::array, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?memo: ::Temporalio::Api::Common::V1::Payload::hash[::String], ?headers: ::Temporalio::Api::Common::V1::Payload::hash[::String], ?search_attributes: ::Temporalio::Api::Common::V1::Payload::hash[::String], ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?versioning_intent: ::Temporalio::Bridge::Api::Common::VersioningIntent::init) -> void
 
           def []: (:workflow_type) -> ::String
                 | (:task_queue) -> ::String
@@ -1116,6 +1151,7 @@ module Temporalio
                 | (:headers) -> ::Temporalio::Api::Common::V1::Payload::field_hash[::String]
                 | (:search_attributes) -> ::Temporalio::Api::Common::V1::Payload::field_hash[::String]
                 | (:retry_policy) -> ::Temporalio::Api::Common::V1::RetryPolicy?
+                | (:versioning_intent) -> ::Temporalio::Bridge::Api::Common::VersioningIntent
                 | (::Symbol) -> untyped
 
           def []=: (:workflow_type, ::String) -> ::String
@@ -1134,6 +1170,8 @@ module Temporalio
                  | (:search_attributes, ::Temporalio::Api::Common::V1::Payload::hash[::String]) -> ::Temporalio::Api::Common::V1::Payload::hash[::String]
                  | (:retry_policy, ::Temporalio::Api::Common::V1::RetryPolicy?) -> ::Temporalio::Api::Common::V1::RetryPolicy?
                  | [M < ::Temporalio::Api::Common::V1::RetryPolicy::_ToProto] (:retry_policy, M?) -> M?
+                 | (:versioning_intent, ::Temporalio::Bridge::Api::Common::VersioningIntent) -> ::Temporalio::Bridge::Api::Common::VersioningIntent
+                 | (:versioning_intent, ::Temporalio::Bridge::Api::Common::VersioningIntent::values) -> ::Temporalio::Bridge::Api::Common::VersioningIntent::values
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -1154,8 +1192,8 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, ContinueAsNewWorkflowExecution | _ToProto]
         end
 
-        # / Indicate a workflow has completed as cancelled. Generally sent as a response to an activation
-        # / containing a cancellation job.
+        # Indicate a workflow has completed as cancelled. Generally sent as a response to an activation
+        #  containing a cancellation job.
         #
         class CancelWorkflowExecution < ::Protobuf::Message
           # Encode the message to a binary string
@@ -1182,7 +1220,7 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, CancelWorkflowExecution | _ToProto]
         end
 
-        # / A request to set/check if a certain patch is present or not
+        # A request to set/check if a certain patch is present or not
         #
         class SetPatchMarker < ::Protobuf::Message
           # Encode the message to a binary string
@@ -1234,14 +1272,14 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, SetPatchMarker | _ToProto]
         end
 
-        # / Start a child workflow execution
+        # Start a child workflow execution
         #
         class StartChildWorkflowExecution < ::Protobuf::Message
           # Encode the message to a binary string
           #
           def self.encode: (StartChildWorkflowExecution) -> String
 
-          # / Lang's incremental sequence number, used as the operation identifier
+          # Lang's incremental sequence number, used as the operation identifier
           #
           attr_accessor seq(): ::Integer
 
@@ -1270,44 +1308,44 @@ module Temporalio
 
           def input!: () -> ::Temporalio::Api::Common::V1::Payload::field_array?
 
-          # / Total workflow execution timeout including retries and continue as new.
+          # Total workflow execution timeout including retries and continue as new.
           #
           attr_accessor workflow_execution_timeout(): ::Google::Protobuf::Duration?
 
-          # / Total workflow execution timeout including retries and continue as new.
+          # Total workflow execution timeout including retries and continue as new.
           #
           def workflow_execution_timeout=: [M < ::Google::Protobuf::Duration::_ToProto] (M?) -> M?
                                          | ...
 
           def workflow_execution_timeout!: () -> ::Google::Protobuf::Duration?
 
-          # / Timeout of a single workflow run.
+          # Timeout of a single workflow run.
           #
           attr_accessor workflow_run_timeout(): ::Google::Protobuf::Duration?
 
-          # / Timeout of a single workflow run.
+          # Timeout of a single workflow run.
           #
           def workflow_run_timeout=: [M < ::Google::Protobuf::Duration::_ToProto] (M?) -> M?
                                    | ...
 
           def workflow_run_timeout!: () -> ::Google::Protobuf::Duration?
 
-          # / Timeout of a single workflow task.
+          # Timeout of a single workflow task.
           #
           attr_accessor workflow_task_timeout(): ::Google::Protobuf::Duration?
 
-          # / Timeout of a single workflow task.
+          # Timeout of a single workflow task.
           #
           def workflow_task_timeout=: [M < ::Google::Protobuf::Duration::_ToProto] (M?) -> M?
                                     | ...
 
           def workflow_task_timeout!: () -> ::Google::Protobuf::Duration?
 
-          # / Default: PARENT_CLOSE_POLICY_TERMINATE.
+          # Default: PARENT_CLOSE_POLICY_TERMINATE.
           #
           attr_accessor parent_close_policy(): ::Temporalio::Bridge::Api::ChildWorkflow::ParentClosePolicy
 
-          # / Default: PARENT_CLOSE_POLICY_TERMINATE.
+          # Default: PARENT_CLOSE_POLICY_TERMINATE.
           #
           def parent_close_policy=: (::Temporalio::Bridge::Api::ChildWorkflow::ParentClosePolicy::values) -> ::Temporalio::Bridge::Api::ChildWorkflow::ParentClosePolicy::values
                                   | ...
@@ -1338,51 +1376,62 @@ module Temporalio
 
           def cron_schedule!: () -> ::String?
 
-          # / Header fields
+          # Header fields
           #
           attr_accessor headers(): ::Temporalio::Api::Common::V1::Payload::field_hash[::String]
 
-          # / Header fields
+          # Header fields
           #
           def headers=: (::Temporalio::Api::Common::V1::Payload::hash[::String]) -> ::Temporalio::Api::Common::V1::Payload::hash[::String]
                       | ...
 
           def headers!: () -> ::Temporalio::Api::Common::V1::Payload::field_hash[::String]?
 
-          # / Memo fields
+          # Memo fields
           #
           attr_accessor memo(): ::Temporalio::Api::Common::V1::Payload::field_hash[::String]
 
-          # / Memo fields
+          # Memo fields
           #
           def memo=: (::Temporalio::Api::Common::V1::Payload::hash[::String]) -> ::Temporalio::Api::Common::V1::Payload::hash[::String]
                    | ...
 
           def memo!: () -> ::Temporalio::Api::Common::V1::Payload::field_hash[::String]?
 
-          # / Search attributes
+          # Search attributes
           #
           attr_accessor search_attributes(): ::Temporalio::Api::Common::V1::Payload::field_hash[::String]
 
-          # / Search attributes
+          # Search attributes
           #
           def search_attributes=: (::Temporalio::Api::Common::V1::Payload::hash[::String]) -> ::Temporalio::Api::Common::V1::Payload::hash[::String]
                                 | ...
 
           def search_attributes!: () -> ::Temporalio::Api::Common::V1::Payload::field_hash[::String]?
 
-          # / Defines behaviour of the underlying workflow when child workflow cancellation has been requested.
+          # Defines behaviour of the underlying workflow when child workflow cancellation has been requested.
           #
           attr_accessor cancellation_type(): ::Temporalio::Bridge::Api::ChildWorkflow::ChildWorkflowCancellationType
 
-          # / Defines behaviour of the underlying workflow when child workflow cancellation has been requested.
+          # Defines behaviour of the underlying workflow when child workflow cancellation has been requested.
           #
           def cancellation_type=: (::Temporalio::Bridge::Api::ChildWorkflow::ChildWorkflowCancellationType::values) -> ::Temporalio::Bridge::Api::ChildWorkflow::ChildWorkflowCancellationType::values
                                 | ...
 
           def cancellation_type!: () -> ::Temporalio::Bridge::Api::ChildWorkflow::ChildWorkflowCancellationType?
 
-          def initialize: (?seq: ::Integer, ?namespace: ::String, ?workflow_id: ::String, ?workflow_type: ::String, ?task_queue: ::String, ?input: ::Temporalio::Api::Common::V1::Payload::array, ?workflow_execution_timeout: ::Google::Protobuf::Duration::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?parent_close_policy: ::Temporalio::Bridge::Api::ChildWorkflow::ParentClosePolicy::init, ?workflow_id_reuse_policy: ::Temporalio::Api::Enums::V1::WorkflowIdReusePolicy::init, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?cron_schedule: ::String, ?headers: ::Temporalio::Api::Common::V1::Payload::hash[::String], ?memo: ::Temporalio::Api::Common::V1::Payload::hash[::String], ?search_attributes: ::Temporalio::Api::Common::V1::Payload::hash[::String], ?cancellation_type: ::Temporalio::Bridge::Api::ChildWorkflow::ChildWorkflowCancellationType::init) -> void
+          # Whether this child should run on a worker with a compatible build id or not.
+          #
+          attr_accessor versioning_intent(): ::Temporalio::Bridge::Api::Common::VersioningIntent
+
+          # Whether this child should run on a worker with a compatible build id or not.
+          #
+          def versioning_intent=: (::Temporalio::Bridge::Api::Common::VersioningIntent::values) -> ::Temporalio::Bridge::Api::Common::VersioningIntent::values
+                                | ...
+
+          def versioning_intent!: () -> ::Temporalio::Bridge::Api::Common::VersioningIntent?
+
+          def initialize: (?seq: ::Integer, ?namespace: ::String, ?workflow_id: ::String, ?workflow_type: ::String, ?task_queue: ::String, ?input: ::Temporalio::Api::Common::V1::Payload::array, ?workflow_execution_timeout: ::Google::Protobuf::Duration::init?, ?workflow_run_timeout: ::Google::Protobuf::Duration::init?, ?workflow_task_timeout: ::Google::Protobuf::Duration::init?, ?parent_close_policy: ::Temporalio::Bridge::Api::ChildWorkflow::ParentClosePolicy::init, ?workflow_id_reuse_policy: ::Temporalio::Api::Enums::V1::WorkflowIdReusePolicy::init, ?retry_policy: ::Temporalio::Api::Common::V1::RetryPolicy::init?, ?cron_schedule: ::String, ?headers: ::Temporalio::Api::Common::V1::Payload::hash[::String], ?memo: ::Temporalio::Api::Common::V1::Payload::hash[::String], ?search_attributes: ::Temporalio::Api::Common::V1::Payload::hash[::String], ?cancellation_type: ::Temporalio::Bridge::Api::ChildWorkflow::ChildWorkflowCancellationType::init, ?versioning_intent: ::Temporalio::Bridge::Api::Common::VersioningIntent::init) -> void
 
           def []: (:seq) -> ::Integer
                 | (:namespace) -> ::String
@@ -1401,6 +1450,7 @@ module Temporalio
                 | (:memo) -> ::Temporalio::Api::Common::V1::Payload::field_hash[::String]
                 | (:search_attributes) -> ::Temporalio::Api::Common::V1::Payload::field_hash[::String]
                 | (:cancellation_type) -> ::Temporalio::Bridge::Api::ChildWorkflow::ChildWorkflowCancellationType
+                | (:versioning_intent) -> ::Temporalio::Bridge::Api::Common::VersioningIntent
                 | (::Symbol) -> untyped
 
           def []=: (:seq, ::Integer) -> ::Integer
@@ -1431,6 +1481,8 @@ module Temporalio
                  | (:search_attributes, ::Temporalio::Api::Common::V1::Payload::hash[::String]) -> ::Temporalio::Api::Common::V1::Payload::hash[::String]
                  | (:cancellation_type, ::Temporalio::Bridge::Api::ChildWorkflow::ChildWorkflowCancellationType) -> ::Temporalio::Bridge::Api::ChildWorkflow::ChildWorkflowCancellationType
                  | (:cancellation_type, ::Temporalio::Bridge::Api::ChildWorkflow::ChildWorkflowCancellationType::values) -> ::Temporalio::Bridge::Api::ChildWorkflow::ChildWorkflowCancellationType::values
+                 | (:versioning_intent, ::Temporalio::Bridge::Api::Common::VersioningIntent) -> ::Temporalio::Bridge::Api::Common::VersioningIntent
+                 | (:versioning_intent, ::Temporalio::Bridge::Api::Common::VersioningIntent::values) -> ::Temporalio::Bridge::Api::Common::VersioningIntent::values
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto
@@ -1451,7 +1503,7 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, StartChildWorkflowExecution | _ToProto]
         end
 
-        # / Cancel a child workflow
+        # Cancel a child workflow
         #
         class CancelChildWorkflowExecution < ::Protobuf::Message
           # Encode the message to a binary string
@@ -1490,14 +1542,14 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, CancelChildWorkflowExecution | _ToProto]
         end
 
-        # / Request cancellation of an external workflow execution (which may be a started child)
+        # Request cancellation of an external workflow execution (which may be a started child)
         #
         class RequestCancelExternalWorkflowExecution < ::Protobuf::Message
           # Encode the message to a binary string
           #
           def self.encode: (RequestCancelExternalWorkflowExecution) -> String
 
-          # / Lang's incremental sequence number, used as the operation identifier
+          # Lang's incremental sequence number, used as the operation identifier
           #
           attr_accessor seq(): ::Integer
 
@@ -1551,14 +1603,14 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, RequestCancelExternalWorkflowExecution | _ToProto]
         end
 
-        # / Send a signal to an external or child workflow
+        # Send a signal to an external or child workflow
         #
         class SignalExternalWorkflowExecution < ::Protobuf::Message
           # Encode the message to a binary string
           #
           def self.encode: (SignalExternalWorkflowExecution) -> String
 
-          # / Lang's incremental sequence number, used as the operation identifier
+          # Lang's incremental sequence number, used as the operation identifier
           #
           attr_accessor seq(): ::Integer
 
@@ -1581,28 +1633,28 @@ module Temporalio
 
           def child_workflow_id!: () -> ::String?
 
-          # / Name of the signal handler
+          # Name of the signal handler
           #
           attr_accessor signal_name(): ::String
 
           def signal_name!: () -> ::String?
 
-          # / Arguments for the handler
+          # Arguments for the handler
           #
           attr_accessor args(): ::Temporalio::Api::Common::V1::Payload::field_array
 
-          # / Arguments for the handler
+          # Arguments for the handler
           #
           def args=: (::Temporalio::Api::Common::V1::Payload::array) -> ::Temporalio::Api::Common::V1::Payload::array
                    | ...
 
           def args!: () -> ::Temporalio::Api::Common::V1::Payload::field_array?
 
-          # / Headers to attach to the signal
+          # Headers to attach to the signal
           #
           attr_accessor headers(): ::Temporalio::Api::Common::V1::Payload::field_hash[::String]
 
-          # / Headers to attach to the signal
+          # Headers to attach to the signal
           #
           def headers=: (::Temporalio::Api::Common::V1::Payload::hash[::String]) -> ::Temporalio::Api::Common::V1::Payload::hash[::String]
                       | ...
@@ -1648,14 +1700,14 @@ module Temporalio
           type hash[KEY] = ::Hash[KEY, SignalExternalWorkflowExecution | _ToProto]
         end
 
-        # / Can be used to cancel not-already-sent `SignalExternalWorkflowExecution` commands
+        # Can be used to cancel not-already-sent `SignalExternalWorkflowExecution` commands
         #
         class CancelSignalWorkflow < ::Protobuf::Message
           # Encode the message to a binary string
           #
           def self.encode: (CancelSignalWorkflow) -> String
 
-          # / Lang's incremental sequence number as passed to `SignalExternalWorkflowExecution`
+          # Lang's incremental sequence number as passed to `SignalExternalWorkflowExecution`
           #
           attr_accessor seq(): ::Integer
 
@@ -1692,13 +1744,13 @@ module Temporalio
           #
           def self.encode: (UpsertWorkflowSearchAttributes) -> String
 
-          # / SearchAttributes fields - equivalent to indexed_fields on api. Key = search index, Value =
-          # / value?
+          # SearchAttributes fields - equivalent to indexed_fields on api. Key = search index, Value =
+          #  value?
           #
           attr_accessor search_attributes(): ::Temporalio::Api::Common::V1::Payload::field_hash[::String]
 
-          # / SearchAttributes fields - equivalent to indexed_fields on api. Key = search index, Value =
-          # / value?
+          # SearchAttributes fields - equivalent to indexed_fields on api. Key = search index, Value =
+          #  value?
           #
           def search_attributes=: (::Temporalio::Api::Common::V1::Payload::hash[::String]) -> ::Temporalio::Api::Common::V1::Payload::hash[::String]
                                 | ...
@@ -1777,6 +1829,101 @@ module Temporalio
           type array = ::Array[ModifyWorkflowProperties | _ToProto]
 
           type hash[KEY] = ::Hash[KEY, ModifyWorkflowProperties | _ToProto]
+        end
+
+        # A reply to a `DoUpdate` job - lang must run the update's validator if told to, and then
+        #  immediately run the handler, if the update was accepted.
+        #
+        #  There must always be an accepted or rejected response immediately, in the same activation as
+        #  this job, to indicate the result of the validator. Accepted for ran and accepted or skipped, or
+        #  rejected for rejected.
+        #
+        #  Then, in the same or any subsequent activation, after the update handler has completed, respond
+        #  with completed or rejected as appropriate for the result of the handler.
+        #
+        class UpdateResponse < ::Protobuf::Message
+          # Encode the message to a binary string
+          #
+          def self.encode: (UpdateResponse) -> String
+
+          # The protocol message instance ID
+          #
+          attr_accessor protocol_instance_id(): ::String
+
+          def protocol_instance_id!: () -> ::String?
+
+          # Must be sent if the update's validator has passed (or lang was not asked to run it, and
+          #  thus should be considered already-accepted, allowing lang to always send the same
+          #  sequence on replay).
+          #
+          attr_accessor accepted(): ::Google::Protobuf::Empty?
+
+          # Must be sent if the update's validator has passed (or lang was not asked to run it, and
+          #  thus should be considered already-accepted, allowing lang to always send the same
+          #  sequence on replay).
+          #
+          def accepted=: [M < ::Google::Protobuf::Empty::_ToProto] (M?) -> M?
+                       | ...
+
+          def accepted!: () -> ::Google::Protobuf::Empty?
+
+          # Must be sent if the update's validator does not pass, or after acceptance if the update
+          #  handler fails.
+          #
+          attr_accessor rejected(): ::Temporalio::Api::Failure::V1::Failure?
+
+          # Must be sent if the update's validator does not pass, or after acceptance if the update
+          #  handler fails.
+          #
+          def rejected=: [M < ::Temporalio::Api::Failure::V1::Failure::_ToProto] (M?) -> M?
+                       | ...
+
+          def rejected!: () -> ::Temporalio::Api::Failure::V1::Failure?
+
+          # Must be sent once the update handler completes successfully.
+          #
+          attr_accessor completed(): ::Temporalio::Api::Common::V1::Payload?
+
+          # Must be sent once the update handler completes successfully.
+          #
+          def completed=: [M < ::Temporalio::Api::Common::V1::Payload::_ToProto] (M?) -> M?
+                        | ...
+
+          def completed!: () -> ::Temporalio::Api::Common::V1::Payload?
+
+          def initialize: (?protocol_instance_id: ::String, ?accepted: ::Google::Protobuf::Empty::init?, ?rejected: ::Temporalio::Api::Failure::V1::Failure::init?, ?completed: ::Temporalio::Api::Common::V1::Payload::init?) -> void
+
+          def []: (:protocol_instance_id) -> ::String
+                | (:accepted) -> ::Google::Protobuf::Empty?
+                | (:rejected) -> ::Temporalio::Api::Failure::V1::Failure?
+                | (:completed) -> ::Temporalio::Api::Common::V1::Payload?
+                | (::Symbol) -> untyped
+
+          def []=: (:protocol_instance_id, ::String) -> ::String
+                 | (:accepted, ::Google::Protobuf::Empty?) -> ::Google::Protobuf::Empty?
+                 | [M < ::Google::Protobuf::Empty::_ToProto] (:accepted, M?) -> M?
+                 | (:rejected, ::Temporalio::Api::Failure::V1::Failure?) -> ::Temporalio::Api::Failure::V1::Failure?
+                 | [M < ::Temporalio::Api::Failure::V1::Failure::_ToProto] (:rejected, M?) -> M?
+                 | (:completed, ::Temporalio::Api::Common::V1::Payload?) -> ::Temporalio::Api::Common::V1::Payload?
+                 | [M < ::Temporalio::Api::Common::V1::Payload::_ToProto] (:completed, M?) -> M?
+                 | (::Symbol, untyped) -> untyped
+
+          interface _ToProto
+            def to_proto: () -> UpdateResponse
+          end
+
+          # The type of `#initialize` parameter.
+          type init = UpdateResponse | _ToProto
+
+          # The type of `repeated` field.
+          type field_array = ::Protobuf::Field::FieldArray[UpdateResponse, UpdateResponse | _ToProto]
+
+          # The type of `map` field.
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, UpdateResponse, UpdateResponse | _ToProto]
+
+          type array = ::Array[UpdateResponse | _ToProto]
+
+          type hash[KEY] = ::Hash[KEY, UpdateResponse | _ToProto]
         end
       end
     end

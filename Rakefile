@@ -4,9 +4,9 @@ require 'fileutils'
 require 'thermite/tasks'
 require_relative 'lib/thermite_patch'
 
-API_PROTO_ROOT = 'bridge/sdk-core/protos/api_upstream'.freeze
-CORE_PROTO_ROOT = 'bridge/sdk-core/protos/local'.freeze
-TEST_PROTO_ROOT = 'bridge/sdk-core/protos/testsrv_upstream'.freeze
+API_PROTO_ROOT = 'bridge/sdk-core/sdk-core-protos/protos/api_upstream'.freeze
+CORE_PROTO_ROOT = 'bridge/sdk-core/sdk-core-protos/protos/local'.freeze
+TEST_PROTO_ROOT = 'bridge/sdk-core/sdk-core-protos/protos/testsrv_upstream'.freeze
 PROTOBUF_PATH = 'lib/gen'.freeze
 RBS_SIG_PATH = 'sig/protos'.freeze
 GRPC_PATH = 'spec/support/grpc'.freeze
@@ -90,7 +90,7 @@ namespace :proto do
       ruby_package = content.match(/^\s*option\s+ruby_package\s*=\s*"([^"]+)"\s*;/)&.match(1)
 
       if ruby_package
-        normalized_package = ruby_package.gsub(/::/, '.').gsub(/(?<=[a-zA-Z])([A-Z])/, '_\1').downcase
+        normalized_package = ruby_package.gsub('::', '.').gsub(/(?<=[a-zA-Z])([A-Z])/, '_\1').downcase
         package_map[original_package] = normalized_package
       else
         package_map[original_package] = original_package
@@ -109,6 +109,13 @@ namespace :proto do
 
       # Fix references to renamed packages
       content = content.gsub(%r{(//.*?\R)|(?<![.a-z])(temporal\.api\.[a-z0-9.]+)\.([a-z0-9]+)}im) do
+        comment = Regexp.last_match(1)
+        package = Regexp.last_match(2)
+        element_name = Regexp.last_match(3)
+        comment || "#{package_map[package]}.#{element_name}"
+      end
+
+      content = content.gsub(%r{(//.*?\R)|(?<![.a-z])(coresdk\.[a-z0-9.]+)\.([a-z0-9]+)}im) do
         comment = Regexp.last_match(1)
         package = Regexp.last_match(2)
         element_name = Regexp.last_match(3)

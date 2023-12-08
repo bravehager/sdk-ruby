@@ -3,11 +3,11 @@ module Temporalio
     module Enums
       module V1
         class BatchOperationType < ::Protobuf::Enum
-          type names = :BATCH_OPERATION_TYPE_UNSPECIFIED | :BATCH_OPERATION_TYPE_TERMINATE | :BATCH_OPERATION_TYPE_CANCEL | :BATCH_OPERATION_TYPE_SIGNAL | :BATCH_OPERATION_TYPE_DELETE
+          type names = :BATCH_OPERATION_TYPE_UNSPECIFIED | :BATCH_OPERATION_TYPE_TERMINATE | :BATCH_OPERATION_TYPE_CANCEL | :BATCH_OPERATION_TYPE_SIGNAL | :BATCH_OPERATION_TYPE_DELETE | :BATCH_OPERATION_TYPE_RESET
 
-          type strings = "BATCH_OPERATION_TYPE_UNSPECIFIED" | "BATCH_OPERATION_TYPE_TERMINATE" | "BATCH_OPERATION_TYPE_CANCEL" | "BATCH_OPERATION_TYPE_SIGNAL" | "BATCH_OPERATION_TYPE_DELETE"
+          type strings = "BATCH_OPERATION_TYPE_UNSPECIFIED" | "BATCH_OPERATION_TYPE_TERMINATE" | "BATCH_OPERATION_TYPE_CANCEL" | "BATCH_OPERATION_TYPE_SIGNAL" | "BATCH_OPERATION_TYPE_DELETE" | "BATCH_OPERATION_TYPE_RESET"
 
-          type tags = 0 | 1 | 2 | 3 | 4
+          type tags = 0 | 1 | 2 | 3 | 4 | 5
 
           type values = names | strings | tags
 
@@ -24,6 +24,8 @@ module Temporalio
           BATCH_OPERATION_TYPE_SIGNAL: BatchOperationType
 
           BATCH_OPERATION_TYPE_DELETE: BatchOperationType
+
+          BATCH_OPERATION_TYPE_RESET: BatchOperationType
 
           # The type of `#initialize` parameter.
           type init = BatchOperationType | values

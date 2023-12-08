@@ -268,16 +268,24 @@ module Temporalio
           #
           def self.encode: (DeleteNamespaceRequest) -> String
 
+          # Only one of namespace or namespace_id must be specified to identify namespace.
+          #
           attr_accessor namespace(): ::String
 
           def namespace!: () -> ::String?
 
-          def initialize: (?namespace: ::String) -> void
+          attr_accessor namespace_id(): ::String
+
+          def namespace_id!: () -> ::String?
+
+          def initialize: (?namespace: ::String, ?namespace_id: ::String) -> void
 
           def []: (:namespace) -> ::String
+                | (:namespace_id) -> ::String
                 | (::Symbol) -> untyped
 
           def []=: (:namespace, ::String) -> ::String
+                 | (:namespace_id, ::String) -> ::String
                  | (::Symbol, untyped) -> untyped
 
           interface _ToProto

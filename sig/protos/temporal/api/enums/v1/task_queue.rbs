@@ -86,6 +86,58 @@ module Temporalio
 
           type hash[KEY] = ::Hash[KEY, TaskQueueType | values]
         end
+
+        # Specifies which category of tasks may reach a worker on a versioned task queue.
+        #  Used both in a reachability query and its response.
+        #
+        class TaskReachability < ::Protobuf::Enum
+          type names = :TASK_REACHABILITY_UNSPECIFIED | :TASK_REACHABILITY_NEW_WORKFLOWS | :TASK_REACHABILITY_EXISTING_WORKFLOWS | :TASK_REACHABILITY_OPEN_WORKFLOWS | :TASK_REACHABILITY_CLOSED_WORKFLOWS
+
+          type strings = "TASK_REACHABILITY_UNSPECIFIED" | "TASK_REACHABILITY_NEW_WORKFLOWS" | "TASK_REACHABILITY_EXISTING_WORKFLOWS" | "TASK_REACHABILITY_OPEN_WORKFLOWS" | "TASK_REACHABILITY_CLOSED_WORKFLOWS"
+
+          type tags = 0 | 1 | 2 | 3 | 4
+
+          type values = names | strings | tags
+
+          attr_reader name(): names
+
+          attr_reader tag(): tags
+
+          TASK_REACHABILITY_UNSPECIFIED: TaskReachability
+
+          # There's a possiblity for a worker to receive new workflow tasks. Workers should *not* be retired.
+          #
+          TASK_REACHABILITY_NEW_WORKFLOWS: TaskReachability
+
+          # There's a possiblity for a worker to receive existing workflow and activity tasks from existing workflows. Workers
+          #  should *not* be retired.
+          #  This enum value does not distinguish between open and closed workflows.
+          #
+          TASK_REACHABILITY_EXISTING_WORKFLOWS: TaskReachability
+
+          # There's a possiblity for a worker to receive existing workflow and activity tasks from open workflows. Workers
+          #  should *not* be retired.
+          #
+          TASK_REACHABILITY_OPEN_WORKFLOWS: TaskReachability
+
+          # There's a possiblity for a worker to receive existing workflow tasks from closed workflows. Workers may be
+          #  retired dependending on application requirements. For example, if there's no need to query closed workflows.
+          #
+          TASK_REACHABILITY_CLOSED_WORKFLOWS: TaskReachability
+
+          # The type of `#initialize` parameter.
+          type init = TaskReachability | values
+
+          # The type of `repeated` field.
+          type field_array = ::Protobuf::Field::FieldArray[TaskReachability, TaskReachability | values]
+
+          # The type of `map` field.
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, TaskReachability, TaskReachability | values]
+
+          type array = ::Array[TaskReachability | values]
+
+          type hash[KEY] = ::Hash[KEY, TaskReachability | values]
+        end
       end
     end
   end

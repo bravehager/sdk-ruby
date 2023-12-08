@@ -400,6 +400,9 @@ module Temporalio
         #  structured_calendar (and maybe interval and timezone_name), so if you
         #  Describe a schedule, you'll see only structured_calendar, interval, etc.
         #
+        #  If a spec has no matching times after the current time, then the schedule
+        #  will be subject to automatic deletion (after several days).
+        #
         class ScheduleSpec < ::Protobuf::Message
           # Encode the message to a binary string
           #
@@ -670,7 +673,7 @@ module Temporalio
           #  If the Temporal server misses an action due to one or more components
           #  being down, and comes back up, the action will be run if the scheduled
           #  time is within this window from the current time.
-          #  This value defaults to 60 seconds, and can't be less than 10 seconds.
+          #  This value defaults to one year, and can't be less than 10 seconds.
           #
           attr_accessor catchup_window(): ::Google::Protobuf::Duration?
 
@@ -678,7 +681,7 @@ module Temporalio
           #  If the Temporal server misses an action due to one or more components
           #  being down, and comes back up, the action will be run if the scheduled
           #  time is within this window from the current time.
-          #  This value defaults to 60 seconds, and can't be less than 10 seconds.
+          #  This value defaults to one year, and can't be less than 10 seconds.
           #
           def catchup_window=: [M < ::Google::Protobuf::Duration::_ToProto] (M?) -> M?
                              | ...
@@ -873,6 +876,8 @@ module Temporalio
           #  is zero. Actions may still be taken by explicit request (i.e. trigger
           #  immediately or backfill). Skipped actions (due to overlap policy) do not
           #  count against remaining actions.
+          #  If a schedule has no more remaining actions, then the schedule will be
+          #  subject to automatic deletion (after several days).
           #
           attr_accessor limited_actions(): bool
 
@@ -923,11 +928,11 @@ module Temporalio
           #
           def self.encode: (TriggerImmediatelyRequest) -> String
 
-          # Override overlap policy for this one request.
+          # If set, override overlap policy for this one request.
           #
           attr_accessor overlap_policy(): ::Temporalio::Api::Enums::V1::ScheduleOverlapPolicy
 
-          # Override overlap policy for this one request.
+          # If set, override overlap policy for this one request.
           #
           def overlap_policy=: (::Temporalio::Api::Enums::V1::ScheduleOverlapPolicy::values) -> ::Temporalio::Api::Enums::V1::ScheduleOverlapPolicy::values
                              | ...
@@ -966,11 +971,21 @@ module Temporalio
           #
           def self.encode: (BackfillRequest) -> String
 
-          # Time range to evaluate schedule in.
+          # Time range to evaluate schedule in. Currently, this time range is
+          #  exclusive on start_time and inclusive on end_time. (This is admittedly
+          #  counterintuitive and it may change in the future, so to be safe, use a
+          #  start time strictly before a scheduled time.) Also note that an action
+          #  nominally scheduled in the interval but with jitter that pushes it after
+          #  end_time will not be included.
           #
           attr_accessor start_time(): ::Google::Protobuf::Timestamp?
 
-          # Time range to evaluate schedule in.
+          # Time range to evaluate schedule in. Currently, this time range is
+          #  exclusive on start_time and inclusive on end_time. (This is admittedly
+          #  counterintuitive and it may change in the future, so to be safe, use a
+          #  start time strictly before a scheduled time.) Also note that an action
+          #  nominally scheduled in the interval but with jitter that pushes it after
+          #  end_time will not be included.
           #
           def start_time=: [M < ::Google::Protobuf::Timestamp::_ToProto] (M?) -> M?
                          | ...
@@ -984,11 +999,11 @@ module Temporalio
 
           def end_time!: () -> ::Google::Protobuf::Timestamp?
 
-          # Override overlap policy for this request.
+          # If set, override overlap policy for this request.
           #
           attr_accessor overlap_policy(): ::Temporalio::Api::Enums::V1::ScheduleOverlapPolicy
 
-          # Override overlap policy for this request.
+          # If set, override overlap policy for this request.
           #
           def overlap_policy=: (::Temporalio::Api::Enums::V1::ScheduleOverlapPolicy::values) -> ::Temporalio::Api::Enums::V1::ScheduleOverlapPolicy::values
                              | ...
@@ -1127,6 +1142,20 @@ module Temporalio
 
           def overlap_skipped!: () -> ::Integer?
 
+          # Number of dropped actions due to buffer limit.
+          #
+          attr_accessor buffer_dropped(): ::Integer
+
+          def buffer_dropped!: () -> ::Integer?
+
+          # Number of actions in the buffer. The buffer holds the actions that cannot
+          #  be immediately triggered (due to the overlap policy). These actions can be a result of
+          #  the normal schedule or a backfill.
+          #
+          attr_accessor buffer_size(): ::Integer
+
+          def buffer_size!: () -> ::Integer?
+
           # Currently-running workflows started by this schedule. (There might be
           #  more than one if the overlap policy allows overlaps.)
           #  Note that the run_ids in here are the original execution run ids as
@@ -1194,11 +1223,13 @@ module Temporalio
 
           def invalid_schedule_error!: () -> ::String?
 
-          def initialize: (?action_count: ::Integer, ?missed_catchup_window: ::Integer, ?overlap_skipped: ::Integer, ?running_workflows: ::Temporalio::Api::Common::V1::WorkflowExecution::array, ?recent_actions: ::Temporalio::Api::Schedule::V1::ScheduleActionResult::array, ?future_action_times: ::Google::Protobuf::Timestamp::array, ?create_time: ::Google::Protobuf::Timestamp::init?, ?update_time: ::Google::Protobuf::Timestamp::init?, ?invalid_schedule_error: ::String) -> void
+          def initialize: (?action_count: ::Integer, ?missed_catchup_window: ::Integer, ?overlap_skipped: ::Integer, ?buffer_dropped: ::Integer, ?buffer_size: ::Integer, ?running_workflows: ::Temporalio::Api::Common::V1::WorkflowExecution::array, ?recent_actions: ::Temporalio::Api::Schedule::V1::ScheduleActionResult::array, ?future_action_times: ::Google::Protobuf::Timestamp::array, ?create_time: ::Google::Protobuf::Timestamp::init?, ?update_time: ::Google::Protobuf::Timestamp::init?, ?invalid_schedule_error: ::String) -> void
 
           def []: (:action_count) -> ::Integer
                 | (:missed_catchup_window) -> ::Integer
                 | (:overlap_skipped) -> ::Integer
+                | (:buffer_dropped) -> ::Integer
+                | (:buffer_size) -> ::Integer
                 | (:running_workflows) -> ::Temporalio::Api::Common::V1::WorkflowExecution::field_array
                 | (:recent_actions) -> ::Temporalio::Api::Schedule::V1::ScheduleActionResult::field_array
                 | (:future_action_times) -> ::Google::Protobuf::Timestamp::field_array
@@ -1210,6 +1241,8 @@ module Temporalio
           def []=: (:action_count, ::Integer) -> ::Integer
                  | (:missed_catchup_window, ::Integer) -> ::Integer
                  | (:overlap_skipped, ::Integer) -> ::Integer
+                 | (:buffer_dropped, ::Integer) -> ::Integer
+                 | (:buffer_size, ::Integer) -> ::Integer
                  | (:running_workflows, ::Temporalio::Api::Common::V1::WorkflowExecution::field_array) -> ::Temporalio::Api::Common::V1::WorkflowExecution::field_array
                  | (:running_workflows, ::Temporalio::Api::Common::V1::WorkflowExecution::array) -> ::Temporalio::Api::Common::V1::WorkflowExecution::array
                  | (:recent_actions, ::Temporalio::Api::Schedule::V1::ScheduleActionResult::field_array) -> ::Temporalio::Api::Schedule::V1::ScheduleActionResult::field_array

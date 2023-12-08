@@ -113,6 +113,53 @@ module Temporalio
 
           type hash[KEY] = ::Hash[KEY, LocalActivityMarkerData | _ToProto]
         end
+
+        class PatchedMarkerData < ::Protobuf::Message
+          # Encode the message to a binary string
+          #
+          def self.encode: (PatchedMarkerData) -> String
+
+          # The patch id
+          #
+          attr_accessor id(): ::String
+
+          def id!: () -> ::String?
+
+          # Whether or not the patch is marked deprecated.
+          #
+          attr_accessor deprecated(): bool
+
+          def deprecated!: () -> bool?
+
+          def initialize: (?id: ::String, ?deprecated: bool) -> void
+
+          def []: (:id) -> ::String
+                | (:deprecated) -> bool
+                | (::Symbol) -> untyped
+
+          def []=: (:id, ::String) -> ::String
+                 | (:deprecated, bool) -> bool
+                 | (::Symbol, untyped) -> untyped
+
+          def deprecated?: () -> bool
+
+          interface _ToProto
+            def to_proto: () -> PatchedMarkerData
+          end
+
+          # The type of `#initialize` parameter.
+          type init = PatchedMarkerData | _ToProto
+
+          # The type of `repeated` field.
+          type field_array = ::Protobuf::Field::FieldArray[PatchedMarkerData, PatchedMarkerData | _ToProto]
+
+          # The type of `map` field.
+          type field_hash[KEY] = ::Protobuf::Field::FieldHash[KEY, PatchedMarkerData, PatchedMarkerData | _ToProto]
+
+          type array = ::Array[PatchedMarkerData | _ToProto]
+
+          type hash[KEY] = ::Hash[KEY, PatchedMarkerData | _ToProto]
+        end
       end
     end
   end
